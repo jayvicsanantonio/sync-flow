@@ -1,9 +1,9 @@
 import { Hono } from 'hono';
 import { handle } from 'hono/vercel';
-import { createClient } from 'redis';
-import { google } from 'googleapis';
+import { Redis } from '@upstash/redis';
 
-const redis = await createClient().connect();
+// Initialize Redis
+const redis = Redis.fromEnv();
 
 export const config = {
   runtime: 'edge',
@@ -18,14 +18,144 @@ const REDIRECT_URL = `${SERVER_BASE_URL}/api/auth/google/callback`;
 // --- HONO APP SETUP ---
 const app = new Hono().basePath('/api');
 
-// --- GOOGLE OAUTH CLIENT ---
-const oauth2Client = new google.auth.OAuth2(
-  GOOGLE_CLIENT_ID,
-  GOOGLE_CLIENT_SECRET,
-  REDIRECT_URL
-);
+// --- HELPER FUNCTIONS ---
+
+// Exchange authorization code for tokens
+async function exchangeCodeForTokens(code: string) {
+  const response = await fetch(
+    'https://oauth2.googleapis.com/token',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        code,
+        client_id: GOOGLE_CLIENT_ID!,
+        client_secret: GOOGLE_CLIENT_SECRET!,
+        redirect_uri: REDIRECT_URL,
+        grant_type: 'authorization_code',
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to exchange code for tokens');
+  }
+
+  return await response.json();
+}
+
+// Create a task using Google Tasks API
+async function createGoogleTask(
+  accessToken: string,
+  title: string,
+  notes?: string,
+  due?: string
+) {
+  const taskData: any = {
+    title: title || 'New Reminder',
+  };
+
+  if (notes) taskData.notes = notes;
+  if (due) taskData.due = due;
+
+  const response = await fetch(
+    'https://tasks.googleapis.com/tasks/v1/lists/@default/tasks',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(taskData),
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to create task');
+  }
+
+  return await response.json();
+}
+
+// List tasks using Google Tasks API
+async function listGoogleTasks(accessToken: string) {
+  const response = await fetch(
+    'https://tasks.googleapis.com/tasks/v1/lists/@default/tasks?showCompleted=false&showHidden=false',
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch tasks');
+  }
+
+  return await response.json();
+}
 
 // --- ROUTES ---
+
+// 0. Index - Generate Google OAuth URL
+app.get('/', async (c) => {
+  const scopes = [
+    'https://www.googleapis.com/auth/tasks',
+    'https://www.googleapis.com/auth/tasks.readonly',
+  ];
+
+  const params = new URLSearchParams({
+    client_id: GOOGLE_CLIENT_ID!,
+    redirect_uri: REDIRECT_URL,
+    response_type: 'code',
+    scope: scopes.join(' '),
+    access_type: 'offline',
+    prompt: 'consent',
+  });
+
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+
+  return c.html(`
+    <html>
+      <head>
+        <title>Sync Flow - Google Tasks Integration</title>
+        <style>
+          body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+          }
+          .auth-button {
+            background: #4285f4;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px 0;
+          }
+          .auth-button:hover {
+            background: #3367d6;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>🔄 Sync Flow</h1>
+        <p>Connect your Apple Reminders with Google Tasks</p>
+        <p>Click the button below to authorize access to your Google Tasks:</p>
+        <a href="${authUrl}" class="auth-button">Authorize Google Tasks</a>
+        <p><small>This will redirect you to Google's authorization page.</small></p>
+      </body>
+    </html>
+  `);
+});
 
 // 1. Google OAuth Callback
 app.get('/auth/google/callback', async (c) => {
@@ -35,7 +165,7 @@ app.get('/auth/google/callback', async (c) => {
   }
 
   try {
-    const { tokens } = await oauth2Client.getToken(code);
+    const tokens = await exchangeCodeForTokens(code);
     const userId = crypto.randomUUID();
     const user = { id: userId, tokens: tokens, syncedTaskIds: [] };
 
@@ -57,20 +187,17 @@ app.post('/webhook/:userId', async (c) => {
     return c.json({ error: 'User not found.' }, 404);
   }
 
-  const user = JSON.parse(userJSON);
+  const user = JSON.parse(userJSON as string);
   const { title, notes, due } = await c.req.json();
-  oauth2Client.setCredentials(user.tokens);
-  const tasks = google.tasks({ version: 'v1', auth: oauth2Client });
 
   try {
-    const task = await tasks.tasks.insert({
-      tasklist: '@default',
-      requestBody: { title: title || 'New Reminder', notes, due },
-    });
-    return c.json(
-      { message: 'Task created.', taskId: task.data.id },
-      201
+    const task = await createGoogleTask(
+      user.tokens.access_token,
+      title,
+      notes,
+      due
     );
+    return c.json({ message: 'Task created.', taskId: task.id }, 201);
   } catch (error) {
     return c.json({ error: 'Failed to create task in Google.' }, 500);
   }
@@ -79,32 +206,24 @@ app.post('/webhook/:userId', async (c) => {
 // 3. Fetch Endpoint: Google Tasks -> Apple Reminders
 app.get('/fetch-updates/:userId', async (c) => {
   const userId = c.req.param('userId');
-  const userJSON = await redis.get(`user:${userId}`); // Get user data from Redis
+  const userJSON = await redis.get(`user:${userId}`);
   if (!userJSON) {
     return c.json({ error: 'User not found.' }, 404);
   }
 
-  const user = JSON.parse(userJSON); // Parse the JSON string
-  oauth2Client.setCredentials(user.tokens);
-  const tasks = google.tasks({ version: 'v1', auth: oauth2Client });
+  const user = JSON.parse(userJSON as string);
 
   try {
-    const response = await tasks.tasks.list({
-      tasklist: '@default',
-      showCompleted: false,
-      showHidden: false,
-    });
-
-    const allTasks = response.data.items || [];
+    const response = await listGoogleTasks(user.tokens.access_token);
+    const allTasks = response.items || [];
     const newTasks = allTasks.filter(
-      (task) => !user.syncedTaskIds.includes(task.id)
+      (task: any) => !user.syncedTaskIds.includes(task.id)
     );
 
     if (newTasks.length > 0) {
-      const newTaskIds = newTasks.map((task) => task.id);
+      const newTaskIds = newTasks.map((task: any) => task.id);
       user.syncedTaskIds.push(...newTaskIds);
 
-      // Save the updated user object back to Redis
       await redis.set(`user:${userId}`, JSON.stringify(user));
     }
 
