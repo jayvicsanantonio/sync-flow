@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { logger } from 'hono/logger';
 import { handle } from 'hono/vercel';
 import { Redis } from '@upstash/redis';
 
@@ -17,6 +18,10 @@ const REDIRECT_URL = `${SERVER_BASE_URL}/api/auth/google/callback`;
 
 // --- HONO APP SETUP ---
 const app = new Hono().basePath('/api');
+
+// --- MIDDLEWARE ---
+
+app.use(logger());
 
 // --- HELPER FUNCTIONS ---
 
