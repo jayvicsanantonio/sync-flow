@@ -6,6 +6,7 @@
     "deploy": "vercel"
   },
   "dependencies": {
+    "eslint": "^9.32.0",
     "hono": "^4.8.10"
   },
   "devDependencies": {
