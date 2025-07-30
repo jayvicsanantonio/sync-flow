@@ -192,7 +192,18 @@ app.post('/webhook/:userId', async (c) => {
     return c.json({ error: 'User not found.' }, 404);
   }
 
-  const user = JSON.parse(userJSON as string);
+  let user;
+  try {
+    if (typeof userJSON === 'string') {
+      user = JSON.parse(userJSON);
+    } else {
+      user = userJSON;
+    }
+  } catch (parseError) {
+    console.error('Failed to parse user data:', userJSON);
+    return c.json({ error: 'Invalid user data format.' }, 500);
+  }
+
   const { title, notes, due } = await c.req.json();
 
   try {
@@ -204,6 +215,7 @@ app.post('/webhook/:userId', async (c) => {
     );
     return c.json({ message: 'Task created.', taskId: task.id }, 201);
   } catch (error) {
+    console.error('Google Tasks API error:', error);
     return c.json({ error: 'Failed to create task in Google.' }, 500);
   }
 });
@@ -216,7 +228,17 @@ app.get('/fetch-updates/:userId', async (c) => {
     return c.json({ error: 'User not found.' }, 404);
   }
 
-  const user = JSON.parse(userJSON as string);
+  let user;
+  try {
+    if (typeof userJSON === 'string') {
+      user = JSON.parse(userJSON);
+    } else {
+      user = userJSON;
+    }
+  } catch (parseError) {
+    console.error('Failed to parse user data:', userJSON);
+    return c.json({ error: 'Invalid user data format.' }, 500);
+  }
 
   try {
     const response = await listGoogleTasks(user.tokens.access_token);
@@ -234,6 +256,7 @@ app.get('/fetch-updates/:userId', async (c) => {
 
     return c.json(newTasks);
   } catch (error) {
+    console.error('Google Tasks API error:', error);
     return c.json(
       { error: 'Failed to fetch tasks from Google.' },
       500
