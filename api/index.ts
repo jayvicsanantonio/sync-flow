@@ -51,6 +51,33 @@ async function exchangeCodeForTokens(code: string) {
   return await response.json();
 }
 
+// Get user profile from Google API
+async function getUserProfile(accessToken: string) {
+  const response = await fetch(
+    'https://www.googleapis.com/oauth2/v2/userinfo',
+    {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Google User Info API Error:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorText,
+    });
+    throw new Error(
+      `Failed to fetch user profile: ${response.status} ${response.statusText} - ${errorText}`
+    );
+  }
+
+  return await response.json();
+}
+
 // Create a task using Google Tasks API
 async function createGoogleTask(
   accessToken: string,
@@ -83,9 +110,11 @@ async function createGoogleTask(
       status: response.status,
       statusText: response.statusText,
       body: errorText,
-      requestData: taskData
+      requestData: taskData,
     });
-    throw new Error(`Failed to create task: ${response.status} ${response.statusText} - ${errorText}`);
+    throw new Error(
+      `Failed to create task: ${response.status} ${response.statusText} - ${errorText}`
+    );
   }
 
   return await response.json();
@@ -94,18 +123,21 @@ async function createGoogleTask(
 // Refresh Google OAuth tokens
 async function refreshGoogleTokens(refreshToken: string) {
   console.log('Refreshing Google tokens...');
-  const response = await fetch('https://oauth2.googleapis.com/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      client_id: GOOGLE_CLIENT_ID!,
-      client_secret: GOOGLE_CLIENT_SECRET!,
-      refresh_token: refreshToken,
-      grant_type: 'refresh_token',
-    }),
-  });
+  const response = await fetch(
+    'https://oauth2.googleapis.com/token',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: GOOGLE_CLIENT_ID!,
+        client_secret: GOOGLE_CLIENT_SECRET!,
+        refresh_token: refreshToken,
+        grant_type: 'refresh_token',
+      }),
+    }
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -135,9 +167,11 @@ async function listGoogleTasks(accessToken: string) {
     console.error('Google Tasks API Error (list):', {
       status: response.status,
       statusText: response.statusText,
-      body: errorText
+      body: errorText,
     });
-    throw new Error(`Failed to fetch tasks: ${response.status} ${response.statusText} - ${errorText}`);
+    throw new Error(
+      `Failed to fetch tasks: ${response.status} ${response.statusText} - ${errorText}`
+    );
   }
 
   return await response.json();
@@ -165,38 +199,49 @@ async function callGoogleAPIWithRefresh(
     // Try the API call with current access token
     return await apiCall(user.tokens.access_token);
   } catch (error: any) {
-    console.log('API call failed, checking if token refresh is needed...');
-    
+    console.log(
+      'API call failed, checking if token refresh is needed...'
+    );
+
     // Check if it's a 401 error (token expired)
     if (error.message && error.message.includes('401')) {
       console.log('Token expired, attempting refresh...');
-      
+
       if (!user.tokens.refresh_token) {
-        throw new Error('No refresh token available. User needs to re-authenticate.');
+        throw new Error(
+          'No refresh token available. User needs to re-authenticate.'
+        );
       }
 
       try {
         // Refresh the token
-        const newTokens = await refreshGoogleTokens(user.tokens.refresh_token);
-        
+        const newTokens = await refreshGoogleTokens(
+          user.tokens.refresh_token
+        );
+
         // Update user data with new tokens
         user.tokens = {
           ...user.tokens,
           access_token: newTokens.access_token,
           // Google might not return a new refresh token, so keep the old one if not provided
-          refresh_token: newTokens.refresh_token || user.tokens.refresh_token
+          refresh_token:
+            newTokens.refresh_token || user.tokens.refresh_token,
         };
-        
+
         // Save updated user data back to Redis
         await redis.set(`user:${userId}`, JSON.stringify(user));
-        
-        console.log('Token refreshed successfully, retrying API call...');
-        
+
+        console.log(
+          'Token refreshed successfully, retrying API call...'
+        );
+
         // Retry the API call with new token
         return await apiCall(user.tokens.access_token);
       } catch (refreshError) {
         console.error('Failed to refresh token:', refreshError);
-        throw new Error('Token refresh failed. User needs to re-authenticate.');
+        throw new Error(
+          'Token refresh failed. User needs to re-authenticate.'
+        );
       }
     } else {
       // If it's not a 401 error, just re-throw the original error
@@ -212,6 +257,8 @@ app.get('/', async (c) => {
   const scopes = [
     'https://www.googleapis.com/auth/tasks',
     'https://www.googleapis.com/auth/tasks.readonly',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
   ];
 
   const params = new URLSearchParams({
@@ -273,15 +320,32 @@ app.get('/auth/google/callback', async (c) => {
 
   try {
     const tokens = await exchangeCodeForTokens(code);
-    const userId = crypto.randomUUID();
-    const user = { id: userId, tokens: tokens, syncedTaskIds: [] };
+    const userProfile = await getUserProfile(tokens.access_token);
 
-    await redis.set(`user:${userId}`, JSON.stringify(user));
+    const id = userProfile.id;
+    const user = {
+      id,
+      tokens: tokens,
+      syncedTaskIds: [],
+      profile: {
+        email: userProfile.email,
+        name: userProfile.name,
+        given_name: userProfile.given_name,
+        family_name: userProfile.family_name,
+        picture: userProfile.picture,
+      },
+    };
+
+    await redis.set(`user:${id}`, JSON.stringify(user));
 
     return c.html(
-      `<h2>✅ Auth Successful!</h2><p>Your ID is: <code>${userId}</code></p>`
+      `<h2>✅ Auth Successful!</h2>
+       <p>Welcome, <strong>${userProfile.name}</strong>!</p>
+       <p>Your email: <code>${userProfile.email}</code></p>
+       <p>Your ID is: <code>${id}</code></p>`
     );
   } catch (error) {
+    console.error('Authentication error:', error);
     return c.text('Authentication failed.', 500);
   }
 });
@@ -290,22 +354,33 @@ app.get('/auth/google/callback', async (c) => {
 app.post('/webhook/:userId', async (c) => {
   const userId = c.req.param('userId');
   console.log('Webhook called for userId:', userId);
-  
+
   const { title, notes, due } = await c.req.json();
   console.log('Webhook payload:', { title, notes, due });
 
   try {
-    const task = await callGoogleAPIWithRefresh(userId, (accessToken) =>
-      createGoogleTask(accessToken, title, notes, due)
+    const task = await callGoogleAPIWithRefresh(
+      userId,
+      (accessToken) =>
+        createGoogleTask(accessToken, title, notes, due)
     );
     return c.json({ message: 'Task created.', taskId: task.id }, 201);
   } catch (error) {
     console.error('Webhook error:', error);
-    
-    if (error instanceof Error && error.message.includes('User needs to re-authenticate')) {
-      return c.json({ error: 'Authentication expired. Please re-authorize the app.' }, 401);
+
+    if (
+      error instanceof Error &&
+      error.message.includes('User needs to re-authenticate')
+    ) {
+      return c.json(
+        {
+          error:
+            'Authentication expired. Please re-authorize the app.',
+        },
+        401
+      );
     }
-    
+
     return c.json({ error: 'Failed to create task in Google.' }, 500);
   }
 });
@@ -315,17 +390,18 @@ app.get('/fetch-updates/:userId', async (c) => {
   const userId = c.req.param('userId');
 
   try {
-    const response = await callGoogleAPIWithRefresh(userId, (accessToken) =>
-      listGoogleTasks(accessToken)
+    const response = await callGoogleAPIWithRefresh(
+      userId,
+      (accessToken) => listGoogleTasks(accessToken)
     );
-    
+
     // After getting the tasks, we need to get the latest user data again
     // as the token might have been refreshed and the data updated.
     const userJSON = await redis.get(`user:${userId}`);
     if (!userJSON) {
       return c.json({ error: 'User not found after API call.' }, 404);
     }
-    
+
     let user;
     if (typeof userJSON === 'string') {
       user = JSON.parse(userJSON);
@@ -348,12 +424,24 @@ app.get('/fetch-updates/:userId', async (c) => {
     return c.json(newTasks);
   } catch (error) {
     console.error('Fetch-updates error:', error);
-    
-    if (error instanceof Error && error.message.includes('User needs to re-authenticate')) {
-      return c.json({ error: 'Authentication expired. Please re-authorize the app.' }, 401);
+
+    if (
+      error instanceof Error &&
+      error.message.includes('User needs to re-authenticate')
+    ) {
+      return c.json(
+        {
+          error:
+            'Authentication expired. Please re-authorize the app.',
+        },
+        401
+      );
     }
-    
-    return c.json({ error: 'Failed to fetch tasks from Google.' }, 500);
+
+    return c.json(
+      { error: 'Failed to fetch tasks from Google.' },
+      500
+    );
   }
 });
 
