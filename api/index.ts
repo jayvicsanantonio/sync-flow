@@ -23,6 +23,29 @@ const app = new Hono().basePath('/api');
 
 app.use(logger());
 
+// --- TYPE DEFINITIONS ---
+interface UserTokens {
+  access_token: string;
+  refresh_token?: string;
+  expires_in?: number;
+  token_type?: string;
+}
+
+interface UserProfile {
+  email: string;
+  name: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+}
+
+interface User {
+  id: string;
+  tokens: UserTokens;
+  syncedTaskIds: string[];
+  profile: UserProfile;
+}
+
 // --- HELPER FUNCTIONS ---
 
 // Exchange authorization code for tokens
@@ -189,11 +212,11 @@ async function callGoogleAPIWithRefresh(
     throw new Error('User not found');
   }
 
-  let user;
+  let user: User;
   if (typeof userJSON === 'string') {
-    user = JSON.parse(userJSON);
+    user = JSON.parse(userJSON) as User;
   } else {
-    user = userJSON;
+    user = userJSON as User;
   }
 
   try {
@@ -411,11 +434,11 @@ app.get('/fetch-updates/:userId', async (c) => {
       return c.json({ error: 'User not found after API call.' }, 404);
     }
 
-    let user;
+    let user: User;
     if (typeof userJSON === 'string') {
-      user = JSON.parse(userJSON);
+      user = JSON.parse(userJSON) as User;
     } else {
-      user = userJSON;
+      user = userJSON as User;
     }
 
     const allTasks = response.items || [];
