@@ -78,7 +78,14 @@ async function createGoogleTask(
   );
 
   if (!response.ok) {
-    throw new Error('Failed to create task');
+    const errorText = await response.text();
+    console.error('Google Tasks API Error:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorText,
+      requestData: taskData
+    });
+    throw new Error(`Failed to create task: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   return await response.json();
@@ -187,8 +194,11 @@ app.get('/auth/google/callback', async (c) => {
 // 2. Webhook: Apple Reminders -> Google Tasks
 app.post('/webhook/:userId', async (c) => {
   const userId = c.req.param('userId');
+  console.log('Webhook called for userId:', userId);
+  
   const userJSON = await redis.get(`user:${userId}`);
   if (!userJSON) {
+    console.log('User not found in Redis for userId:', userId);
     return c.json({ error: 'User not found.' }, 404);
   }
 
@@ -199,12 +209,14 @@ app.post('/webhook/:userId', async (c) => {
     } else {
       user = userJSON;
     }
+    console.log('User tokens available:', !!user.tokens?.access_token);
   } catch (parseError) {
     console.error('Failed to parse user data:', userJSON);
     return c.json({ error: 'Invalid user data format.' }, 500);
   }
 
   const { title, notes, due } = await c.req.json();
+  console.log('Webhook payload:', { title, notes, due });
 
   try {
     const task = await createGoogleTask(
