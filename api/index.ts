@@ -111,6 +111,7 @@ async function createGoogleTask(
       statusText: response.statusText,
       body: errorText,
       requestData: taskData,
+      accessToken,
     });
     throw new Error(
       `Failed to create task: ${response.status} ${response.statusText} - ${errorText}`
@@ -252,13 +253,21 @@ async function callGoogleAPIWithRefresh(
 
 // --- ROUTES ---
 
+const GOOGLE_USERINFO_EMAIL_SCOPE =
+  'https://www.googleapis.com/auth/userinfo.email';
+const GOOGLE_USERINFO_PROFILE_SCOPE =
+  'https://www.googleapis.com/auth/userinfo.profile';
+const GOOGLE_TASKS_SCOPE = 'https://www.googleapis.com/auth/tasks';
+const GOOGLE_TASKS_READONLY_SCOPE =
+  'https://www.googleapis.com/auth/tasks.readonly';
+
 // 0. Index - Generate Google OAuth URL
 app.get('/', async (c) => {
   const scopes = [
-    'https://www.googleapis.com/auth/tasks',
-    'https://www.googleapis.com/auth/tasks.readonly',
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
+    GOOGLE_TASKS_SCOPE,
+    GOOGLE_TASKS_READONLY_SCOPE,
+    GOOGLE_USERINFO_EMAIL_SCOPE,
+    GOOGLE_USERINFO_PROFILE_SCOPE,
   ];
 
   const params = new URLSearchParams({
