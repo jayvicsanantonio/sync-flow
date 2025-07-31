@@ -1,0 +1,49 @@
+import type { Context } from 'hono';
+import { GoogleAuthService } from '../services/google-auth';
+import { UserService } from '../services/user';
+import type { User } from '../types/user';
+
+export function createAuthHandler(
+  googleAuthService: GoogleAuthService,
+  userService: UserService
+) {
+  return async function handleGoogleCallback(c: Context) {
+    const code = c.req.query('code');
+    if (!code) {
+      return c.text('Authorization code is missing.', 400);
+    }
+
+    try {
+      const tokens = await googleAuthService.exchangeCodeForTokens(code);
+      const userProfile = await googleAuthService.getUserProfile(
+        tokens.access_token
+      );
+
+      const id = userProfile.id;
+      const user: User = {
+        id,
+        tokens: tokens,
+        syncedTaskIds: [],
+        profile: {
+          email: userProfile.email,
+          name: userProfile.name,
+          given_name: userProfile.given_name,
+          family_name: userProfile.family_name,
+          picture: userProfile.picture,
+        },
+      };
+
+      await userService.saveUser(user);
+
+      return c.html(
+        `<h2>✅ Auth Successful!</h2>
+         <p>Welcome, <strong>${userProfile.name}</strong>!</p>
+         <p>Your email: <code>${userProfile.email}</code></p>
+         <p>Your ID is: <code>${id}</code></p>`
+      );
+    } catch (error) {
+      console.error('Authentication error:', error);
+      return c.text('Authentication failed.', 500);
+    }
+  };
+} 
