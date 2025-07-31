@@ -1,6 +1,7 @@
 import { config } from '../config/environment';
 import type { UserTokens } from '../types/auth';
 import type { GoogleUserInfo } from '../types/google-api';
+import { GoogleAPIError, AuthenticationError } from '../utils/errors';
 
 export class GoogleAuthService {
   async exchangeCodeForTokens(code: string): Promise<UserTokens> {
@@ -22,14 +23,11 @@ export class GoogleAuthService {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Token exchange failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText,
-      });
-      throw new Error(
-        `Failed to exchange code for tokens: ${response.status} ${response.statusText} - ${errorText}`
+      const errorData = await response.text();
+      throw new GoogleAPIError(
+        'Failed to exchange code for tokens',
+        errorData,
+        response.status
       );
     }
 
@@ -48,14 +46,18 @@ export class GoogleAuthService {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Google User Info API Error:', {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText,
-      });
-      throw new Error(
-        `Failed to fetch user profile: ${response.status} ${response.statusText} - ${errorText}`
+      const errorData = await response.text();
+
+      if (response.status === 401) {
+        throw new AuthenticationError(
+          'Invalid or expired access token'
+        );
+      }
+
+      throw new GoogleAPIError(
+        'Failed to fetch user profile',
+        errorData,
+        response.status
       );
     }
 
@@ -82,9 +84,19 @@ export class GoogleAuthService {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Failed to refresh tokens:', errorText);
-      throw new Error('Failed to refresh Google tokens');
+      const errorData = await response.text();
+
+      if (response.status === 400) {
+        throw new AuthenticationError(
+          'Refresh token expired or invalid'
+        );
+      }
+
+      throw new GoogleAPIError(
+        'Failed to refresh Google tokens',
+        errorData,
+        response.status
+      );
     }
 
     const newTokens = await response.json();
