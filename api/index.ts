@@ -20,9 +20,18 @@ const googleTasksService = new GoogleTasksService();
 const userService = new UserService(redis);
 
 // Create Handlers with Dependencies
-const handleGoogleCallback = createAuthHandler(googleAuthService, userService);
-const handleWebhook = createWebhookHandler(googleTasksService, userService);
-const handleFetchUpdates = createSyncHandler(googleTasksService, userService);
+const handleGoogleCallback = createAuthHandler(
+  googleAuthService,
+  userService
+);
+const handleWebhook = createWebhookHandler(
+  googleTasksService,
+  userService
+);
+const handleFetchUpdates = createSyncHandler(
+  googleTasksService,
+  userService
+);
 
 // Export config for Vercel
 export { config };
