@@ -2,49 +2,26 @@ import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { handle } from 'hono/vercel';
 import { Redis } from '@upstash/redis';
+import { config } from './config/environment';
+import type { User, UserTokens, UserProfile } from './types/user';
+import type {
+  GoogleTask,
+  GoogleTasksListResponse,
+  CreateTaskRequest,
+  GoogleUserInfo,
+} from './types/google-api';
 
 // Initialize Redis
 const redis = Redis.fromEnv();
 
-export const config = {
-  runtime: 'edge',
-};
-
-// --- CONFIGURATION from Environment Variables ---
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, SERVER_BASE_URL } =
-  process.env;
-
-const REDIRECT_URL = `${SERVER_BASE_URL}/api/auth/google/callback`;
+// Export config for Vercel
+export { config };
 
 // --- HONO APP SETUP ---
 const app = new Hono().basePath('/api');
 
 // --- MIDDLEWARE ---
-
 app.use(logger());
-
-// --- TYPE DEFINITIONS ---
-interface UserTokens {
-  access_token: string;
-  refresh_token?: string;
-  expires_in?: number;
-  token_type?: string;
-}
-
-interface UserProfile {
-  email: string;
-  name: string;
-  given_name: string;
-  family_name: string;
-  picture: string;
-}
-
-interface User {
-  id: string;
-  tokens: UserTokens;
-  syncedTaskIds: string[];
-  profile: UserProfile;
-}
 
 // --- HELPER FUNCTIONS ---
 
@@ -59,9 +36,9 @@ async function exchangeCodeForTokens(code: string) {
       },
       body: new URLSearchParams({
         code,
-        client_id: GOOGLE_CLIENT_ID!,
-        client_secret: GOOGLE_CLIENT_SECRET!,
-        redirect_uri: REDIRECT_URL,
+        client_id: config.google.clientId,
+        client_secret: config.google.clientSecret,
+        redirect_uri: config.google.redirectUrl,
         grant_type: 'authorization_code',
       }),
     }
@@ -75,7 +52,9 @@ async function exchangeCodeForTokens(code: string) {
 }
 
 // Get user profile from Google API
-async function getUserProfile(accessToken: string) {
+async function getUserProfile(
+  accessToken: string
+): Promise<GoogleUserInfo> {
   const response = await fetch(
     'https://www.googleapis.com/oauth2/v2/userinfo',
     {
@@ -107,8 +86,8 @@ async function createGoogleTask(
   title: string,
   notes?: string,
   due?: string
-) {
-  const taskData: any = {
+): Promise<GoogleTask> {
+  const taskData: CreateTaskRequest = {
     title: title || 'New Reminder',
   };
 
@@ -155,8 +134,8 @@ async function refreshGoogleTokens(refreshToken: string) {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        client_id: GOOGLE_CLIENT_ID!,
-        client_secret: GOOGLE_CLIENT_SECRET!,
+        client_id: config.google.clientId,
+        client_secret: config.google.clientSecret,
         refresh_token: refreshToken,
         grant_type: 'refresh_token',
       }),
@@ -175,7 +154,9 @@ async function refreshGoogleTokens(refreshToken: string) {
 }
 
 // List tasks using Google Tasks API
-async function listGoogleTasks(accessToken: string) {
+async function listGoogleTasks(
+  accessToken: string
+): Promise<GoogleTasksListResponse> {
   const response = await fetch(
     'https://tasks.googleapis.com/tasks/v1/lists/@default/tasks?showCompleted=false&showHidden=false',
     {
@@ -276,28 +257,13 @@ async function callGoogleAPIWithRefresh(
 
 // --- ROUTES ---
 
-const GOOGLE_USERINFO_EMAIL_SCOPE =
-  'https://www.googleapis.com/auth/userinfo.email';
-const GOOGLE_USERINFO_PROFILE_SCOPE =
-  'https://www.googleapis.com/auth/userinfo.profile';
-const GOOGLE_TASKS_SCOPE = 'https://www.googleapis.com/auth/tasks';
-const GOOGLE_TASKS_READONLY_SCOPE =
-  'https://www.googleapis.com/auth/tasks.readonly';
-
 // 0. Index - Generate Google OAuth URL
 app.get('/', async (c) => {
-  const scopes = [
-    GOOGLE_TASKS_SCOPE,
-    GOOGLE_TASKS_READONLY_SCOPE,
-    GOOGLE_USERINFO_EMAIL_SCOPE,
-    GOOGLE_USERINFO_PROFILE_SCOPE,
-  ];
-
   const params = new URLSearchParams({
-    client_id: GOOGLE_CLIENT_ID!,
-    redirect_uri: REDIRECT_URL,
+    client_id: config.google.clientId,
+    redirect_uri: config.google.redirectUrl,
     response_type: 'code',
-    scope: scopes.join(' '),
+    scope: config.google.scopes.join(' '),
     access_type: 'offline',
     prompt: 'consent',
   });
@@ -355,7 +321,7 @@ app.get('/auth/google/callback', async (c) => {
     const userProfile = await getUserProfile(tokens.access_token);
 
     const id = userProfile.id;
-    const user = {
+    const user: User = {
       id,
       tokens: tokens,
       syncedTaskIds: [],
@@ -443,11 +409,11 @@ app.get('/fetch-updates/:userId', async (c) => {
 
     const allTasks = response.items || [];
     const newTasks = allTasks.filter(
-      (task: any) => !user.syncedTaskIds.includes(task.id)
+      (task: GoogleTask) => !user.syncedTaskIds.includes(task.id)
     );
 
     if (newTasks.length > 0) {
-      const newTaskIds = newTasks.map((task: any) => task.id);
+      const newTaskIds = newTasks.map((task: GoogleTask) => task.id);
       user.syncedTaskIds.push(...newTaskIds);
 
       await redis.set(`user:${userId}`, JSON.stringify(user));
