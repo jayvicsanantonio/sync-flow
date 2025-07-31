@@ -5,9 +5,9 @@ import { Redis } from '@upstash/redis';
 import { config } from './config/environment';
 import type { User } from './types/user';
 import type { GoogleTask } from './types/google-api';
-import { GoogleAuthService } from './services/google-auth.service';
-import { GoogleTasksService } from './services/google-tasks.service';
-import { UserService } from './services/user.service';
+import { GoogleAuthService } from './services/google-auth';
+import { GoogleTasksService } from './services/google-tasks';
+import { UserService } from './services/user';
 
 // Initialize Redis
 const redis = Redis.fromEnv();
@@ -79,8 +79,12 @@ app.get('/auth/google/callback', async (c) => {
   }
 
   try {
-    const tokens = await googleAuthService.exchangeCodeForTokens(code);
-    const userProfile = await googleAuthService.getUserProfile(tokens.access_token);
+    const tokens = await googleAuthService.exchangeCodeForTokens(
+      code
+    );
+    const userProfile = await googleAuthService.getUserProfile(
+      tokens.access_token
+    );
 
     const id = userProfile.id;
     const user: User = {
@@ -121,7 +125,8 @@ app.post('/webhook/:userId', async (c) => {
   try {
     const task = await userService.callGoogleAPIWithRefresh(
       userId,
-      (accessToken) => googleTasksService.createTask(accessToken, title, notes, due)
+      (accessToken) =>
+        googleTasksService.createTask(accessToken, title, notes, due)
     );
     return c.json({ message: 'Task created.', taskId: task.id }, 201);
   } catch (error) {
@@ -133,7 +138,8 @@ app.post('/webhook/:userId', async (c) => {
     ) {
       return c.json(
         {
-          error: 'Authentication expired. Please re-authorize the app.',
+          error:
+            'Authentication expired. Please re-authorize the app.',
         },
         401
       );
@@ -179,13 +185,17 @@ app.get('/fetch-updates/:userId', async (c) => {
     ) {
       return c.json(
         {
-          error: 'Authentication expired. Please re-authorize the app.',
+          error:
+            'Authentication expired. Please re-authorize the app.',
         },
         401
       );
     }
 
-    return c.json({ error: 'Failed to fetch tasks from Google.' }, 500);
+    return c.json(
+      { error: 'Failed to fetch tasks from Google.' },
+      500
+    );
   }
 });
 
