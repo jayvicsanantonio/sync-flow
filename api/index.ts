@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
+import { cors } from 'hono/cors';
 import { handle } from 'hono/vercel';
 import { Redis } from '@upstash/redis';
 import { config } from './config/environment';
@@ -10,6 +11,7 @@ import { createHomeHandler } from './handlers/home';
 import { createAuthHandler } from './handlers/auth';
 import { createWebhookHandler } from './handlers/webhook';
 import { createSyncHandler } from './handlers/sync';
+import { errorHandler } from './middleware/error-handler';
 
 // Initialize Redis
 const redis = Redis.fromEnv();
@@ -42,6 +44,8 @@ const app = new Hono().basePath('/api');
 
 // --- MIDDLEWARE ---
 app.use(logger());
+app.use(cors());
+app.use(errorHandler);
 
 // --- ROUTES ---
 app.get('/', handleHome);
