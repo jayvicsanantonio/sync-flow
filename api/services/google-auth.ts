@@ -22,7 +22,15 @@ export class GoogleAuthService {
     );
 
     if (!response.ok) {
-      throw new Error('Failed to exchange code for tokens');
+      const errorText = await response.text();
+      console.error('Token exchange failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+      });
+      throw new Error(
+        `Failed to exchange code for tokens: ${response.status} ${response.statusText} - ${errorText}`
+      );
     }
 
     return await response.json();

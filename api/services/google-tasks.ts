@@ -37,7 +37,6 @@ export class GoogleTasksService {
         statusText: response.statusText,
         body: errorText,
         requestData: taskData,
-        accessToken,
       });
       throw new Error(
         `Failed to create task: ${response.status} ${response.statusText} - ${errorText}`

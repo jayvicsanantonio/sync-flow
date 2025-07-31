@@ -6,9 +6,9 @@ export class UserService {
   private redis: Redis;
   private googleAuthService: GoogleAuthService;
 
-  constructor(redis: Redis) {
+  constructor(redis: Redis, googleAuthService: GoogleAuthService) {
     this.redis = redis;
-    this.googleAuthService = new GoogleAuthService();
+    this.googleAuthService = googleAuthService;
   }
 
   async getUserById(userId: string): Promise<User | null> {

@@ -14,16 +14,20 @@ export function createAuthHandler(
     }
 
     try {
-      const tokens = await googleAuthService.exchangeCodeForTokens(code);
+      const tokens = await googleAuthService.exchangeCodeForTokens(
+        code
+      );
       const userProfile = await googleAuthService.getUserProfile(
         tokens.access_token
       );
 
       const id = userProfile.id;
+      const existingUser = await userService.getUserById(id);
+
       const user: User = {
         id,
         tokens: tokens,
-        syncedTaskIds: [],
+        syncedTaskIds: existingUser?.syncedTaskIds || [],
         profile: {
           email: userProfile.email,
           name: userProfile.name,
@@ -46,4 +50,4 @@ export function createAuthHandler(
       return c.text('Authentication failed.', 500);
     }
   };
-} 
+}

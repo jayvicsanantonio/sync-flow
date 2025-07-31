@@ -1,12 +1,13 @@
 import type { Context } from 'hono';
 import { GoogleAuthService } from '../services/google-auth';
 
-const googleAuthService = new GoogleAuthService();
+export function createHomeHandler(
+  googleAuthService: GoogleAuthService
+) {
+  return async function handleHome(c: Context) {
+    const authUrl = googleAuthService.generateAuthUrl();
 
-export async function handleHome(c: Context) {
-  const authUrl = googleAuthService.generateAuthUrl();
-
-  return c.html(`
+    return c.html(`
     <html>
       <head>
         <title>Sync Flow - Google Tasks Integration</title>
@@ -43,4 +44,5 @@ export async function handleHome(c: Context) {
       </body>
     </html>
   `);
+  };
 }

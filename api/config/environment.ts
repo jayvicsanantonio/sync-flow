@@ -23,6 +23,6 @@ export const config = {
     ],
   },
   api: {
-    baseUrl: SERVER_BASE_URL,
+    baseUrl: SERVER_BASE_URL!,
   },
 } as const;

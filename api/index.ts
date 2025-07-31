@@ -6,7 +6,7 @@ import { config } from './config/environment';
 import { GoogleAuthService } from './services/google-auth';
 import { GoogleTasksService } from './services/google-tasks';
 import { UserService } from './services/user';
-import { handleHome } from './handlers/home';
+import { createHomeHandler } from './handlers/home';
 import { createAuthHandler } from './handlers/auth';
 import { createWebhookHandler } from './handlers/webhook';
 import { createSyncHandler } from './handlers/sync';
@@ -17,9 +17,10 @@ const redis = Redis.fromEnv();
 // Initialize Services
 const googleAuthService = new GoogleAuthService();
 const googleTasksService = new GoogleTasksService();
-const userService = new UserService(redis);
+const userService = new UserService(redis, googleAuthService);
 
 // Create Handlers with Dependencies
+const handleHome = createHomeHandler(googleAuthService);
 const handleGoogleCallback = createAuthHandler(
   googleAuthService,
   userService

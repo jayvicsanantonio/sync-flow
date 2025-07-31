@@ -17,11 +17,7 @@ export interface GoogleTasksListResponse {
   items?: GoogleTask[];
 }
 
-export interface CreateTaskRequest {
-  title: string;
-  notes?: string;
-  due?: string;
-}
+export interface CreateTaskRequest extends GoogleTaskData {}
 
 export interface GoogleUserInfo {
   id: string;
