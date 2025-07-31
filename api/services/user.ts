@@ -18,9 +18,10 @@ export class UserService {
       return null;
     }
 
-    if (typeof user === 'string') {
-      return JSON.parse(user) as User;
+    if (typeof user === 'string' || user instanceof Buffer) {
+      return JSON.parse(user.toString()) as User;
     }
+
     return user as User;
   }
 
@@ -42,7 +43,7 @@ export class UserService {
   }
 
   async getAccessToken(userId: string): Promise<string> {
-    const user = (await this.getUserById(userId)) as User;
+    const user = await this.getUserById(userId);
 
     if (
       !user ||
@@ -60,14 +61,10 @@ export class UserService {
           user.tokens.refresh_token
         );
 
-        user.tokens = {
-          ...user.tokens,
-          access_token: newTokens.access_token,
-          refresh_token:
-            newTokens.refresh_token || user.tokens.refresh_token,
-        };
-
-        await this.saveUser(user);
+        await this.saveUser({
+          ...user,
+          tokens: newTokens,
+        });
       } catch (error) {
         console.error('Failed to refresh token:', error);
         throw new Error(
