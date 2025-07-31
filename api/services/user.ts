@@ -12,15 +12,16 @@ export class UserService {
   }
 
   async getUserById(userId: string): Promise<User | null> {
-    const userJSON = await this.redis.get(`user:${userId}`);
-    if (!userJSON) {
+    const user = await this.redis.get(`user:${userId}`);
+
+    if (!user) {
       return null;
     }
 
-    if (typeof userJSON === 'string') {
-      return JSON.parse(userJSON) as User;
+    if (typeof user === 'string') {
+      return JSON.parse(user) as User;
     }
-    return userJSON as User;
+    return user as User;
   }
 
   async saveUser(user: User): Promise<void> {
@@ -40,60 +41,41 @@ export class UserService {
     await this.saveUser(user);
   }
 
-  async callGoogleAPIWithRefresh<T>(
-    userId: string,
-    apiCall: (accessToken: string) => Promise<T>
-  ): Promise<T> {
-    const user = await this.getUserById(userId);
-    if (!user) {
-      throw new Error('User not found');
+  async getAccessToken(userId: string): Promise<string> {
+    const user = (await this.getUserById(userId)) as User;
+
+    if (
+      !user ||
+      !user.tokens.refresh_token ||
+      !user.tokens.expires_in
+    ) {
+      throw new Error('User not found or missing tokens');
     }
 
-    try {
-      return await apiCall(user.tokens.access_token);
-    } catch (error: any) {
-      console.log(
-        'API call failed, checking if token refresh is needed...'
-      );
+    if (Date.now() >= user.tokens.expires_in - 60000) {
+      console.log(`Refreshing token for user: ${userId}`);
 
-      if (error.message && error.message.includes('401')) {
-        console.log('Token expired, attempting refresh...');
+      try {
+        const newTokens = await this.googleAuthService.refreshTokens(
+          user.tokens.refresh_token
+        );
 
-        if (!user.tokens.refresh_token) {
-          throw new Error(
-            'No refresh token available. User needs to re-authenticate.'
-          );
-        }
+        user.tokens = {
+          ...user.tokens,
+          access_token: newTokens.access_token,
+          refresh_token:
+            newTokens.refresh_token || user.tokens.refresh_token,
+        };
 
-        try {
-          const newTokens =
-            await this.googleAuthService.refreshTokens(
-              user.tokens.refresh_token
-            );
-
-          user.tokens = {
-            ...user.tokens,
-            access_token: newTokens.access_token,
-            refresh_token:
-              newTokens.refresh_token || user.tokens.refresh_token,
-          };
-
-          await this.saveUser(user);
-
-          console.log(
-            'Token refreshed successfully, retrying API call...'
-          );
-
-          return await apiCall(user.tokens.access_token);
-        } catch (refreshError) {
-          console.error('Failed to refresh token:', refreshError);
-          throw new Error(
-            'Token refresh failed. User needs to re-authenticate.'
-          );
-        }
-      } else {
-        throw error;
+        await this.saveUser(user);
+      } catch (error) {
+        console.error('Failed to refresh token:', error);
+        throw new Error(
+          'Token refresh failed. User needs to re-authenticate.'
+        );
       }
     }
+
+    return user.tokens.access_token;
   }
 }

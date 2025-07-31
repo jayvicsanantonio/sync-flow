@@ -25,15 +25,12 @@ export function createWebhookHandler(
     }
 
     try {
-      const task = await userService.callGoogleAPIWithRefresh(
-        userId,
-        (accessToken) =>
-          googleTasksService.createTask(
-            accessToken,
-            title,
-            notes,
-            due
-          )
+      const accessToken = await userService.getAccessToken(userId);
+      const task = await googleTasksService.createTask(
+        accessToken,
+        title,
+        notes,
+        due
       );
       return c.json(
         { message: 'Task created.', taskId: task.id },

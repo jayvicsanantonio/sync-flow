@@ -15,12 +15,13 @@ export function createSyncHandler(
     }
 
     try {
-      const response = await userService.callGoogleAPIWithRefresh(
-        userId,
-        (accessToken) => googleTasksService.listTasks(accessToken)
+      const accessToken = await userService.getAccessToken(userId);
+      const response = await googleTasksService.listTasks(
+        accessToken
       );
 
       const user = await userService.getUserById(userId);
+
       if (!user) {
         return c.json(
           { error: 'User not found after API call.' },
