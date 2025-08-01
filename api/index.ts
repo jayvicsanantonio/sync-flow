@@ -13,24 +13,37 @@ import { GoogleTasksService } from './services/google-tasks';
 import { UserService } from './services/user';
 import { createHomeHandler } from './handlers/home';
 import { createAuthHandler } from './handlers/auth';
-import { createWebhookHandler } from './handlers/webhook';
+import {
+  createWebhookHandler,
+  createCreateTaskWebhookHandler,
+  createUpdateTaskWebhookHandler,
+  createDeleteTaskWebhookHandler,
+} from './handlers/webhook';
 import { createSyncHandler } from './handlers/sync';
 
-// Initialize Redis
 const redis = Redis.fromEnv();
 
-// Initialize Services
 const googleAuthService = new GoogleAuthService();
 const googleTasksService = new GoogleTasksService();
 const userService = new UserService(redis, googleAuthService);
 
-// Create Handlers with Dependencies
 const handleHome = createHomeHandler(googleAuthService);
 const handleGoogleCallback = createAuthHandler(googleAuthService, userService);
 const handleWebhook = createWebhookHandler(googleTasksService, userService);
+const handleCreateTaskWebhook = createCreateTaskWebhookHandler(
+  googleTasksService,
+  userService
+);
+const handleUpdateTaskWebhook = createUpdateTaskWebhookHandler(
+  googleTasksService,
+  userService
+);
+const handleDeleteTaskWebhook = createDeleteTaskWebhookHandler(
+  googleTasksService,
+  userService
+);
 const handleFetchUpdates = createSyncHandler(googleTasksService, userService);
 
-// Export config for Vercel
 export const config = {
   runtime: 'edge',
 };
@@ -79,34 +92,77 @@ const userIdParamSchema = z.object({
   userId: z.string().min(1).trim(),
 });
 
+const userIdWithTaskIdParamSchema = z.object({
+  userId: z.string().min(1).trim(),
+  taskId: z.string().min(1).trim(),
+});
+
 const webhookBodySchema = z.object({
   title: z.string().min(1).trim(),
   notes: z.string().trim().optional(),
   due: z.string().optional(),
 });
 
+const createTaskWebhookBodySchema = z.object({
+  title: z.string().min(1).trim(),
+  notes: z.string().trim().optional(),
+  due: z.string().optional(),
+});
+
+const updateTaskWebhookBodySchema = z.object({
+  title: z.string().min(1).trim().optional(),
+  notes: z.string().trim().optional(),
+  due: z.string().optional(),
+  status: z.enum(['needsAction', 'completed']).optional(),
+});
+
 const authCallbackQuerySchema = z.object({
   code: z.string().min(1),
 });
 
-// Export types for use in handlers if needed
 export type UserIdParam = z.infer<typeof userIdParamSchema>;
+export type UserIdWithTaskIdParam = z.infer<typeof userIdWithTaskIdParamSchema>;
 export type WebhookBody = z.infer<typeof webhookBodySchema>;
+export type CreateTaskWebhookBody = z.infer<typeof createTaskWebhookBodySchema>;
+export type UpdateTaskWebhookBody = z.infer<typeof updateTaskWebhookBodySchema>;
 export type AuthCallbackQuery = z.infer<typeof authCallbackQuerySchema>;
 
 // --- ROUTES ---
 app.get('/', handleHome);
+
 app.get(
   '/auth/google/callback',
   zValidator('query', authCallbackQuerySchema),
   handleGoogleCallback
 );
+
 app.post(
   '/webhook/:userId',
   zValidator('param', userIdParamSchema),
   zValidator('json', webhookBodySchema),
   handleWebhook
 );
+
+app.post(
+  '/webhook/:userId/tasks',
+  zValidator('param', userIdParamSchema),
+  zValidator('json', createTaskWebhookBodySchema),
+  handleCreateTaskWebhook
+);
+
+app.put(
+  '/webhook/:userId/tasks/:taskId',
+  zValidator('param', userIdWithTaskIdParamSchema),
+  zValidator('json', updateTaskWebhookBodySchema),
+  handleUpdateTaskWebhook
+);
+
+app.delete(
+  '/webhook/:userId/tasks/:taskId',
+  zValidator('param', userIdWithTaskIdParamSchema),
+  handleDeleteTaskWebhook
+);
+
 app.get(
   '/fetch-updates/:userId',
   zValidator('param', userIdParamSchema),
