@@ -8,11 +8,7 @@ export function createSyncHandler(
   userService: UserService
 ) {
   return async function handleFetchUpdates(c: Context) {
-    const userId = c.req.param('userId');
-
-    if (!userId) {
-      return c.json({ error: 'User ID is required.' }, 400);
-    }
+    const { userId } = c.req.valid('param');
 
     try {
       const accessToken = await userService.getAccessToken(userId);

@@ -8,10 +8,7 @@ export function createAuthHandler(
   userService: UserService
 ) {
   return async function handleGoogleCallback(c: Context) {
-    const code = c.req.query('code');
-    if (!code) {
-      return c.text('Authorization code is missing.', 400);
-    }
+    const { code } = c.req.valid('query');
 
     try {
       const tokens = await googleAuthService.exchangeCodeForTokens(
