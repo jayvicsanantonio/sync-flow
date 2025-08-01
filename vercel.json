@@ -1,9 +1,4 @@
 {
-  "functions": {
-    "api/*": {
-      "excludeFiles": "{api/config,api/handlers,api/middleware,api/services,api/utils}/**"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
