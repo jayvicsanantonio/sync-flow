@@ -19,6 +19,14 @@ export interface GoogleTasksListResponse {
 
 export interface CreateTaskRequest extends GoogleTaskData {}
 
+export interface UpdateTaskRequest {
+  title?: string;
+  notes?: string;
+  due?: string;
+  status?: 'needsAction' | 'completed';
+  completed?: string;
+}
+
 export interface GoogleUserInfo {
   id: string;
   email: string;
