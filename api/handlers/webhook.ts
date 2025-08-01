@@ -1,10 +1,10 @@
 import type { Context } from 'hono';
-import { GoogleTasksService } from '@/services/google-tasks';
-import { UserService } from '@/services/user';
+import { GoogleTasksService } from '../services/google-tasks';
+import { UserService } from '../services/user';
 import {
   validateWebhookPayload,
   validateUserId,
-} from '@/utils/validation';
+} from '../utils/validation';
 
 export function createWebhookHandler(
   googleTasksService: GoogleTasksService,

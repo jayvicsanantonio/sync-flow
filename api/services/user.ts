@@ -1,6 +1,6 @@
 import { Redis } from '@upstash/redis';
-import type { User } from '@/types/user';
-import { GoogleAuthService } from '@/services/google-auth';
+import type { User } from '../types/user';
+import { GoogleAuthService } from './google-auth';
 
 export class UserService {
   private redis: Redis;
