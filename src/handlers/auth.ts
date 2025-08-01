@@ -1,7 +1,7 @@
 import type { Context } from 'hono';
-import { GoogleAuthService } from '../services/google-auth';
-import { UserService } from '../services/user';
-import type { User } from '../types/user';
+import { GoogleAuthService } from '@/services/google-auth';
+import { UserService } from '@/services/user';
+import type { User } from '@/types/user';
 
 export function createAuthHandler(
   googleAuthService: GoogleAuthService,
