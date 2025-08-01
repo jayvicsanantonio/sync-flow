@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@hono/zod-validator':
-        specifier: ^0.7.2
-        version: 0.7.2(hono@4.8.10)(zod@4.0.14)
+        specifier: ^0.2.2
+        version: 0.2.2(hono@4.8.10)(zod@3.25.76)
       '@upstash/redis':
         specifier: ^1.35.2
         version: 1.35.2
@@ -21,8 +21,8 @@ importers:
         specifier: ^4.8.10
         version: 4.8.10
       zod:
-        specifier: ^4.0.14
-        version: 4.0.14
+        specifier: ^3.25.76
+        version: 3.25.76
     devDependencies:
       '@eslint/js':
         specifier: ^9.32.0
@@ -124,11 +124,11 @@ packages:
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
 
-  '@hono/zod-validator@0.7.2':
-    resolution: {integrity: sha512-ub5eL/NeZ4eLZawu78JpW/J+dugDAYhwqUIdp9KYScI6PZECij4Hx4UsrthlEUutqDDhPwRI0MscUfNkvn/mqQ==}
+  '@hono/zod-validator@0.2.2':
+    resolution: {integrity: sha512-dSDxaPV70Py8wuIU2QNpoVEIOSzSXZ/6/B/h4xA7eOMz7+AarKTSGV8E6QwrdcCbBLkpqfJ4Q2TmBO0eP1tCBQ==}
     peerDependencies:
       hono: '>=3.9.0'
-      zod: ^3.25.0 || ^4.0.0
+      zod: ^3.19.1
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -1499,8 +1499,8 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-  zod@4.0.14:
-    resolution: {integrity: sha512-nGFJTnJN6cM2v9kXL+SOBq3AtjQby3Mv5ySGFof5UGRHrRioSJ5iG680cYNjE/yWk671nROcpPj4hAS8nyLhSw==}
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
 snapshots:
 
@@ -1570,10 +1570,10 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@hono/zod-validator@0.7.2(hono@4.8.10)(zod@4.0.14)':
+  '@hono/zod-validator@0.2.2(hono@4.8.10)(zod@3.25.76)':
     dependencies:
       hono: 4.8.10
-      zod: 4.0.14
+      zod: 3.25.76
 
   '@humanfs/core@0.19.1': {}
 
@@ -2950,4 +2950,4 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod@4.0.14: {}
+  zod@3.25.76: {}
