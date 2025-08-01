@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
 import { handle } from 'hono/vercel';
-import { ContentfulStatusCode } from 'hono/utils/http-status';
+import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { SyncFlowError } from './utils/errors';
 import { Redis } from '@upstash/redis';
 import { GoogleAuthService } from './services/google-auth';
@@ -26,18 +26,9 @@ const userService = new UserService(redis, googleAuthService);
 
 // Create Handlers with Dependencies
 const handleHome = createHomeHandler(googleAuthService);
-const handleGoogleCallback = createAuthHandler(
-  googleAuthService,
-  userService
-);
-const handleWebhook = createWebhookHandler(
-  googleTasksService,
-  userService
-);
-const handleFetchUpdates = createSyncHandler(
-  googleTasksService,
-  userService
-);
+const handleGoogleCallback = createAuthHandler(googleAuthService, userService);
+const handleWebhook = createWebhookHandler(googleTasksService, userService);
+const handleFetchUpdates = createSyncHandler(googleTasksService, userService);
 
 // Export config for Vercel
 export const config = {
@@ -101,9 +92,7 @@ const authCallbackQuerySchema = z.object({
 // Export types for use in handlers if needed
 export type UserIdParam = z.infer<typeof userIdParamSchema>;
 export type WebhookBody = z.infer<typeof webhookBodySchema>;
-export type AuthCallbackQuery = z.infer<
-  typeof authCallbackQuerySchema
->;
+export type AuthCallbackQuery = z.infer<typeof authCallbackQuerySchema>;
 
 // --- ROUTES ---
 app.get('/', handleHome);

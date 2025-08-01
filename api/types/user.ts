@@ -1,4 +1,4 @@
-import { UserTokens } from './auth';
+import type { UserTokens } from './auth';
 
 export interface UserProfile {
   email: string;

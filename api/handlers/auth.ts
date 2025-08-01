@@ -1,19 +1,19 @@
 import type { Context } from 'hono';
-import { GoogleAuthService } from '../services/google-auth';
-import { UserService } from '../services/user';
+import type { GoogleAuthService } from '../services/google-auth';
+import type { UserService } from '../services/user';
 import type { User } from '../types/user';
 
 export function createAuthHandler(
   googleAuthService: GoogleAuthService,
   userService: UserService
 ) {
-  return async function handleGoogleCallback(c: Context) {
+  return async function handleGoogleCallback(
+    c: Context<any, any, { out: { query: { code: string } } }>
+  ) {
     const { code } = c.req.valid('query');
 
     try {
-      const tokens = await googleAuthService.exchangeCodeForTokens(
-        code
-      );
+      const tokens = await googleAuthService.exchangeCodeForTokens(code);
       const userProfile = await googleAuthService.getUserProfile(
         tokens.access_token
       );
@@ -23,7 +23,7 @@ export function createAuthHandler(
 
       const user: User = {
         id,
-        tokens: tokens,
+        tokens,
         syncedTaskIds: existingUser?.syncedTaskIds || [],
         profile: {
           email: userProfile.email,

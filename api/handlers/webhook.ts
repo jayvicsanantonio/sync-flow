@@ -1,12 +1,15 @@
 import type { Context } from 'hono';
-import { GoogleTasksService } from '../services/google-tasks';
-import { UserService } from '../services/user';
+import type { GoogleTasksService } from '../services/google-tasks';
+import type { UserService } from '../services/user';
+import type { WebhookBody, UserIdParam } from '../index';
 
 export function createWebhookHandler(
   googleTasksService: GoogleTasksService,
   userService: UserService
 ) {
-  return async function handleWebhook(c: Context) {
+  return async function handleWebhook(
+    c: Context<any, any, { out: { param: UserIdParam; json: WebhookBody } }>
+  ) {
     const { userId } = c.req.valid('param');
     console.log('Webhook called for userId:', userId);
 
