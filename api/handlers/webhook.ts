@@ -69,22 +69,18 @@ export function createUpdateTaskWebhookHandler(
     try {
       const accessToken = await userService.getAccessToken(userId);
 
-      // TODO: Implement updateTask in GoogleTasksService
-      // const task = await googleTasksService.updateTask(
-      //   accessToken,
-      //   taskId,
-      //   payload.title,
-      //   payload.notes,
-      //   payload.due,
-      //   payload.status
-      // );
+      const task = await googleTasksService.updateTask(accessToken, taskId, {
+        title: payload.title,
+        notes: payload.notes,
+        due: payload.due,
+        status: payload.status,
+      });
 
-      // Temporary response until updateTask is implemented
       return c.json(
         {
-          message: 'Task update endpoint ready (implementation pending).',
-          taskId: taskId,
-          updatedFields: payload,
+          message: 'Task updated successfully.',
+          taskId: task.id,
+          task: task,
         },
         200
       );

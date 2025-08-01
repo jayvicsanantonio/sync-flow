@@ -2,6 +2,7 @@ import type {
   GoogleTask,
   GoogleTasksListResponse,
   CreateTaskRequest,
+  UpdateTaskRequest,
 } from '../types/google-api';
 
 export class GoogleTasksService {
@@ -66,6 +67,53 @@ export class GoogleTasksService {
       });
       throw new Error(
         `Failed to fetch tasks: ${response.status} ${response.statusText} - ${errorText}`
+      );
+    }
+
+    return await response.json();
+  }
+
+  async updateTask(
+    accessToken: string,
+    taskId: string,
+    updates: UpdateTaskRequest
+  ): Promise<GoogleTask> {
+    const taskData: UpdateTaskRequest = {};
+    if (updates.title !== undefined) taskData.title = updates.title;
+    if (updates.notes !== undefined) taskData.notes = updates.notes;
+    if (updates.due !== undefined) taskData.due = updates.due;
+    if (updates.status !== undefined) {
+      taskData.status = updates.status;
+
+      if (updates.status === 'completed' && !updates.completed) {
+        taskData.completed = new Date().toISOString();
+      }
+    }
+    if (updates.completed !== undefined) taskData.completed = updates.completed;
+
+    const response = await fetch(
+      `https://tasks.googleapis.com/tasks/v1/lists/@default/tasks/${taskId}`,
+      {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(taskData),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Google Tasks API Error (update):', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        taskId,
+        updates: taskData,
+      });
+      throw new Error(
+        `Failed to update task: ${response.status} ${response.statusText} - ${errorText}`
       );
     }
 

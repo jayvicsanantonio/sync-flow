@@ -32,7 +32,7 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
 ```bash
 PUT /api/webhook/{userId}/tasks/{taskId}
 
-# Example:
+# Example 1: Update title and mark as completed
 curl -X PUT https://your-domain.com/api/webhook/user123/tasks/task-id-123 \
   -H "Content-Type: application/json" \
   -d '{
@@ -40,11 +40,40 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks/task-id-123 \
     "status": "completed"
   }'
 
+# Example 2: Update only the due date
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks/task-id-123 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "due": "2024-02-15T23:59:59Z"
+  }'
+
+# Example 3: Add or update notes
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks/task-id-123 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "notes": "Remember to include API examples and migration guide"
+  }'
+
+# Example 4: Mark task as incomplete
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks/task-id-123 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "needsAction"
+  }'
+
 # Response:
 {
-  "message": "Task update endpoint ready (implementation pending).",
+  "message": "Task updated successfully.",
   "taskId": "task-id-123",
-  "updatedFields": { ... }
+  "task": {
+    "id": "task-id-123",
+    "title": "Complete project documentation v2",
+    "status": "completed",
+    "updated": "2024-01-31T10:00:00.000Z",
+    "notes": "Remember to include API examples and migration guide",
+    "due": "2024-02-15T23:59:59Z",
+    ...
+  }
 }
 ```
 
@@ -87,4 +116,5 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
 - All endpoints require a valid `userId` parameter
 - Update and Delete endpoints require both `userId` and `taskId` parameters
 - Update endpoint allows partial updates (only send fields you want to change)
-- The Google Tasks service methods for update and delete need to be implemented
+- Update endpoint is fully implemented and supports updating title, notes, due date, and status
+- Delete endpoint still needs implementation in GoogleTasksService
