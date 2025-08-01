@@ -119,4 +119,29 @@ export class GoogleTasksService {
 
     return await response.json();
   }
+
+  async deleteTask(accessToken: string, taskId: string): Promise<void> {
+    const response = await fetch(
+      `https://tasks.googleapis.com/tasks/v1/lists/@default/tasks/${taskId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Google Tasks API Error (delete):', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorText,
+        taskId,
+      });
+      throw new Error(
+        `Failed to delete task: ${response.status} ${response.statusText} - ${errorText}`
+      );
+    }
+  }
 }

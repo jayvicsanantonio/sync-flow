@@ -105,13 +105,11 @@ export function createDeleteTaskWebhookHandler(
     try {
       const accessToken = await userService.getAccessToken(userId);
 
-      // TODO: Implement deleteTask in GoogleTasksService
-      // await googleTasksService.deleteTask(accessToken, taskId);
+      await googleTasksService.deleteTask(accessToken, taskId);
 
-      // Temporary response until deleteTask is implemented
       return c.json(
         {
-          message: 'Task delete endpoint ready (implementation pending).',
+          message: 'Task deleted successfully.',
           taskId: taskId,
           deleted: true,
         },

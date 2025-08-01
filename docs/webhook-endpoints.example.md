@@ -86,10 +86,12 @@ curl -X DELETE https://your-domain.com/api/webhook/user123/tasks/task-id-123
 
 # Response:
 {
-  "message": "Task delete endpoint ready (implementation pending).",
+  "message": "Task deleted successfully.",
   "taskId": "task-id-123",
   "deleted": true
 }
+
+# Note: This is a permanent action. The task cannot be recovered once deleted.
 ```
 
 ### 4. Legacy Create Task (for backwards compatibility)
@@ -117,4 +119,5 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
 - Update and Delete endpoints require both `userId` and `taskId` parameters
 - Update endpoint allows partial updates (only send fields you want to change)
 - Update endpoint is fully implemented and supports updating title, notes, due date, and status
-- Delete endpoint still needs implementation in GoogleTasksService
+- Delete endpoint is fully implemented - permanently removes tasks from Google Tasks
+- All endpoints handle errors gracefully with detailed error messages
