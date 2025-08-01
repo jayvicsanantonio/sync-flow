@@ -46,9 +46,7 @@ export class GoogleTasksService {
     return await response.json();
   }
 
-  async listTasks(
-    accessToken: string
-  ): Promise<GoogleTasksListResponse> {
+  async listTasks(accessToken: string): Promise<GoogleTasksListResponse> {
     const response = await fetch(
       'https://tasks.googleapis.com/tasks/v1/lists/@default/tasks?showCompleted=false&showHidden=false',
       {

@@ -1,6 +1,6 @@
-import { Redis } from '@upstash/redis';
+import type { Redis } from '@upstash/redis';
 import type { User } from '../types/user';
-import { GoogleAuthService } from './google-auth';
+import type { GoogleAuthService } from './google-auth';
 
 export class UserService {
   private redis: Redis;
@@ -45,11 +45,7 @@ export class UserService {
   async getAccessToken(userId: string): Promise<string> {
     const user = await this.getUserById(userId);
 
-    if (
-      !user ||
-      !user.tokens.refresh_token ||
-      !user.tokens.expires_in
-    ) {
+    if (!user || !user.tokens.refresh_token || !user.tokens.expires_in) {
       throw new Error('User not found or missing tokens');
     }
 
@@ -67,9 +63,7 @@ export class UserService {
         });
       } catch (error) {
         console.error('Failed to refresh token:', error);
-        throw new Error(
-          'Token refresh failed. User needs to re-authenticate.'
-        );
+        throw new Error('Token refresh failed. User needs to re-authenticate.');
       }
     }
 
