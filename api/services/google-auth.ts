@@ -1,7 +1,7 @@
-import { config } from '@/config/environment';
-import type { UserTokens } from '@/types/auth';
-import type { GoogleUserInfo } from '@/types/google-api';
-import { GoogleAPIError, AuthenticationError } from '@/utils/errors';
+import { config } from '../config/environment';
+import type { UserTokens } from '../types/auth';
+import type { GoogleUserInfo } from '../types/google-api';
+import { GoogleAPIError, AuthenticationError } from '../utils/errors';
 
 export class GoogleAuthService {
   async exchangeCodeForTokens(code: string): Promise<UserTokens> {
