@@ -3,15 +3,15 @@ import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
 import { handle } from 'hono/vercel';
 import { Redis } from '@upstash/redis';
-import { config } from './config/environment';
-import { GoogleAuthService } from './services/google-auth';
-import { GoogleTasksService } from './services/google-tasks';
-import { UserService } from './services/user';
-import { createHomeHandler } from './handlers/home';
-import { createAuthHandler } from './handlers/auth';
-import { createWebhookHandler } from './handlers/webhook';
-import { createSyncHandler } from './handlers/sync';
-import { errorHandler } from './middleware/error-handler';
+import { config } from '../src/config/environment';
+import { GoogleAuthService } from '../src/services/google-auth';
+import { GoogleTasksService } from '../src/services/google-tasks';
+import { UserService } from '../src/services/user';
+import { createHomeHandler } from '../src/handlers/home';
+import { createAuthHandler } from '../src/handlers/auth';
+import { createWebhookHandler } from '../src/handlers/webhook';
+import { createSyncHandler } from '../src/handlers/sync';
+import { errorHandler } from '../src/middleware/error-handler';
 
 // Initialize Redis
 const redis = Redis.fromEnv();
