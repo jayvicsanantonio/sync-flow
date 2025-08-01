@@ -1,5 +1,5 @@
 import type { Context } from 'hono';
-import { GoogleAuthService } from '../services/google-auth';
+import { GoogleAuthService } from '@/services/google-auth';
 
 export function createHomeHandler(
   googleAuthService: GoogleAuthService

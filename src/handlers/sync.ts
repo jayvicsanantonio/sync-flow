@@ -1,7 +1,7 @@
 import type { Context } from 'hono';
-import { GoogleTasksService } from '../services/google-tasks';
-import { UserService } from '../services/user';
-import type { GoogleTask } from '../types/google-api';
+import { GoogleTasksService } from '@/services/google-tasks';
+import { UserService } from '@/services/user';
+import type { GoogleTask } from '@/types/google-api';
 
 export function createSyncHandler(
   googleTasksService: GoogleTasksService,
