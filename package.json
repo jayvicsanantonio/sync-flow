@@ -26,6 +26,6 @@
     "eslint-plugin-prettier": "^5.5.3",
     "prettier": "^3.6.2",
     "typescript": "^5.9.2",
-    "vercel": "^44.7.0"
+    "vercel": "^32.4.1"
   }
 }
