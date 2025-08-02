@@ -4,8 +4,8 @@ import type { UserService } from '../services/user';
 import type {
   CreateTaskWebhookBody,
   UpdateTaskWebhookBody,
+  DeleteTaskWebhookBody,
   UserIdParam,
-  UserIdWithTaskIdParam,
 } from '../index';
 
 export function createCreateTaskWebhookHandler(
@@ -38,7 +38,7 @@ export function createCreateTaskWebhookHandler(
         {
           message: 'Task created successfully.',
           taskId: task.id,
-          task: task,
+          task,
         },
         201
       );
@@ -57,30 +57,31 @@ export function createUpdateTaskWebhookHandler(
     c: Context<
       any,
       any,
-      { out: { param: UserIdWithTaskIdParam; json: UpdateTaskWebhookBody } }
+      { out: { param: UserIdParam; json: UpdateTaskWebhookBody } }
     >
   ) {
-    const { userId, taskId } = c.req.valid('param');
+    const { userId } = c.req.valid('param');
     const payload = c.req.valid('json');
+    const { taskId, ...updateData } = payload;
 
     console.log('Updating task:', { userId, taskId });
-    console.log('Update payload:', payload);
+    console.log('Update payload:', updateData);
 
     try {
       const accessToken = await userService.getAccessToken(userId);
 
       const task = await googleTasksService.updateTask(accessToken, taskId, {
-        title: payload.title,
-        notes: payload.notes,
-        due: payload.due,
-        status: payload.status,
+        title: updateData.title,
+        notes: updateData.notes,
+        due: updateData.due,
+        status: updateData.status,
       });
 
       return c.json(
         {
           message: 'Task updated successfully.',
           taskId: task.id,
-          task: task,
+          task,
         },
         200
       );
@@ -96,9 +97,14 @@ export function createDeleteTaskWebhookHandler(
   userService: UserService
 ) {
   return async function handleDeleteTask(
-    c: Context<any, any, { out: { param: UserIdWithTaskIdParam } }>
+    c: Context<
+      any,
+      any,
+      { out: { param: UserIdParam; json: DeleteTaskWebhookBody } }
+    >
   ) {
-    const { userId, taskId } = c.req.valid('param');
+    const { userId } = c.req.valid('param');
+    const { taskId } = c.req.valid('json');
 
     console.log('Deleting task:', { userId, taskId });
 
@@ -110,7 +116,7 @@ export function createDeleteTaskWebhookHandler(
       return c.json(
         {
           message: 'Task deleted successfully.',
-          taskId: taskId,
+          taskId,
           deleted: true,
         },
         200
