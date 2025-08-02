@@ -19,9 +19,9 @@ export interface GoogleTaskData {
 
   /**
    * @description Represents a "starred" task in Google Tasks.
-   * This is the closest equivalent to Apple Reminders' "priority".
+   * This is the closest equivalent to Apple Reminders' "isFlagged".
    * It's a boolean, not a graded scale.
-   * Sync Strategy: Map this to a 'High' priority in Apple Reminders.
+   * Sync Strategy: Map this to Apple Reminders' isFlagged property.
    */
   starred?: boolean;
 }
@@ -85,6 +85,11 @@ export interface CreateTaskRequest extends GoogleTaskData {
    * @description The ID of the parent task under which to create this subtask.
    */
   parent?: string;
+
+  /**
+   * @description Links associated with the task.
+   */
+  links?: GoogleLink[];
 }
 
 /**
@@ -106,7 +111,7 @@ export interface UpdateTaskRequest {
 
   /**
    * @description Set to `true` or `false` to star or unstar the task.
-   * Used to sync priority.
+   * Used to sync priority/flagged status.
    */
   starred?: boolean;
 
@@ -116,6 +121,11 @@ export interface UpdateTaskRequest {
    * which isn't directly supported via a simple `parent: null` update.
    */
   parent?: string;
+
+  /**
+   * @description Links associated with the task.
+   */
+  links?: GoogleLink[];
 }
 
 /**

@@ -13,4 +13,5 @@ export interface User {
   tokens: UserTokens;
   syncedTaskIds: string[];
   profile: UserProfile;
+  lastSyncTime?: string; // RFC 3339 timestamp of last sync
 }

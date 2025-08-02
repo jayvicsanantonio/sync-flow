@@ -1,6 +1,7 @@
 # Webhook Endpoints Example Usage
 
 ## Base URL
+
 ```
 https://your-domain.com/api/webhook/{userId}
 ```
@@ -8,6 +9,7 @@ https://your-domain.com/api/webhook/{userId}
 ## Endpoints
 
 ### 1. Create Task (NEW)
+
 ```bash
 POST /api/webhook/{userId}/tasks
 
@@ -19,10 +21,19 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
     "notes": "Update README and API docs",
     "due": "2024-12-31T23:59:59Z",
     "starred": true,
-    "parent": "parent-task-id-456"
+    "parent": "parent-task-id-456",
+    "url": "https://github.com/user/project"
   }'
 
-# Response:
+# Example - Sync from Apple Reminders:
+curl -X POST https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Review pull request",
+    "notes": "Check the new implementation",
+    "starred": true,  # Maps from Apple Reminders isFlagged
+    "url": "https://github.com/user/repo/pull/123"  # Maps from Apple Reminders url
+  }'
 {
   "message": "Task created successfully.",
   "taskId": "task-id-123",
@@ -31,6 +42,7 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
 ```
 
 ### 2. Update Task (NEW)
+
 ```bash
 PUT /api/webhook/{userId}/tasks
 
@@ -68,15 +80,23 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
     "status": "needsAction"
   }'
 
-# Example 5: Star/unstar a task (high priority)
+# Example 5: Star/unstar a task (sync Apple Reminders flagged status)
 curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "taskId": "task-id-123",
-    "starred": false
+    "starred": false  # Maps to/from Apple Reminders isFlagged
   }'
 
-# Example 6: Move task under a parent (create subtask)
+# Example 6: Update task URL (sync Apple Reminders URL)
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "taskId": "task-id-123",
+    "url": "https://docs.google.com/document/d/abc123"  # Maps to/from Apple Reminders url
+  }'
+
+# Example 7: Move task under a parent (create subtask)
 curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
@@ -101,6 +121,7 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
 ```
 
 ### 3. Delete Task (NEW)
+
 ```bash
 DELETE /api/webhook/{userId}/tasks
 
@@ -122,6 +143,7 @@ curl -X DELETE https://your-domain.com/api/webhook/user123/tasks \
 ```
 
 ### 4. Legacy Create Task (for backwards compatibility)
+
 ```bash
 POST /api/webhook/{userId}
 

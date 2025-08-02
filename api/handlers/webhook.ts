@@ -33,7 +33,8 @@ export function createCreateTaskWebhookHandler(
         payload.notes,
         payload.due,
         payload.starred,
-        payload.parent
+        payload.parent,
+        payload.url
       );
 
       return c.json(
@@ -79,6 +80,9 @@ export function createUpdateTaskWebhookHandler(
         status: updateData.status,
         starred: updateData.starred,
         parent: updateData.parent,
+        links: updateData.url
+          ? [{ type: 'url', description: 'Link', link: updateData.url }]
+          : updateData.links,
       });
 
       return c.json(

@@ -96,6 +96,16 @@ const createTaskWebhookBodySchema = z.object({
   due: z.string().optional(),
   starred: z.boolean().optional(),
   parent: z.string().trim().optional(),
+  url: z.string().url().optional(),
+  links: z
+    .array(
+      z.object({
+        type: z.string(),
+        description: z.string(),
+        link: z.string().url(),
+      })
+    )
+    .optional(),
 });
 
 const updateTaskWebhookBodySchema = z.object({
@@ -106,6 +116,16 @@ const updateTaskWebhookBodySchema = z.object({
   status: z.enum(['needsAction', 'completed']).optional(),
   starred: z.boolean().optional(),
   parent: z.string().trim().optional(),
+  url: z.string().url().optional(),
+  links: z
+    .array(
+      z.object({
+        type: z.string(),
+        description: z.string(),
+        link: z.string().url(),
+      })
+    )
+    .optional(),
 });
 
 const deleteTaskWebhookBodySchema = z.object({
