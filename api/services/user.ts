@@ -42,6 +42,16 @@ export class UserService {
     await this.saveUser(user);
   }
 
+  async updateLastSyncTime(userId: string, syncTime: string): Promise<void> {
+    const user = await this.getUserById(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    user.lastSyncTime = syncTime;
+    await this.saveUser(user);
+  }
+
   async getAccessToken(userId: string): Promise<string> {
     const user = await this.getUserById(userId);
 

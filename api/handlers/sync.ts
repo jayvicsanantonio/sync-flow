@@ -15,13 +15,20 @@ export function createSyncHandler(
 
     try {
       const accessToken = await userService.getAccessToken(userId);
-      const response = await googleTasksService.listTasks(accessToken);
 
       const user = await userService.getUserById(userId);
-
       if (!user) {
-        return c.json({ error: 'User not found after API call.' }, 404);
+        return c.json({ error: 'User not found.' }, 404);
       }
+
+      const lastSyncTime = user.lastSyncTime || new Date(0).toISOString();
+
+      const response = await googleTasksService.listTasks(accessToken, {
+        showCompleted: false,
+        showHidden: false,
+        updatedMin: lastSyncTime,
+        maxResults: 100,
+      });
 
       const allTasks = response.items || [];
       const newTasks = allTasks.filter(
@@ -33,7 +40,13 @@ export function createSyncHandler(
         await userService.updateSyncedTaskIds(userId, newTaskIds);
       }
 
-      return c.json(newTasks);
+      await userService.updateLastSyncTime(userId, new Date().toISOString());
+
+      return c.json({
+        tasks: newTasks,
+        hasMore: !!response.nextPageToken,
+        syncedAt: new Date().toISOString(),
+      });
     } catch (error) {
       console.error('Fetch-updates error:', error);
 
