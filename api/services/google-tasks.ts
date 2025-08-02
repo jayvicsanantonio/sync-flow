@@ -26,7 +26,7 @@ export class GoogleTasksService {
     if (url) {
       taskData.links = [
         {
-          type: 'url',
+          type: 'generic',
           description: 'Link',
           link: url,
         },
