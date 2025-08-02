@@ -82,7 +82,7 @@ export function createUpdateTaskWebhookHandler(
         parent: updateData.parent,
         links: updateData.url
           ? [{ type: 'url', description: 'Link', link: updateData.url }]
-          : undefined,
+          : updateData.links,
       });
 
       return c.json(
