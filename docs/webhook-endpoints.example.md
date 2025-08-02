@@ -21,12 +21,8 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
     "notes": "Update README and API docs",
     "due": "2024-12-31T23:59:59Z",
     "starred": true,
-<<<<<<< HEAD
-    "parent": "parent-task-id-456"
-=======
     "parent": "parent-task-id-456",
     "url": "https://github.com/user/project"
->>>>>>> d7ca970 (Update webhook schemas and handlers to support additional task properties)
   }'
 
 # Example - Sync from Apple Reminders:
@@ -84,21 +80,11 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
     "status": "needsAction"
   }'
 
-<<<<<<< HEAD
-# Example 5: Star/unstar a task (high priority)
-=======
 # Example 5: Star/unstar a task (sync Apple Reminders flagged status)
->>>>>>> d7ca970 (Update webhook schemas and handlers to support additional task properties)
 curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "taskId": "task-id-123",
-<<<<<<< HEAD
-    "starred": false
-  }'
-
-# Example 6: Move task under a parent (create subtask)
-=======
     "starred": false  # Maps to/from Apple Reminders isFlagged
   }'
 
@@ -111,7 +97,6 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   }'
 
 # Example 7: Move task under a parent (create subtask)
->>>>>>> d7ca970 (Update webhook schemas and handlers to support additional task properties)
 curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
