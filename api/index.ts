@@ -14,7 +14,6 @@ import { UserService } from './services/user';
 import { createHomeHandler } from './handlers/home';
 import { createAuthHandler } from './handlers/auth';
 import {
-  createWebhookHandler,
   createCreateTaskWebhookHandler,
   createUpdateTaskWebhookHandler,
   createDeleteTaskWebhookHandler,
@@ -29,7 +28,6 @@ const userService = new UserService(redis, googleAuthService);
 
 const handleHome = createHomeHandler(googleAuthService);
 const handleGoogleCallback = createAuthHandler(googleAuthService, userService);
-const handleWebhook = createWebhookHandler(googleTasksService, userService);
 const handleCreateTaskWebhook = createCreateTaskWebhookHandler(
   googleTasksService,
   userService
@@ -92,14 +90,6 @@ const userIdParamSchema = z.object({
   userId: z.string().min(1).trim(),
 });
 
-const webhookBodySchema = z.object({
-  title: z.string().min(1).trim(),
-  notes: z.string().trim().optional(),
-  due: z.string().optional(),
-  starred: z.boolean().optional(),
-  parent: z.string().trim().optional(),
-});
-
 const createTaskWebhookBodySchema = z.object({
   title: z.string().min(1).trim(),
   notes: z.string().trim().optional(),
@@ -127,7 +117,6 @@ const authCallbackQuerySchema = z.object({
 });
 
 export type UserIdParam = z.infer<typeof userIdParamSchema>;
-export type WebhookBody = z.infer<typeof webhookBodySchema>;
 export type CreateTaskWebhookBody = z.infer<typeof createTaskWebhookBodySchema>;
 export type UpdateTaskWebhookBody = z.infer<typeof updateTaskWebhookBodySchema>;
 export type DeleteTaskWebhookBody = z.infer<typeof deleteTaskWebhookBodySchema>;
@@ -140,13 +129,6 @@ app.get(
   '/auth/google/callback',
   zValidator('query', authCallbackQuerySchema),
   handleGoogleCallback
-);
-
-app.post(
-  '/webhook/:userId',
-  zValidator('param', userIdParamSchema),
-  zValidator('json', webhookBodySchema),
-  handleWebhook
 );
 
 app.post(

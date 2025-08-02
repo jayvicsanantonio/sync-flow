@@ -131,10 +131,3 @@ export function createDeleteTaskWebhookHandler(
     }
   };
 }
-
-export function createWebhookHandler(
-  googleTasksService: GoogleTasksService,
-  userService: UserService
-) {
-  return createCreateTaskWebhookHandler(googleTasksService, userService);
-}
