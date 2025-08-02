@@ -40,12 +40,13 @@ export function createSyncHandler(
         await userService.updateSyncedTaskIds(userId, newTaskIds);
       }
 
-      await userService.updateLastSyncTime(userId, new Date().toISOString());
+      const syncedAt = new Date().toISOString();
+      await userService.updateLastSyncTime(userId, syncedAt);
 
       return c.json({
         tasks: newTasks,
         hasMore: !!response.nextPageToken,
-        syncedAt: new Date().toISOString(),
+        syncedAt,
       });
     } catch (error) {
       console.error('Fetch-updates error:', error);
