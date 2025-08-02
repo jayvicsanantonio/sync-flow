@@ -16,22 +16,33 @@ export class GoogleTasksService {
     notes?: string,
     due?: string,
     starred?: boolean,
-    parent?: string
+    parent?: string,
+    url?: string
   ): Promise<GoogleTask> {
     const taskData: CreateTaskRequest = {
       title: title || 'New Reminder',
     };
+
+    if (url) {
+      taskData.links = [
+        {
+          type: 'url',
+          description: 'Link',
+          link: url,
+        },
+      ];
+    }
 
     if (notes) taskData.notes = notes;
     if (due) taskData.due = due;
     if (starred !== undefined) taskData.starred = starred;
     if (parent) taskData.parent = parent;
 
-    const url = new URL(
+    const requestUrl = new URL(
       `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks`
     );
 
-    const response = await fetch(url.toString(), {
+    const response = await fetch(requestUrl.toString(), {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -127,6 +138,7 @@ export class GoogleTasksService {
     etag?: string
   ): Promise<GoogleTask> {
     const taskData: UpdateTaskRequest = {};
+
     if (updates.title !== undefined) taskData.title = updates.title;
     if (updates.notes !== undefined) taskData.notes = updates.notes;
     if (updates.due !== undefined) taskData.due = updates.due;
@@ -140,6 +152,7 @@ export class GoogleTasksService {
     if (updates.completed !== undefined) taskData.completed = updates.completed;
     if (updates.starred !== undefined) taskData.starred = updates.starred;
     if (updates.parent !== undefined) taskData.parent = updates.parent;
+    if (updates.links !== undefined) taskData.links = updates.links;
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${accessToken}`,

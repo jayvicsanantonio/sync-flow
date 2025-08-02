@@ -21,10 +21,23 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
     "notes": "Update README and API docs",
     "due": "2024-12-31T23:59:59Z",
     "starred": true,
+<<<<<<< HEAD
     "parent": "parent-task-id-456"
+=======
+    "parent": "parent-task-id-456",
+    "url": "https://github.com/user/project"
+>>>>>>> d7ca970 (Update webhook schemas and handlers to support additional task properties)
   }'
 
-# Response:
+# Example - Sync from Apple Reminders:
+curl -X POST https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Review pull request",
+    "notes": "Check the new implementation",
+    "starred": true,  # Maps from Apple Reminders isFlagged
+    "url": "https://github.com/user/repo/pull/123"  # Maps from Apple Reminders url
+  }'
 {
   "message": "Task created successfully.",
   "taskId": "task-id-123",
@@ -71,15 +84,34 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
     "status": "needsAction"
   }'
 
+<<<<<<< HEAD
 # Example 5: Star/unstar a task (high priority)
+=======
+# Example 5: Star/unstar a task (sync Apple Reminders flagged status)
+>>>>>>> d7ca970 (Update webhook schemas and handlers to support additional task properties)
 curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "taskId": "task-id-123",
+<<<<<<< HEAD
     "starred": false
   }'
 
 # Example 6: Move task under a parent (create subtask)
+=======
+    "starred": false  # Maps to/from Apple Reminders isFlagged
+  }'
+
+# Example 6: Update task URL (sync Apple Reminders URL)
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "taskId": "task-id-123",
+    "url": "https://docs.google.com/document/d/abc123"  # Maps to/from Apple Reminders url
+  }'
+
+# Example 7: Move task under a parent (create subtask)
+>>>>>>> d7ca970 (Update webhook schemas and handlers to support additional task properties)
 curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
