@@ -110,10 +110,15 @@ const createTaskWebhookBodySchema = z.object({
 });
 
 const updateTaskWebhookBodySchema = z.object({
+  taskId: z.string().min(1).trim(),
   title: z.string().min(1).trim().optional(),
   notes: z.string().trim().optional(),
   due: z.string().optional(),
   status: z.enum(['needsAction', 'completed']).optional(),
+});
+
+const deleteTaskWebhookBodySchema = z.object({
+  taskId: z.string().min(1).trim(),
 });
 
 const authCallbackQuerySchema = z.object({
@@ -125,6 +130,7 @@ export type UserIdWithTaskIdParam = z.infer<typeof userIdWithTaskIdParamSchema>;
 export type WebhookBody = z.infer<typeof webhookBodySchema>;
 export type CreateTaskWebhookBody = z.infer<typeof createTaskWebhookBodySchema>;
 export type UpdateTaskWebhookBody = z.infer<typeof updateTaskWebhookBodySchema>;
+export type DeleteTaskWebhookBody = z.infer<typeof deleteTaskWebhookBodySchema>;
 export type AuthCallbackQuery = z.infer<typeof authCallbackQuerySchema>;
 
 // --- ROUTES ---
@@ -151,15 +157,16 @@ app.post(
 );
 
 app.put(
-  '/webhook/:userId/tasks/:taskId',
-  zValidator('param', userIdWithTaskIdParamSchema),
+  '/webhook/:userId/tasks',
+  zValidator('param', userIdParamSchema),
   zValidator('json', updateTaskWebhookBodySchema),
   handleUpdateTaskWebhook
 );
 
 app.delete(
-  '/webhook/:userId/tasks/:taskId',
-  zValidator('param', userIdWithTaskIdParamSchema),
+  '/webhook/:userId/tasks',
+  zValidator('param', userIdParamSchema),
+  zValidator('json', deleteTaskWebhookBodySchema),
   handleDeleteTaskWebhook
 );
 

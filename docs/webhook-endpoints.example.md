@@ -30,34 +30,38 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
 
 ### 2. Update Task (NEW)
 ```bash
-PUT /api/webhook/{userId}/tasks/{taskId}
+PUT /api/webhook/{userId}/tasks
 
 # Example 1: Update title and mark as completed
-curl -X PUT https://your-domain.com/api/webhook/user123/tasks/task-id-123 \
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
+    "taskId": "task-id-123",
     "title": "Complete project documentation v2",
     "status": "completed"
   }'
 
 # Example 2: Update only the due date
-curl -X PUT https://your-domain.com/api/webhook/user123/tasks/task-id-123 \
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
+    "taskId": "task-id-123",
     "due": "2024-02-15T23:59:59Z"
   }'
 
 # Example 3: Add or update notes
-curl -X PUT https://your-domain.com/api/webhook/user123/tasks/task-id-123 \
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
+    "taskId": "task-id-123",
     "notes": "Remember to include API examples and migration guide"
   }'
 
 # Example 4: Mark task as incomplete
-curl -X PUT https://your-domain.com/api/webhook/user123/tasks/task-id-123 \
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
+    "taskId": "task-id-123",
     "status": "needsAction"
   }'
 
@@ -79,10 +83,14 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks/task-id-123 \
 
 ### 3. Delete Task (NEW)
 ```bash
-DELETE /api/webhook/{userId}/tasks/{taskId}
+DELETE /api/webhook/{userId}/tasks
 
 # Example:
-curl -X DELETE https://your-domain.com/api/webhook/user123/tasks/task-id-123
+curl -X DELETE https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "taskId": "task-id-123"
+  }'
 
 # Response:
 {
@@ -116,7 +124,7 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
   - PUT for update
   - DELETE for delete
 - All endpoints require a valid `userId` parameter
-- Update and Delete endpoints require both `userId` and `taskId` parameters
+- Update and Delete endpoints now require `taskId` to be passed in the request body (JSON)
 - Update endpoint allows partial updates (only send fields you want to change)
 - Update endpoint is fully implemented and supports updating title, notes, due date, and status
 - Delete endpoint is fully implemented - permanently removes tasks from Google Tasks
