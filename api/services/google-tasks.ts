@@ -31,10 +31,6 @@ export class GoogleTasksService {
       `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks`
     );
 
-    if (parent) {
-      url.searchParams.set('parent', parent);
-    }
-
     const response = await fetch(url.toString(), {
       method: 'POST',
       headers: {

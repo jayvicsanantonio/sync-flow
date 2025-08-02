@@ -43,11 +43,11 @@ This document provides examples of using the improved Google Tasks API service w
 // Create a high-priority subtask with due date
 const task = await googleTasksService.createTask(
   accessToken,
-  "Review pull request",
-  "Check the new sync implementation", // notes
-  "2024-02-15T17:00:00Z",             // due date (RFC 3339)
-  true,                               // starred (high priority)
-  "parent-task-id-123"               // parent task ID
+  'Review pull request',
+  'Check the new sync implementation', // notes
+  '2024-02-15T17:00:00Z', // due date (RFC 3339)
+  true, // starred (high priority)
+  'parent-task-id-123' // parent task ID
 );
 ```
 
@@ -83,16 +83,16 @@ try {
     accessToken,
     taskId,
     {
-      title: "Updated title",
+      title: 'Updated title',
       starred: true,
-      status: "completed"
+      status: 'completed',
     },
     task.etag // Pass the ETag to prevent conflicts
   );
 } catch (error) {
-  if (error.message.includes("412")) {
+  if (error.message.includes('412')) {
     // Precondition failed - task was modified by another client
-    console.log("Task was modified, refetch and retry");
+    console.log('Task was modified, refetch and retry');
   }
 }
 ```
@@ -104,7 +104,7 @@ try {
 const allTasks = await googleTasksService.listAllTasks(accessToken, {
   showCompleted: true,
   showHidden: false,
-  updatedMin: "2024-01-01T00:00:00Z"
+  updatedMin: '2024-01-01T00:00:00Z',
 });
 
 console.log(`Found ${allTasks.length} tasks`);
@@ -115,13 +115,13 @@ console.log(`Found ${allTasks.length} tasks`);
 ```typescript
 // Move a task under a new parent
 await googleTasksService.moveTask(accessToken, taskId, {
-  parent: "new-parent-task-id",
-  previous: "sibling-task-id" // Optional: position after this task
+  parent: 'new-parent-task-id',
+  previous: 'sibling-task-id', // Optional: position after this task
 });
 
 // Move to top level (remove parent)
 await googleTasksService.moveTask(accessToken, taskId, {
-  parent: "", // Empty string removes parent
+  parent: '', // Empty string removes parent
 });
 ```
 
@@ -150,7 +150,7 @@ try {
   // - Status text
   // - Response body
   // - Request context
-  console.error("Failed to create task:", error.message);
+  console.error('Failed to create task:', error.message);
 }
 ```
 
