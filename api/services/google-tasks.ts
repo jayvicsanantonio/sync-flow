@@ -10,7 +10,9 @@ export class GoogleTasksService {
     accessToken: string,
     title: string,
     notes?: string,
-    due?: string
+    due?: string,
+    starred?: boolean,
+    parent?: string
   ): Promise<GoogleTask> {
     const taskData: CreateTaskRequest = {
       title: title || 'New Reminder',
@@ -18,6 +20,8 @@ export class GoogleTasksService {
 
     if (notes) taskData.notes = notes;
     if (due) taskData.due = due;
+    if (starred !== undefined) taskData.starred = starred;
+    if (parent) taskData.parent = parent;
 
     const response = await fetch(
       'https://tasks.googleapis.com/tasks/v1/lists/@default/tasks',
@@ -90,6 +94,8 @@ export class GoogleTasksService {
       }
     }
     if (updates.completed !== undefined) taskData.completed = updates.completed;
+    if (updates.starred !== undefined) taskData.starred = updates.starred;
+    if (updates.parent !== undefined) taskData.parent = updates.parent;
 
     const response = await fetch(
       `https://tasks.googleapis.com/tasks/v1/lists/@default/tasks/${taskId}`,
