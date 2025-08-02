@@ -92,11 +92,6 @@ const userIdParamSchema = z.object({
   userId: z.string().min(1).trim(),
 });
 
-const userIdWithTaskIdParamSchema = z.object({
-  userId: z.string().min(1).trim(),
-  taskId: z.string().min(1).trim(),
-});
-
 const webhookBodySchema = z.object({
   title: z.string().min(1).trim(),
   notes: z.string().trim().optional(),
@@ -126,7 +121,6 @@ const authCallbackQuerySchema = z.object({
 });
 
 export type UserIdParam = z.infer<typeof userIdParamSchema>;
-export type UserIdWithTaskIdParam = z.infer<typeof userIdWithTaskIdParamSchema>;
 export type WebhookBody = z.infer<typeof webhookBodySchema>;
 export type CreateTaskWebhookBody = z.infer<typeof createTaskWebhookBodySchema>;
 export type UpdateTaskWebhookBody = z.infer<typeof updateTaskWebhookBodySchema>;
