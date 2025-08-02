@@ -21,6 +21,10 @@ export function createAuthHandler(
       const id = userProfile.id;
       const existingUser = await userService.getUserById(id);
 
+      if (tokens.expires_in) {
+        tokens.expires_at = Date.now() + tokens.expires_in * 1000;
+      }
+
       const user: User = {
         id,
         tokens,
