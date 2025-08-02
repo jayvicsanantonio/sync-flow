@@ -31,7 +31,9 @@ export function createCreateTaskWebhookHandler(
         accessToken,
         payload.title,
         payload.notes,
-        payload.due
+        payload.due,
+        payload.starred,
+        payload.parent
       );
 
       return c.json(
@@ -75,6 +77,8 @@ export function createUpdateTaskWebhookHandler(
         notes: updateData.notes,
         due: updateData.due,
         status: updateData.status,
+        starred: updateData.starred,
+        parent: updateData.parent,
       });
 
       return c.json(

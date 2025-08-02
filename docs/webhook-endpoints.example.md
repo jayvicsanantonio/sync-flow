@@ -17,7 +17,9 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
   -d '{
     "title": "Complete project documentation",
     "notes": "Update README and API docs",
-    "due": "2024-12-31T23:59:59Z"
+    "due": "2024-12-31T23:59:59Z",
+    "starred": true,
+    "parent": "parent-task-id-456"
   }'
 
 # Response:
@@ -38,7 +40,8 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -d '{
     "taskId": "task-id-123",
     "title": "Complete project documentation v2",
-    "status": "completed"
+    "status": "completed",
+    "starred": true
   }'
 
 # Example 2: Update only the due date
@@ -63,6 +66,22 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -d '{
     "taskId": "task-id-123",
     "status": "needsAction"
+  }'
+
+# Example 5: Star/unstar a task (high priority)
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "taskId": "task-id-123",
+    "starred": false
+  }'
+
+# Example 6: Move task under a parent (create subtask)
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "taskId": "task-id-123",
+    "parent": "parent-task-id-789"
   }'
 
 # Response:
@@ -126,6 +145,18 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
 - All endpoints require a valid `userId` parameter
 - Update and Delete endpoints now require `taskId` to be passed in the request body (JSON)
 - Update endpoint allows partial updates (only send fields you want to change)
-- Update endpoint is fully implemented and supports updating title, notes, due date, and status
+- Update endpoint is fully implemented and supports updating:
+  - `title`: Task title
+  - `notes`: Task description/notes
+  - `due`: Due date (RFC 3339 format)
+  - `status`: Task status ('needsAction' or 'completed')
+  - `starred`: Boolean flag for high priority tasks
+  - `parent`: Parent task ID for creating subtasks
+- Create endpoint supports:
+  - `title`: Task title (required)
+  - `notes`: Task description/notes
+  - `due`: Due date (RFC 3339 format)
+  - `starred`: Boolean flag for high priority tasks
+  - `parent`: Parent task ID to create as subtask
 - Delete endpoint is fully implemented - permanently removes tasks from Google Tasks
 - All endpoints handle errors gracefully with detailed error messages
