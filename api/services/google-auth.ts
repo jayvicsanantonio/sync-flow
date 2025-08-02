@@ -70,24 +70,51 @@ export class GoogleAuthService {
   async refreshTokens(refreshToken: string): Promise<UserTokens> {
     console.log('Refreshing Google tokens...');
 
+    if (!refreshToken) {
+      throw new AuthenticationError('No refresh token provided');
+    }
+
+    const params = {
+      client_id: GOOGLE_CLIENT_ID!,
+      client_secret: GOOGLE_CLIENT_SECRET!,
+      refresh_token: refreshToken,
+      grant_type: 'refresh_token',
+    };
+
+    console.log('Refresh token request params:', {
+      client_id: GOOGLE_CLIENT_ID,
+      has_client_secret: !!GOOGLE_CLIENT_SECRET,
+      has_refresh_token: !!refreshToken,
+      grant_type: 'refresh_token',
+    });
+
     const response = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams({
-        client_id: GOOGLE_CLIENT_ID!,
-        client_secret: GOOGLE_CLIENT_SECRET!,
-        refresh_token: refreshToken,
-        grant_type: 'refresh_token',
-      }),
+      body: new URLSearchParams(params),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
+      console.error('Token refresh failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorData,
+      });
 
       if (response.status === 400) {
-        throw new AuthenticationError('Refresh token expired or invalid');
+        // Parse error response for more details
+        try {
+          const errorJson = JSON.parse(errorData);
+          console.error('Token refresh error details:', errorJson);
+          throw new AuthenticationError(
+            `Refresh token expired or invalid: ${errorJson.error_description || errorJson.error}`
+          );
+        } catch {
+          throw new AuthenticationError('Refresh token expired or invalid');
+        }
       }
 
       throw new GoogleAPIError(
@@ -98,7 +125,11 @@ export class GoogleAuthService {
     }
 
     const newTokens = await response.json();
-    console.log('Successfully refreshed tokens.');
+    console.log('Successfully refreshed tokens:', {
+      has_access_token: !!newTokens.access_token,
+      has_refresh_token: !!newTokens.refresh_token,
+      expires_in: newTokens.expires_in,
+    });
     return newTokens;
   }
 

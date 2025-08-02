@@ -53,24 +53,42 @@ export class UserService {
   }
 
   async getAccessToken(userId: string): Promise<string> {
-    const user = await this.getUserById(userId);
+    let user = await this.getUserById(userId);
 
-    if (!user || !user.tokens.refresh_token || !user.tokens.expires_in) {
+    if (!user || !user.tokens.refresh_token) {
       throw new Error('User not found or missing tokens');
     }
 
-    if (Date.now() >= user.tokens.expires_in - 60000) {
-      console.log(`Refreshing token for user: ${userId}`);
+    const now = Date.now();
+    const expiresAt = user.tokens.expires_at || 0;
+
+    if (now >= expiresAt - 60000) {
+      console.log(`Token expired or about to expire for user: ${userId}`);
+      console.log(`Current time: ${new Date(now).toISOString()}`);
+      console.log(`Token expires at: ${new Date(expiresAt).toISOString()}`);
 
       try {
         const newTokens = await this.googleAuthService.refreshTokens(
           user.tokens.refresh_token
         );
 
-        await this.saveUser({
+        if (newTokens.expires_in) {
+          newTokens.expires_at = Date.now() + newTokens.expires_in * 1000;
+        }
+
+        if (!newTokens.refresh_token) {
+          newTokens.refresh_token = user.tokens.refresh_token;
+        }
+
+        user = {
           ...user,
           tokens: newTokens,
-        });
+        };
+
+        await this.saveUser(user);
+        console.log(
+          `Token refreshed successfully. New expiration: ${new Date(newTokens.expires_at || 0).toISOString()}`
+        );
       } catch (error) {
         console.error('Failed to refresh token:', error);
         throw new Error('Token refresh failed. User needs to re-authenticate.');
