@@ -4,7 +4,6 @@ import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
-import { handle } from 'hono/vercel';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
 import { SyncFlowError } from './utils/errors';
 import { Redis } from '@upstash/redis';
@@ -97,15 +96,6 @@ const createTaskWebhookBodySchema = z.object({
   starred: z.boolean().optional(),
   parent: z.string().trim().optional(),
   url: z.string().url().optional(),
-  links: z
-    .array(
-      z.object({
-        type: z.string(),
-        description: z.string(),
-        link: z.string().url(),
-      })
-    )
-    .optional(),
 });
 
 const updateTaskWebhookBodySchema = z.object({
@@ -117,15 +107,6 @@ const updateTaskWebhookBodySchema = z.object({
   starred: z.boolean().optional(),
   parent: z.string().trim().optional(),
   url: z.string().url().optional(),
-  links: z
-    .array(
-      z.object({
-        type: z.string(),
-        description: z.string(),
-        link: z.string().url(),
-      })
-    )
-    .optional(),
 });
 
 const deleteTaskWebhookBodySchema = z.object({
@@ -179,4 +160,4 @@ app.get(
 );
 
 // --- Vercel Export ---
-export default handle(app);
+export default app;
