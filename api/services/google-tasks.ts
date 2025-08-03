@@ -90,9 +90,13 @@ function extractMetadataFromNotes(notes: string): {
     const value = trimmedLine.substring(separatorIndex + 1).trim();
 
     switch (key) {
-      case 'Priority':
-        metadata.priority = parseInt(value, 10);
+      case 'Priority': {
+        const parsedPriority = parseInt(value, 10);
+        if (!isNaN(parsedPriority)) {
+          metadata.priority = parsedPriority;
+        }
         break;
+      }
       case 'Flagged':
         metadata.isFlagged = value === 'Yes';
         break;

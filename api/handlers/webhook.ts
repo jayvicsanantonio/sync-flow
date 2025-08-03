@@ -1,7 +1,6 @@
 import type { Context } from 'hono';
 import type { GoogleTasksService } from '../services/google-tasks';
 import type { UserService } from '../services/user';
-import type { UpdateTaskRequest } from '../types/google-api';
 import type {
   CreateTaskWebhookBody,
   UpdateTaskWebhookBody,
@@ -74,20 +73,11 @@ export function createUpdateTaskWebhookHandler(
     try {
       const accessToken = await userService.getAccessToken(userId);
 
-      const updates: UpdateTaskRequest = {};
-      if (payload.title !== undefined) updates.title = payload.title;
-      if (payload.notes !== undefined) updates.notes = payload.notes;
-      if (payload.due !== undefined) updates.due = payload.due;
-      if (payload.status !== undefined) updates.status = payload.status;
-      if (payload.priority !== undefined) updates.priority = payload.priority;
-      if (payload.isFlagged !== undefined)
-        updates.isFlagged = payload.isFlagged;
-      if (payload.url !== undefined) updates.url = payload.url;
-      if (payload.tags !== undefined) updates.tags = payload.tags;
+      const { taskId, ...updates } = payload;
 
       const task = await googleTasksService.updateTask(
         accessToken,
-        payload.taskId,
+        taskId,
         updates
       );
       return c.json(
