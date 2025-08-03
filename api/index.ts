@@ -87,16 +87,16 @@ app.use(async function errorHandler(c: Context, next: Next) {
 
 // --- VALIDATION SCHEMAS ---
 const userIdParamSchema = z.object({
-  userId: z.string().trim(),
+  userId: z.string().min(1).trim(),
 });
 
 const createTaskWebhookBodySchema = z.object({
-  title: z.string().trim(),
+  title: z.string().min(1).trim(),
   notes: z.string().trim().optional(),
   due: z.string().optional(),
   priority: z.string().optional(),
-  isFlagged: z.string().optional(),
-  url: z.string().optional(),
+  isFlagged: z.boolean().optional(),
+  url: z.string().url().optional(),
   tags: z.string().optional(),
 });
 
@@ -107,17 +107,17 @@ const updateTaskWebhookBodySchema = z.object({
   due: z.string().optional(),
   status: z.enum(['needsAction', 'completed']).optional(),
   priority: z.string().optional(),
-  isFlagged: z.string().optional(),
-  url: z.string().optional(),
+  isFlagged: z.boolean().optional(),
+  url: z.string().url().optional(),
   tags: z.string().optional(),
 });
 
 const deleteTaskWebhookBodySchema = z.object({
-  taskId: z.string().trim(),
+  taskId: z.string().min(1).trim(),
 });
 
 const authCallbackQuerySchema = z.object({
-  code: z.string(),
+  code: z.string().min(1),
 });
 
 export type UserIdParam = z.infer<typeof userIdParamSchema>;
@@ -131,34 +131,120 @@ app.get('/', handleHome);
 
 app.get(
   '/auth/google/callback',
+  async (c, next) => {
+    console.log('Pre-validation - GET /auth/google/callback:', {
+      query: c.req.query(),
+      headers: {
+        'user-agent': c.req.header('user-agent'),
+        'content-type': c.req.header('content-type'),
+      },
+    });
+    await next();
+  },
   zValidator('query', authCallbackQuerySchema),
+  async (c, next) => {
+    console.log('Post-validation - GET /auth/google/callback:', {
+      validatedQuery: c.req.valid('query'),
+    });
+    await next();
+  },
   handleGoogleCallback
 );
 
 app.post(
   '/webhook/:userId/tasks',
+  async (c, next) => {
+    console.log('Pre-validation - POST /webhook/:userId/tasks:', {
+      params: c.req.param(),
+      body: await c.req.json().catch(() => 'Unable to parse body'),
+      headers: {
+        'user-agent': c.req.header('user-agent'),
+        'content-type': c.req.header('content-type'),
+      },
+    });
+    await next();
+  },
   zValidator('param', userIdParamSchema),
   zValidator('json', createTaskWebhookBodySchema),
+  async (c, next) => {
+    console.log('Post-validation - POST /webhook/:userId/tasks:', {
+      validatedParams: c.req.valid('param'),
+      validatedBody: c.req.valid('json'),
+    });
+    await next();
+  },
   handleCreateTaskWebhook
 );
 
 app.put(
   '/webhook/:userId/tasks',
+  async (c, next) => {
+    console.log('Pre-validation - PUT /webhook/:userId/tasks:', {
+      params: c.req.param(),
+      body: await c.req.json().catch(() => 'Unable to parse body'),
+      headers: {
+        'user-agent': c.req.header('user-agent'),
+        'content-type': c.req.header('content-type'),
+      },
+    });
+    await next();
+  },
   zValidator('param', userIdParamSchema),
   zValidator('json', updateTaskWebhookBodySchema),
+  async (c, next) => {
+    console.log('Post-validation - PUT /webhook/:userId/tasks:', {
+      validatedParams: c.req.valid('param'),
+      validatedBody: c.req.valid('json'),
+    });
+    await next();
+  },
   handleUpdateTaskWebhook
 );
 
 app.delete(
   '/webhook/:userId/tasks',
+  async (c, next) => {
+    console.log('Pre-validation - DELETE /webhook/:userId/tasks:', {
+      params: c.req.param(),
+      body: await c.req.json().catch(() => 'Unable to parse body'),
+      headers: {
+        'user-agent': c.req.header('user-agent'),
+        'content-type': c.req.header('content-type'),
+      },
+    });
+    await next();
+  },
   zValidator('param', userIdParamSchema),
   zValidator('json', deleteTaskWebhookBodySchema),
+  async (c, next) => {
+    console.log('Post-validation - DELETE /webhook/:userId/tasks:', {
+      validatedParams: c.req.valid('param'),
+      validatedBody: c.req.valid('json'),
+    });
+    await next();
+  },
   handleDeleteTaskWebhook
 );
 
 app.get(
   '/fetch-updates/:userId',
+  async (c, next) => {
+    console.log('Pre-validation - GET /fetch-updates/:userId:', {
+      params: c.req.param(),
+      headers: {
+        'user-agent': c.req.header('user-agent'),
+        'content-type': c.req.header('content-type'),
+      },
+    });
+    await next();
+  },
   zValidator('param', userIdParamSchema),
+  async (c, next) => {
+    console.log('Post-validation - GET /fetch-updates/:userId:', {
+      validatedParams: c.req.valid('param'),
+    });
+    await next();
+  },
   handleFetchUpdates
 );
 
