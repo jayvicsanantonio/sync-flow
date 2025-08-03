@@ -87,7 +87,17 @@ app.use(async function errorHandler(c: Context, next: Next) {
 
 // --- VALIDATION SCHEMAS ---
 const userIdParamSchema = z.object({
-  userId: z.string().min(1).trim(),
+  userId: z.string().trim(),
+});
+
+const createTaskWebhookBodySchema = z.object({
+  title: z.string().trim(),
+  notes: z.string().trim().optional(),
+  due: z.string().optional(),
+  priority: z.string().optional(),
+  isFlagged: z.string().optional(),
+  url: z.string().optional(),
+  tags: z.string().optional(),
 });
 
 const updateTaskWebhookBodySchema = z.object({
@@ -97,20 +107,21 @@ const updateTaskWebhookBodySchema = z.object({
   due: z.string().optional(),
   status: z.enum(['needsAction', 'completed']).optional(),
   priority: z.string().optional(),
-  isFlagged: z.boolean().optional(),
-  url: z.string().url().optional(),
+  isFlagged: z.string().optional(),
+  url: z.string().optional(),
   tags: z.string().optional(),
 });
 
 const deleteTaskWebhookBodySchema = z.object({
-  taskId: z.string().min(1).trim(),
+  taskId: z.string().trim(),
 });
 
 const authCallbackQuerySchema = z.object({
-  code: z.string().min(1),
+  code: z.string(),
 });
 
 export type UserIdParam = z.infer<typeof userIdParamSchema>;
+export type CreateTaskWebhookBody = z.infer<typeof createTaskWebhookBodySchema>;
 export type UpdateTaskWebhookBody = z.infer<typeof updateTaskWebhookBodySchema>;
 export type DeleteTaskWebhookBody = z.infer<typeof deleteTaskWebhookBodySchema>;
 export type AuthCallbackQuery = z.infer<typeof authCallbackQuerySchema>;
@@ -124,7 +135,12 @@ app.get(
   handleGoogleCallback
 );
 
-app.post('/webhook/:userId/tasks', handleCreateTaskWebhook);
+app.post(
+  '/webhook/:userId/tasks',
+  zValidator('param', userIdParamSchema),
+  zValidator('json', createTaskWebhookBodySchema),
+  handleCreateTaskWebhook
+);
 
 app.put(
   '/webhook/:userId/tasks',
