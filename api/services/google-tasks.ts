@@ -29,28 +29,23 @@ function buildNotesWithMetadata(
   let finalNotes = notes || '';
   const metadataLines: string[] = [];
 
-  // Add priority to metadata
   if (metadata.priority !== undefined) {
     metadataLines.push(`Priority: ${metadata.priority}`);
   }
 
-  // Add flagged status to metadata
   if (metadata.isFlagged !== undefined) {
     metadataLines.push(`Flagged: ${metadata.isFlagged ? 'Yes' : 'No'}`);
   }
 
-  // Add URL to metadata
   if (metadata.url) {
     metadataLines.push(`URL: ${metadata.url}`);
   }
 
-  // Add tags to metadata
   if (metadata.tags && metadata.tags.length > 0) {
     const tagsString = metadata.tags.map((tag) => `#${tag}`).join(' ');
     metadataLines.push(`Tags: ${tagsString}`);
   }
 
-  // Append all metadata to notes
   if (metadataLines.length > 0) {
     const metadataSection = metadataLines.join('\n');
     finalNotes = finalNotes
@@ -121,7 +116,6 @@ export class GoogleTasksService {
       title: title || 'New Reminder',
     };
 
-    // Build notes with metadata
     const finalNotes = buildNotesWithMetadata(notes, {
       priority,
       isFlagged,
@@ -262,78 +256,12 @@ export class GoogleTasksService {
     return tasksList;
   }
 
-  /**
-   * Update a task using individual parameters (simplified interface)
-   */
-  async updateTask(
-    accessToken: string,
-    taskId: string,
-    title?: string,
-    notes?: string,
-    due?: string,
-    status?: 'needsAction' | 'completed',
-    priority?: number,
-    isFlagged?: boolean,
-    url?: string,
-    tags?: string[],
-    etag?: string
-  ): Promise<GoogleTask>;
-
-  /**
-   * Update a task using UpdateTaskRequest object (original interface)
-   */
   async updateTask(
     accessToken: string,
     taskId: string,
     updates: UpdateTaskRequest,
     etag?: string
-  ): Promise<GoogleTask>;
-
-  async updateTask(
-    accessToken: string,
-    taskId: string,
-    titleOrUpdates?: string | UpdateTaskRequest,
-    notesOrEtag?: string,
-    due?: string,
-    status?: 'needsAction' | 'completed',
-    priority?: number,
-    isFlagged?: boolean,
-    url?: string,
-    tags?: string[],
-    etag?: string
   ): Promise<GoogleTask> {
-    // Handle overloaded parameters
-    let updates: UpdateTaskRequest;
-    let finalEtag: string | undefined;
-
-    if (typeof titleOrUpdates === 'object') {
-      // Called with UpdateTaskRequest object
-      updates = titleOrUpdates;
-      finalEtag = notesOrEtag; // In this case, notesOrEtag is the etag
-    } else {
-      // Called with individual parameters
-      updates = {};
-      if (titleOrUpdates !== undefined) updates.title = titleOrUpdates;
-
-      // Build notes with metadata if needed
-      const hasMetadata =
-        priority !== undefined ||
-        isFlagged !== undefined ||
-        url !== undefined ||
-        (tags && tags.length > 0);
-      if (notesOrEtag !== undefined || hasMetadata) {
-        updates.notes = buildNotesWithMetadata(notesOrEtag, {
-          priority,
-          isFlagged,
-          url,
-          tags,
-        });
-      }
-
-      if (due !== undefined) updates.due = due;
-      if (status !== undefined) updates.status = status;
-      finalEtag = etag;
-    }
 
     const taskData: UpdateTaskRequest = {};
 
@@ -355,8 +283,8 @@ export class GoogleTasksService {
       Accept: 'application/json',
     };
 
-    if (finalEtag) {
-      headers['If-Match'] = finalEtag;
+    if (etag) {
+      headers['If-Match'] = etag;
     }
 
     console.log('🔵 Google Tasks API Request (updateTask):', {
