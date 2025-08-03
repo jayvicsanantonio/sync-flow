@@ -94,10 +94,10 @@ export interface UpdateTaskRequest {
   completed?: string;
 
   // Metadata fields that will be appended to notes
-  priority?: number;
+  priority?: string;
   isFlagged?: boolean;
   url?: string;
-  tags?: string[];
+  tags?: string;
 }
 
 /**

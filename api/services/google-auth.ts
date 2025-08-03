@@ -158,7 +158,9 @@ export class GoogleAuthService {
             `Refresh token expired or invalid: ${errorJson.error_description || errorJson.error}`
           );
         } catch {
-          throw new AuthenticationError('Refresh token expired or invalid');
+          throw new AuthenticationError(
+            'Re[webhook] / status=400fresh token expired or invalid'
+          );
         }
       }
 
