@@ -97,7 +97,7 @@ const createTaskWebhookBodySchema = z.object({
   priority: z.boolean().optional(),
   isFlagged: z.string().optional(),
   url: z.string().url().optional(),
-  tags: z.array(z.string()).optional(),
+  tags: z.string().optional(),
 });
 
 const updateTaskWebhookBodySchema = z.object({
@@ -109,7 +109,7 @@ const updateTaskWebhookBodySchema = z.object({
   priority: z.boolean().optional(),
   isFlagged: z.string().optional(),
   url: z.string().url().optional(),
-  tags: z.array(z.string()).optional(),
+  tags: z.string().optional(),
 });
 
 const deleteTaskWebhookBodySchema = z.object({
