@@ -94,10 +94,10 @@ const createTaskWebhookBodySchema = z.object({
   title: z.string().min(1).trim(),
   notes: z.string().trim().optional(),
   due: z.string().optional(),
-  priority: z.number().min(0).max(9).optional(),
+  priority: z.string().optional(),
   isFlagged: z.boolean().optional(),
   url: z.string().url().optional(),
-  tags: z.array(z.string()).optional(),
+  tags: z.string().optional(),
 });
 
 const updateTaskWebhookBodySchema = z.object({
@@ -106,10 +106,10 @@ const updateTaskWebhookBodySchema = z.object({
   notes: z.string().trim().optional(),
   due: z.string().optional(),
   status: z.enum(['needsAction', 'completed']).optional(),
-  priority: z.number().min(0).max(9).optional(),
+  priority: z.string().optional(),
   isFlagged: z.boolean().optional(),
   url: z.string().url().optional(),
-  tags: z.array(z.string()).optional(),
+  tags: z.string().optional(),
 });
 
 const deleteTaskWebhookBodySchema = z.object({
