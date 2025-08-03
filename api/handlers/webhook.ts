@@ -32,9 +32,10 @@ export function createCreateTaskWebhookHandler(
         payload.title,
         payload.notes,
         payload.due,
-        payload.starred,
-        payload.parent,
-        payload.url
+        payload.priority,
+        payload.isFlagged,
+        payload.url,
+        payload.tags
       );
 
       return c.json(
@@ -65,25 +66,24 @@ export function createUpdateTaskWebhookHandler(
   ) {
     const { userId } = c.req.valid('param');
     const payload = c.req.valid('json');
-    const { taskId, ...updateData } = payload;
 
-    console.log('Updating task:', { userId, taskId });
-    console.log('Update payload:', updateData);
+    console.log('Updating task for userId:', userId);
+    console.log('Update payload:', payload);
 
     try {
       const accessToken = await userService.getAccessToken(userId);
-
-      const task = await googleTasksService.updateTask(accessToken, taskId, {
-        title: updateData.title,
-        notes: updateData.notes,
-        due: updateData.due,
-        status: updateData.status,
-        starred: updateData.starred,
-        parent: updateData.parent,
-        links: updateData.url
-          ? [{ type: 'url', description: 'Link', link: updateData.url }]
-          : updateData.links,
-      });
+      const task = await googleTasksService.updateTask(
+        accessToken,
+        payload.taskId,
+        payload.title,
+        payload.notes,
+        payload.due,
+        payload.status,
+        payload.priority,
+        payload.isFlagged,
+        payload.url,
+        payload.tags
+      );
 
       return c.json(
         {

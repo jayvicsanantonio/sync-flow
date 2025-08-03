@@ -20,9 +20,10 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
     "title": "Complete project documentation",
     "notes": "Update README and API docs",
     "due": "2024-12-31T23:59:59Z",
-    "starred": true,
-    "parent": "parent-task-id-456",
-    "url": "https://github.com/user/project"
+    "priority": 5,
+    "isFlagged": true,
+    "url": "https://github.com/user/project",
+    "tags": ["documentation", "important"]
   }'
 
 # Example - Sync from Apple Reminders:
@@ -31,13 +32,22 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
   -d '{
     "title": "Review pull request",
     "notes": "Check the new implementation",
-    "starred": true,  # Maps from Apple Reminders isFlagged
-    "url": "https://github.com/user/repo/pull/123"  # Maps from Apple Reminders url
+    "priority": 7,
+    "isFlagged": true,
+    "url": "https://github.com/user/repo/pull/123",
+    "tags": ["code-review", "urgent"]
   }'
 {
   "message": "Task created successfully.",
   "taskId": "task-id-123",
-  "task": { ... }
+  "task": {
+    "id": "task-id-123",
+    "title": "Review pull request",
+    "notes": "Check the new implementation\n\n--- Metadata ---\nPriority: 7\nFlagged: Yes\nURL: https://github.com/user/repo/pull/123\nTags: #code-review #urgent",
+    "status": "needsAction",
+    "kind": "tasks#task",
+    "updated": "2024-01-31T10:00:00.000Z"
+  }
 }
 ```
 
@@ -53,7 +63,7 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
     "taskId": "task-id-123",
     "title": "Complete project documentation v2",
     "status": "completed",
-    "starred": true
+    "isFlagged": true
   }'
 
 # Example 2: Update only the due date
@@ -85,7 +95,7 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "taskId": "task-id-123",
-    "starred": false  # Maps to/from Apple Reminders isFlagged
+    "isFlagged": false  # Maps to/from Apple Reminders isFlagged
   }'
 
 # Example 6: Update task URL (sync Apple Reminders URL)
@@ -96,12 +106,23 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
     "url": "https://docs.google.com/document/d/abc123"  # Maps to/from Apple Reminders url
   }'
 
-# Example 7: Move task under a parent (create subtask)
+# Example 7: Update multiple fields at once
 curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "taskId": "task-id-123",
-    "parent": "parent-task-id-789"
+    "title": "Updated task title",
+    "priority": 3,
+    "isFlagged": false
+  }'
+
+# Example 8: Update priority and tags
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "taskId": "task-id-123",
+    "priority": 8,
+    "tags": ["urgent", "high-priority", "review"]
   }'
 
 # Response:
@@ -167,18 +188,37 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
 - All endpoints require a valid `userId` parameter
 - Update and Delete endpoints now require `taskId` to be passed in the request body (JSON)
 - Update endpoint allows partial updates (only send fields you want to change)
-- Update endpoint is fully implemented and supports updating:
+
+### Metadata Storage
+- All metadata (priority, isFlagged, url, tags) is stored in the notes field
+- Metadata is appended in a structured format for easy parsing:
+  ```
+  [User's notes]
+  
+  --- Metadata ---
+  Priority: 7
+  Flagged: Yes
+  URL: https://example.com
+  Tags: #tag1 #tag2
+  ```
+
+### Supported Fields
+- Update endpoint supports:
   - `title`: Task title
-  - `notes`: Task description/notes
+  - `notes`: Task description/notes (metadata will be appended)
   - `due`: Due date (RFC 3339 format)
   - `status`: Task status ('needsAction' or 'completed')
-  - `starred`: Boolean flag for high priority tasks
-  - `parent`: Parent task ID for creating subtasks
+  - `priority`: Priority level (0-9) - stored in notes
+  - `isFlagged`: Boolean flag - stored in notes
+  - `url`: URL - stored in notes
+  - `tags`: Array of tags - stored in notes
 - Create endpoint supports:
   - `title`: Task title (required)
   - `notes`: Task description/notes
   - `due`: Due date (RFC 3339 format)
-  - `starred`: Boolean flag for high priority tasks
-  - `parent`: Parent task ID to create as subtask
+  - `priority`: Priority level (0-9) - stored in notes
+  - `isFlagged`: Boolean flag - stored in notes
+  - `url`: URL associated with the task - stored in notes
+  - `tags`: Array of tags for categorization - stored in notes
 - Delete endpoint is fully implemented - permanently removes tasks from Google Tasks
 - All endpoints handle errors gracefully with detailed error messages

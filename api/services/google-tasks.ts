@@ -9,34 +9,128 @@ const TASKS_API_BASE_URL = 'https://tasks.googleapis.com/tasks/v1';
 const DEFAULT_TASK_LIST = '@default';
 const MAX_PAGE_SIZE = 100;
 
+interface TaskMetadata {
+  priority?: number;
+  isFlagged?: boolean;
+  url?: string;
+  tags?: string[];
+}
+
+/**
+ * Builds the final notes string with metadata appended in a structured format
+ * @param notes - The original notes content
+ * @param metadata - The metadata to append
+ * @returns The final notes string with metadata section
+ */
+function buildNotesWithMetadata(
+  notes: string | undefined,
+  metadata: TaskMetadata
+): string {
+  let finalNotes = notes || '';
+  const metadataLines: string[] = [];
+
+  // Add priority to metadata
+  if (metadata.priority !== undefined) {
+    metadataLines.push(`Priority: ${metadata.priority}`);
+  }
+
+  // Add flagged status to metadata
+  if (metadata.isFlagged !== undefined) {
+    metadataLines.push(`Flagged: ${metadata.isFlagged ? 'Yes' : 'No'}`);
+  }
+
+  // Add URL to metadata
+  if (metadata.url) {
+    metadataLines.push(`URL: ${metadata.url}`);
+  }
+
+  // Add tags to metadata
+  if (metadata.tags && metadata.tags.length > 0) {
+    const tagsString = metadata.tags.map((tag) => `#${tag}`).join(' ');
+    metadataLines.push(`Tags: ${tagsString}`);
+  }
+
+  // Append all metadata to notes
+  if (metadataLines.length > 0) {
+    const metadataSection = metadataLines.join('\n');
+    finalNotes = finalNotes
+      ? `${finalNotes}\n\n--- Metadata ---\n${metadataSection}`
+      : `--- Metadata ---\n${metadataSection}`;
+  }
+
+  return finalNotes;
+}
+
+/**
+ * Extracts metadata from notes that were formatted with buildNotesWithMetadata
+ * @param notes - The notes string containing metadata
+ * @returns The extracted metadata and the original notes without metadata
+ */
+function extractMetadataFromNotes(notes: string): {
+  originalNotes: string;
+  metadata: TaskMetadata;
+} {
+  const metadataMarker = '--- Metadata ---';
+  const metadataIndex = notes.lastIndexOf(metadataMarker);
+
+  if (metadataIndex === -1) {
+    return { originalNotes: notes, metadata: {} };
+  }
+
+  const originalNotes = notes.substring(0, metadataIndex).trim();
+  const metadataSection = notes
+    .substring(metadataIndex + metadataMarker.length)
+    .trim();
+
+  const metadata: TaskMetadata = {};
+  const lines = metadataSection.split('\n');
+
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+
+    if (trimmedLine.startsWith('Priority: ')) {
+      metadata.priority = parseInt(trimmedLine.substring(10), 10);
+    } else if (trimmedLine.startsWith('Flagged: ')) {
+      metadata.isFlagged = trimmedLine.substring(9) === 'Yes';
+    } else if (trimmedLine.startsWith('URL: ')) {
+      metadata.url = trimmedLine.substring(5);
+    } else if (trimmedLine.startsWith('Tags: ')) {
+      const tagsString = trimmedLine.substring(6);
+      metadata.tags = tagsString
+        .split(' ')
+        .filter((tag) => tag.startsWith('#'))
+        .map((tag) => tag.substring(1));
+    }
+  }
+
+  return { originalNotes, metadata };
+}
+
 export class GoogleTasksService {
   async createTask(
     accessToken: string,
     title: string,
     notes?: string,
     due?: string,
-    starred?: boolean,
-    parent?: string,
-    url?: string
+    priority?: number,
+    isFlagged?: boolean,
+    url?: string,
+    tags?: string[]
   ): Promise<GoogleTask> {
     const taskData: CreateTaskRequest = {
       title: title || 'New Reminder',
     };
 
-    if (url) {
-      taskData.links = [
-        {
-          type: 'url',
-          description: 'Link',
-          link: url,
-        },
-      ];
-    }
+    // Build notes with metadata
+    const finalNotes = buildNotesWithMetadata(notes, {
+      priority,
+      isFlagged,
+      url,
+      tags,
+    });
 
-    if (notes) taskData.notes = notes;
+    if (finalNotes) taskData.notes = finalNotes;
     if (due) taskData.due = due;
-    if (starred !== undefined) taskData.starred = starred;
-    if (parent) taskData.parent = parent;
 
     const requestUrl = new URL(
       `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks`
@@ -168,12 +262,79 @@ export class GoogleTasksService {
     return tasksList;
   }
 
+  /**
+   * Update a task using individual parameters (simplified interface)
+   */
+  async updateTask(
+    accessToken: string,
+    taskId: string,
+    title?: string,
+    notes?: string,
+    due?: string,
+    status?: 'needsAction' | 'completed',
+    priority?: number,
+    isFlagged?: boolean,
+    url?: string,
+    tags?: string[],
+    etag?: string
+  ): Promise<GoogleTask>;
+
+  /**
+   * Update a task using UpdateTaskRequest object (original interface)
+   */
   async updateTask(
     accessToken: string,
     taskId: string,
     updates: UpdateTaskRequest,
     etag?: string
+  ): Promise<GoogleTask>;
+
+  async updateTask(
+    accessToken: string,
+    taskId: string,
+    titleOrUpdates?: string | UpdateTaskRequest,
+    notesOrEtag?: string,
+    due?: string,
+    status?: 'needsAction' | 'completed',
+    priority?: number,
+    isFlagged?: boolean,
+    url?: string,
+    tags?: string[],
+    etag?: string
   ): Promise<GoogleTask> {
+    // Handle overloaded parameters
+    let updates: UpdateTaskRequest;
+    let finalEtag: string | undefined;
+
+    if (typeof titleOrUpdates === 'object') {
+      // Called with UpdateTaskRequest object
+      updates = titleOrUpdates;
+      finalEtag = notesOrEtag; // In this case, notesOrEtag is the etag
+    } else {
+      // Called with individual parameters
+      updates = {};
+      if (titleOrUpdates !== undefined) updates.title = titleOrUpdates;
+
+      // Build notes with metadata if needed
+      const hasMetadata =
+        priority !== undefined ||
+        isFlagged !== undefined ||
+        url !== undefined ||
+        (tags && tags.length > 0);
+      if (notesOrEtag !== undefined || hasMetadata) {
+        updates.notes = buildNotesWithMetadata(notesOrEtag, {
+          priority,
+          isFlagged,
+          url,
+          tags,
+        });
+      }
+
+      if (due !== undefined) updates.due = due;
+      if (status !== undefined) updates.status = status;
+      finalEtag = etag;
+    }
+
     const taskData: UpdateTaskRequest = {};
 
     if (updates.title !== undefined) taskData.title = updates.title;
@@ -187,9 +348,6 @@ export class GoogleTasksService {
       }
     }
     if (updates.completed !== undefined) taskData.completed = updates.completed;
-    if (updates.starred !== undefined) taskData.starred = updates.starred;
-    if (updates.parent !== undefined) taskData.parent = updates.parent;
-    if (updates.links !== undefined) taskData.links = updates.links;
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${accessToken}`,
@@ -197,8 +355,8 @@ export class GoogleTasksService {
       Accept: 'application/json',
     };
 
-    if (etag) {
-      headers['If-Match'] = etag;
+    if (finalEtag) {
+      headers['If-Match'] = finalEtag;
     }
 
     console.log('🔵 Google Tasks API Request (updateTask):', {
