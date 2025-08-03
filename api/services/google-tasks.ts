@@ -10,8 +10,8 @@ const DEFAULT_TASK_LIST = '@default';
 const MAX_PAGE_SIZE = 100;
 
 interface TaskMetadata {
-  priority?: number;
-  isFlagged?: boolean;
+  priority?: boolean;
+  isFlagged?: string;
   url?: string;
   tags?: string[];
 }
@@ -30,11 +30,11 @@ function buildNotesWithMetadata(
   const metadataLines: string[] = [];
 
   if (metadata.priority !== undefined) {
-    metadataLines.push(`Priority: ${metadata.priority}`);
+    metadataLines.push(`Priority: ${metadata.priority ? 'High' : 'Normal'}`);
   }
 
   if (metadata.isFlagged !== undefined) {
-    metadataLines.push(`Flagged: ${metadata.isFlagged ? 'Yes' : 'No'}`);
+    metadataLines.push(`Flagged: ${metadata.isFlagged}`);
   }
 
   if (metadata.url) {
@@ -90,15 +90,11 @@ function extractMetadataFromNotes(notes: string): {
     const value = trimmedLine.substring(separatorIndex + 1).trim();
 
     switch (key) {
-      case 'Priority': {
-        const parsedPriority = parseInt(value, 10);
-        if (!isNaN(parsedPriority)) {
-          metadata.priority = parsedPriority;
-        }
+      case 'Priority':
+        metadata.priority = value === 'High';
         break;
-      }
       case 'Flagged':
-        metadata.isFlagged = value === 'Yes';
+        metadata.isFlagged = value;
         break;
       case 'URL':
         metadata.url = value;
@@ -121,8 +117,8 @@ export class GoogleTasksService {
     title: string,
     notes?: string,
     due?: string,
-    priority?: number,
-    isFlagged?: boolean,
+    priority?: boolean,
+    isFlagged?: string,
     url?: string,
     tags?: string[]
   ): Promise<GoogleTask> {

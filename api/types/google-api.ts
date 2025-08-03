@@ -94,8 +94,8 @@ export interface UpdateTaskRequest {
   completed?: string;
 
   // Metadata fields that will be appended to notes
-  priority?: number;
-  isFlagged?: boolean;
+  priority?: boolean;
+  isFlagged?: string;
   url?: string;
   tags?: string[];
 }
