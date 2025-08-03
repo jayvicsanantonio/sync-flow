@@ -16,14 +16,6 @@ export interface GoogleTaskData {
   title: string;
   notes?: string;
   due?: string; // RFC 3339 timestamp. Absence of time means it's an all-day task.
-
-  /**
-   * @description Represents a "starred" task in Google Tasks.
-   * This is the closest equivalent to Apple Reminders' "isFlagged".
-   * It's a boolean, not a graded scale.
-   * Sync Strategy: Map this to Apple Reminders' isFlagged property.
-   */
-  starred?: boolean;
 }
 
 /**
@@ -81,15 +73,7 @@ export interface GoogleTasksListResponse {
  * Inherits user-editable fields and adds properties available at creation time.
  */
 export interface CreateTaskRequest extends GoogleTaskData {
-  /**
-   * @description The ID of the parent task under which to create this subtask.
-   */
-  parent?: string;
-
-  /**
-   * @description Links associated with the task.
-   */
-  links?: GoogleLink[];
+  // All metadata (priority, isFlagged, url, tags) is now stored in the notes field
 }
 
 /**
@@ -109,23 +93,11 @@ export interface UpdateTaskRequest {
    */
   completed?: string;
 
-  /**
-   * @description Set to `true` or `false` to star or unstar the task.
-   * Used to sync priority/flagged status.
-   */
-  starred?: boolean;
-
-  /**
-   * @description Move a task to become a subtask of another.
-   * To make a subtask a top-level task, you would need a 'move' operation,
-   * which isn't directly supported via a simple `parent: null` update.
-   */
-  parent?: string;
-
-  /**
-   * @description Links associated with the task.
-   */
-  links?: GoogleLink[];
+  // Metadata fields that will be appended to notes
+  priority?: number;
+  isFlagged?: boolean;
+  url?: string;
+  tags?: string[];
 }
 
 /**
