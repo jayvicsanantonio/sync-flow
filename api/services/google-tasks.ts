@@ -9,6 +9,29 @@ const TASKS_API_BASE_URL = 'https://tasks.googleapis.com/tasks/v1';
 const DEFAULT_TASK_LIST = '@default';
 const MAX_PAGE_SIZE = 100;
 
+/**
+ * Parses various date formats and returns RFC 3339 format
+ * @param dateString - The date string to parse
+ * @returns RFC 3339 formatted date string or undefined if parsing fails
+ */
+function parseToRFC3339(dateString: string | undefined): string | undefined {
+  if (!dateString) return undefined;
+
+  try {
+    const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+      console.warn(`Failed to parse date: ${dateString}`);
+      return undefined;
+    }
+
+    return date.toISOString();
+  } catch (error) {
+    console.error(`Error parsing date: ${dateString}`, error);
+    return undefined;
+  }
+}
+
 interface TaskMetadata {
   priority?: boolean;
   isFlagged?: string;
@@ -130,7 +153,12 @@ export class GoogleTasksService {
     });
 
     if (finalNotes) taskData.notes = finalNotes;
-    if (due) taskData.due = due;
+    if (due) {
+      const parsedDue = parseToRFC3339(due);
+      if (parsedDue) {
+        taskData.due = parsedDue;
+      }
+    }
 
     const requestUrl = new URL(
       `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks`
@@ -312,7 +340,12 @@ export class GoogleTasksService {
       taskData.notes = buildNotesWithMetadata(finalNotes, finalMetadata);
     }
 
-    if (updates.due !== undefined) taskData.due = updates.due;
+    if (updates.due !== undefined) {
+      const parsedDue = parseToRFC3339(updates.due);
+      if (parsedDue) {
+        taskData.due = parsedDue;
+      }
+    }
     if (updates.status !== undefined) {
       taskData.status = updates.status;
 
