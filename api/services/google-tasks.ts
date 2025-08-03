@@ -13,7 +13,7 @@ interface TaskMetadata {
   priority?: boolean;
   isFlagged?: string;
   url?: string;
-  tags?: string[];
+  tags?: string;
 }
 
 /**
@@ -41,9 +41,8 @@ function buildNotesWithMetadata(
     metadataLines.push(`URL: ${metadata.url}`);
   }
 
-  if (metadata.tags && metadata.tags.length > 0) {
-    const tagsString = metadata.tags.map((tag) => `#${tag}`).join(' ');
-    metadataLines.push(`Tags: ${tagsString}`);
+  if (metadata.tags) {
+    metadataLines.push(`Tags: ${metadata.tags}`);
   }
 
   if (metadataLines.length > 0) {
@@ -100,10 +99,7 @@ function extractMetadataFromNotes(notes: string): {
         metadata.url = value;
         break;
       case 'Tags':
-        metadata.tags = value
-          .split(' ')
-          .filter((tag) => tag.startsWith('#'))
-          .map((tag) => tag.substring(1));
+        metadata.tags = value;
         break;
     }
   }
@@ -120,7 +116,7 @@ export class GoogleTasksService {
     priority?: boolean,
     isFlagged?: string,
     url?: string,
-    tags?: string[]
+    tags?: string
   ): Promise<GoogleTask> {
     const taskData: CreateTaskRequest = {
       title: title || 'New Reminder',
@@ -279,7 +275,7 @@ export class GoogleTasksService {
       updates.priority !== undefined ||
       updates.isFlagged !== undefined ||
       updates.url !== undefined ||
-      (updates.tags && updates.tags.length > 0);
+      updates.tags !== undefined;
 
     if (updates.notes !== undefined || hasMetadata) {
       let finalNotes = updates.notes;

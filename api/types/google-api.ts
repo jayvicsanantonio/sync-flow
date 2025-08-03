@@ -97,7 +97,7 @@ export interface UpdateTaskRequest {
   priority?: boolean;
   isFlagged?: string;
   url?: string;
-  tags?: string[];
+  tags?: string;
 }
 
 /**
