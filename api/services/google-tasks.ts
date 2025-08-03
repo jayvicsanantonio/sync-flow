@@ -284,13 +284,40 @@ export class GoogleTasksService {
       updates.isFlagged !== undefined ||
       updates.url !== undefined ||
       (updates.tags && updates.tags.length > 0);
+
     if (updates.notes !== undefined || hasMetadata) {
-      taskData.notes = buildNotesWithMetadata(updates.notes, {
+      let finalNotes = updates.notes;
+      let finalMetadata: TaskMetadata = {
         priority: updates.priority,
         isFlagged: updates.isFlagged,
         url: updates.url,
         tags: updates.tags,
-      });
+      };
+
+      if (hasMetadata && updates.notes === undefined) {
+        const existingTask = await this.getTask(accessToken, taskId);
+        if (existingTask.notes) {
+          const { originalNotes, metadata: existingMetadata } =
+            extractMetadataFromNotes(existingTask.notes);
+          finalNotes = originalNotes;
+
+          finalMetadata = {
+            priority:
+              updates.priority !== undefined
+                ? updates.priority
+                : existingMetadata.priority,
+            isFlagged:
+              updates.isFlagged !== undefined
+                ? updates.isFlagged
+                : existingMetadata.isFlagged,
+            url: updates.url !== undefined ? updates.url : existingMetadata.url,
+            tags:
+              updates.tags !== undefined ? updates.tags : existingMetadata.tags,
+          };
+        }
+      }
+
+      taskData.notes = buildNotesWithMetadata(finalNotes, finalMetadata);
     }
 
     if (updates.due !== undefined) taskData.due = updates.due;
@@ -302,14 +329,6 @@ export class GoogleTasksService {
       }
     }
     if (updates.completed !== undefined) taskData.completed = updates.completed;
-
-    const apiRequestData: any = {};
-    if (taskData.title !== undefined) apiRequestData.title = taskData.title;
-    if (taskData.notes !== undefined) apiRequestData.notes = taskData.notes;
-    if (taskData.due !== undefined) apiRequestData.due = taskData.due;
-    if (taskData.status !== undefined) apiRequestData.status = taskData.status;
-    if (taskData.completed !== undefined)
-      apiRequestData.completed = taskData.completed;
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${accessToken}`,
@@ -325,7 +344,7 @@ export class GoogleTasksService {
       url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
       method: 'PATCH',
       headers,
-      body: apiRequestData,
+      body: taskData,
     });
 
     const response = await fetch(
@@ -333,7 +352,7 @@ export class GoogleTasksService {
       {
         method: 'PATCH',
         headers,
-        body: JSON.stringify(apiRequestData),
+        body: JSON.stringify(taskData),
       }
     );
 
