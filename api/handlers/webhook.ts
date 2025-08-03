@@ -8,6 +8,29 @@ import type {
   UserIdParam,
 } from '../index';
 
+/**
+ * Parses various date formats and returns RFC 3339 format
+ * @param dateString - The date string to parse
+ * @returns RFC 3339 formatted date string or undefined if parsing fails
+ */
+function parseToRFC3339(dateString: string | undefined): string | undefined {
+  if (!dateString) return undefined;
+
+  try {
+    const date = new Date(dateString);
+
+    if (isNaN(date.getTime())) {
+      console.warn(`Failed to parse date: ${dateString}`);
+      return undefined;
+    }
+
+    return date.toISOString();
+  } catch (error) {
+    console.error(`Error parsing date: ${dateString}`, error);
+    return undefined;
+  }
+}
+
 export function createCreateTaskWebhookHandler(
   googleTasksService: GoogleTasksService,
   userService: UserService
@@ -31,7 +54,7 @@ export function createCreateTaskWebhookHandler(
         accessToken,
         payload.title,
         payload.notes,
-        payload.due,
+        parseToRFC3339(payload.due),
         payload.priority,
         payload.isFlagged,
         payload.url,
@@ -74,6 +97,10 @@ export function createUpdateTaskWebhookHandler(
       const accessToken = await userService.getAccessToken(userId);
 
       const { taskId, ...updates } = payload;
+
+      if (updates.due) {
+        updates.due = parseToRFC3339(updates.due);
+      }
 
       const task = await googleTasksService.updateTask(
         accessToken,
