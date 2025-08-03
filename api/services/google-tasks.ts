@@ -82,19 +82,29 @@ function extractMetadataFromNotes(notes: string): {
 
   for (const line of lines) {
     const trimmedLine = line.trim();
+    const separatorIndex = trimmedLine.indexOf(':');
 
-    if (trimmedLine.startsWith('Priority: ')) {
-      metadata.priority = parseInt(trimmedLine.substring(10), 10);
-    } else if (trimmedLine.startsWith('Flagged: ')) {
-      metadata.isFlagged = trimmedLine.substring(9) === 'Yes';
-    } else if (trimmedLine.startsWith('URL: ')) {
-      metadata.url = trimmedLine.substring(5);
-    } else if (trimmedLine.startsWith('Tags: ')) {
-      const tagsString = trimmedLine.substring(6);
-      metadata.tags = tagsString
-        .split(' ')
-        .filter((tag) => tag.startsWith('#'))
-        .map((tag) => tag.substring(1));
+    if (separatorIndex === -1) continue;
+
+    const key = trimmedLine.substring(0, separatorIndex).trim();
+    const value = trimmedLine.substring(separatorIndex + 1).trim();
+
+    switch (key) {
+      case 'Priority':
+        metadata.priority = parseInt(value, 10);
+        break;
+      case 'Flagged':
+        metadata.isFlagged = value === 'Yes';
+        break;
+      case 'URL':
+        metadata.url = value;
+        break;
+      case 'Tags':
+        metadata.tags = value
+          .split(' ')
+          .filter((tag) => tag.startsWith('#'))
+          .map((tag) => tag.substring(1));
+        break;
     }
   }
 
@@ -255,18 +265,30 @@ export class GoogleTasksService {
 
     return tasksList;
   }
-
   async updateTask(
     accessToken: string,
     taskId: string,
     updates: UpdateTaskRequest,
     etag?: string
   ): Promise<GoogleTask> {
-
     const taskData: UpdateTaskRequest = {};
 
     if (updates.title !== undefined) taskData.title = updates.title;
-    if (updates.notes !== undefined) taskData.notes = updates.notes;
+
+    const hasMetadata =
+      updates.priority !== undefined ||
+      updates.isFlagged !== undefined ||
+      updates.url !== undefined ||
+      (updates.tags && updates.tags.length > 0);
+    if (updates.notes !== undefined || hasMetadata) {
+      taskData.notes = buildNotesWithMetadata(updates.notes, {
+        priority: updates.priority,
+        isFlagged: updates.isFlagged,
+        url: updates.url,
+        tags: updates.tags,
+      });
+    }
+
     if (updates.due !== undefined) taskData.due = updates.due;
     if (updates.status !== undefined) {
       taskData.status = updates.status;
@@ -276,6 +298,14 @@ export class GoogleTasksService {
       }
     }
     if (updates.completed !== undefined) taskData.completed = updates.completed;
+
+    const apiRequestData: any = {};
+    if (taskData.title !== undefined) apiRequestData.title = taskData.title;
+    if (taskData.notes !== undefined) apiRequestData.notes = taskData.notes;
+    if (taskData.due !== undefined) apiRequestData.due = taskData.due;
+    if (taskData.status !== undefined) apiRequestData.status = taskData.status;
+    if (taskData.completed !== undefined)
+      apiRequestData.completed = taskData.completed;
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${accessToken}`,
@@ -291,7 +321,7 @@ export class GoogleTasksService {
       url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
       method: 'PATCH',
       headers,
-      body: taskData,
+      body: apiRequestData,
     });
 
     const response = await fetch(
@@ -299,7 +329,7 @@ export class GoogleTasksService {
       {
         method: 'PATCH',
         headers,
-        body: JSON.stringify(taskData),
+        body: JSON.stringify(apiRequestData),
       }
     );
 

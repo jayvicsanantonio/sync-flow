@@ -93,7 +93,11 @@ export interface UpdateTaskRequest {
    */
   completed?: string;
 
-  // All metadata (priority, isFlagged, url, tags) is now stored in the notes field
+  // Metadata fields that will be appended to notes
+  priority?: number;
+  isFlagged?: boolean;
+  url?: string;
+  tags?: string[];
 }
 
 /**

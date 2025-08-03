@@ -79,13 +79,17 @@ export function createUpdateTaskWebhookHandler(
       if (payload.notes !== undefined) updates.notes = payload.notes;
       if (payload.due !== undefined) updates.due = payload.due;
       if (payload.status !== undefined) updates.status = payload.status;
+      if (payload.priority !== undefined) updates.priority = payload.priority;
+      if (payload.isFlagged !== undefined)
+        updates.isFlagged = payload.isFlagged;
+      if (payload.url !== undefined) updates.url = payload.url;
+      if (payload.tags !== undefined) updates.tags = payload.tags;
 
       const task = await googleTasksService.updateTask(
         accessToken,
         payload.taskId,
         updates
       );
-
       return c.json(
         {
           message: 'Task updated successfully.',
