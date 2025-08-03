@@ -42,6 +42,16 @@ export class GoogleTasksService {
       `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks`
     );
 
+    console.log('🔵 Google Tasks API Request (createTask):', {
+      url: requestUrl.toString(),
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken.substring(0, 20)}...`,
+        'Content-Type': 'application/json',
+      },
+      body: taskData,
+    });
+
     const response = await fetch(requestUrl.toString(), {
       method: 'POST',
       headers: {
@@ -53,19 +63,26 @@ export class GoogleTasksService {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Google Tasks API Error:', {
+      console.error('🔴 Google Tasks API Error (createTask):', {
+        url: requestUrl.toString(),
         status: response.status,
         statusText: response.statusText,
-        body: errorText,
         requestData: taskData,
       });
+      const errorText = await response.text();
       throw new Error(
         `Failed to create task: ${response.status} ${response.statusText} - ${errorText}`
       );
     }
 
-    return await response.json();
+    const createdTask = await response.json();
+    console.log('🟢 Google Tasks API Response (createTask):', {
+      url: requestUrl.toString(),
+      status: response.status,
+      data: { id: createdTask.id, title: createdTask.title },
+    });
+
+    return createdTask;
   }
 
   async listTasks(
@@ -108,6 +125,15 @@ export class GoogleTasksService {
       url.searchParams.set('pageToken', options.pageToken);
     }
 
+    console.log('🔵 Google Tasks API Request (listTasks):', {
+      url: url.toString(),
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${accessToken.substring(0, 20)}...`,
+      },
+      params: options,
+    });
+
     const response = await fetch(url.toString(), {
       method: 'GET',
       headers: {
@@ -117,18 +143,29 @@ export class GoogleTasksService {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Google Tasks API Error (list):', {
+      console.error('🔴 Google Tasks API Error (listTasks):', {
+        url: url.toString(),
         status: response.status,
         statusText: response.statusText,
-        body: errorText,
+        queryParams: options,
       });
+      const errorText = await response.text();
       throw new Error(
         `Failed to fetch tasks: ${response.status} ${response.statusText} - ${errorText}`
       );
     }
 
-    return await response.json();
+    const tasksList = await response.json();
+    console.log('🟢 Google Tasks API Response (listTasks):', {
+      url: url.toString(),
+      status: response.status,
+      data: {
+        totalItems: tasksList.items?.length || 0,
+        hasNextPage: !!tasksList.nextPageToken,
+      },
+    });
+
+    return tasksList;
   }
 
   async updateTask(
@@ -164,6 +201,13 @@ export class GoogleTasksService {
       headers['If-Match'] = etag;
     }
 
+    console.log('🔵 Google Tasks API Request (updateTask):', {
+      url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
+      method: 'PATCH',
+      headers,
+      body: taskData,
+    });
+
     const response = await fetch(
       `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
       {
@@ -174,20 +218,26 @@ export class GoogleTasksService {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Google Tasks API Error (update):', {
+      console.error('🔴 Google Tasks API Error (updateTask):', {
+        url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
         status: response.status,
         statusText: response.statusText,
-        body: errorText,
-        taskId,
-        updates: taskData,
+        requestData: taskData,
       });
+      const errorText = await response.text();
       throw new Error(
         `Failed to update task: ${response.status} ${response.statusText} - ${errorText}`
       );
     }
 
-    return await response.json();
+    const updatedTask = await response.json();
+    console.log('🟢 Google Tasks API Response (updateTask):', {
+      url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
+      status: response.status,
+      data: { id: updatedTask.id, title: updatedTask.title },
+    });
+
+    return updatedTask;
   }
 
   async deleteTask(
@@ -203,6 +253,15 @@ export class GoogleTasksService {
       headers['If-Match'] = etag;
     }
 
+    console.log('🔵 Google Tasks API Request (deleteTask):', {
+      url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer [REDACTED]`,
+        'If-Match': etag || 'not set',
+      },
+    });
+
     const response = await fetch(
       `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
       {
@@ -212,17 +271,23 @@ export class GoogleTasksService {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Google Tasks API Error (delete):', {
+      console.error('🔴 Google Tasks API Error (deleteTask):', {
+        url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
         status: response.status,
         statusText: response.statusText,
-        body: errorText,
         taskId,
       });
+      const errorText = await response.text();
       throw new Error(
         `Failed to delete task: ${response.status} ${response.statusText} - ${errorText}`
       );
     }
+
+    console.log('🟢 Google Tasks API Response (deleteTask):', {
+      url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
+      status: response.status,
+      message: 'Task deleted successfully',
+    });
   }
 
   /**
@@ -230,6 +295,14 @@ export class GoogleTasksService {
    * Useful for fetching updated task details or checking if a task exists
    */
   async getTask(accessToken: string, taskId: string): Promise<GoogleTask> {
+    console.log('🔵 Google Tasks API Request (getTask):', {
+      url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer [REDACTED]`,
+      },
+    });
+
     const response = await fetch(
       `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
       {
@@ -242,19 +315,26 @@ export class GoogleTasksService {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Google Tasks API Error (get):', {
+      console.error('🔴 Google Tasks API Error (getTask):', {
+        url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
         status: response.status,
         statusText: response.statusText,
-        body: errorText,
         taskId,
       });
+      const errorText = await response.text();
       throw new Error(
         `Failed to get task: ${response.status} ${response.statusText} - ${errorText}`
       );
     }
 
-    return await response.json();
+    const fetchedTask = await response.json();
+    console.log('🟢 Google Tasks API Response (getTask):', {
+      url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/tasks/${taskId}`,
+      status: response.status,
+      data: { id: fetchedTask.id, title: fetchedTask.title },
+    });
+
+    return fetchedTask;
   }
 
   /**
@@ -281,6 +361,15 @@ export class GoogleTasksService {
       url.searchParams.set('previous', options.previous);
     }
 
+    console.log('🔵 Google Tasks API Request (moveTask):', {
+      url: url.toString(),
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer [REDACTED]`,
+      },
+      params: options,
+    });
+
     const response = await fetch(url.toString(), {
       method: 'POST',
       headers: {
@@ -290,20 +379,26 @@ export class GoogleTasksService {
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Google Tasks API Error (move):', {
+      console.error('🔴 Google Tasks API Error (moveTask):', {
+        url: url.toString(),
         status: response.status,
         statusText: response.statusText,
-        body: errorText,
         taskId,
-        options,
       });
+      const errorText = await response.text();
       throw new Error(
         `Failed to move task: ${response.status} ${response.statusText} - ${errorText}`
       );
     }
 
-    return await response.json();
+    const movedTask = await response.json();
+    console.log('🟢 Google Tasks API Response (moveTask):', {
+      url: url.toString(),
+      status: response.status,
+      data: { id: movedTask.id, title: movedTask.title },
+    });
+
+    return movedTask;
   }
 
   /**
@@ -311,6 +406,14 @@ export class GoogleTasksService {
    * This is useful for cleanup operations
    */
   async clearCompletedTasks(accessToken: string): Promise<void> {
+    console.log('🔵 Google Tasks API Request (clearCompletedTasks):', {
+      url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/clear`,
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer [REDACTED]`,
+      },
+    });
+
     const response = await fetch(
       `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/clear`,
       {
@@ -322,16 +425,22 @@ export class GoogleTasksService {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Google Tasks API Error (clear):', {
+      console.error('🔴 Google Tasks API Error (clearCompletedTasks):', {
+        url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/clear`,
         status: response.status,
         statusText: response.statusText,
-        body: errorText,
       });
+      const errorText = await response.text();
       throw new Error(
         `Failed to clear completed tasks: ${response.status} ${response.statusText} - ${errorText}`
       );
     }
+
+    console.log('🟢 Google Tasks API Response (clearCompletedTasks):', {
+      url: `${TASKS_API_BASE_URL}/lists/${DEFAULT_TASK_LIST}/clear`,
+      status: response.status,
+      message: 'Completed tasks cleared successfully',
+    });
   }
 
   /**
