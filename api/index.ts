@@ -95,8 +95,7 @@ const createTaskWebhookBodySchema = z.object({
   notes: z.string().trim().optional(),
   due: z.string().optional(),
   priority: z.boolean().optional(),
-  isFlagged: z.string().optional(),
-  url: z.string().url().optional(),
+  url: z.string().optional(),
   tags: z.string().optional(),
 });
 
@@ -107,8 +106,7 @@ const updateTaskWebhookBodySchema = z.object({
   due: z.string().optional(),
   status: z.enum(['needsAction', 'completed']).optional(),
   priority: z.boolean().optional(),
-  isFlagged: z.string().optional(),
-  url: z.string().url().optional(),
+  url: z.string().optional(),
   tags: z.string().optional(),
 });
 

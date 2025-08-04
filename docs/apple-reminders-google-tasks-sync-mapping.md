@@ -4,19 +4,21 @@ This document explains how properties are mapped between Apple Reminders and Goo
 
 ## Property Mappings
 
-### 1. **Flagged/Priority Status**
+### 1. **Priority Status**
 
-- **Apple Reminders**: `isFlagged` (boolean)
-- **Google Tasks**: `starred` (boolean)
-- **Mapping**: Direct 1:1 mapping
-- **Notes**: Both represent a high-priority or important task
+- **Apple Reminders**: `priority` (0-9 scale)
+- **Google Tasks**: Stored in notes metadata as priority (boolean - High/Normal)
+- **Mapping**: Priority values mapped to boolean
+- **Notes**: High priority (5-9) maps to true, Normal priority (0-4) maps to false
 
 ```javascript
 // Apple Reminders → Google Tasks
-googleTask.starred = appleReminder.isFlagged;
+// Priority is stored in notes metadata
+const isHighPriority = appleReminder.priority >= 5;
 
 // Google Tasks → Apple Reminders
-appleReminder.isFlagged = googleTask.starred;
+// Extract priority from notes metadata
+const priority = metadata.priority ? 9 : 0;
 ```
 
 ### 2. **URL/Link**
@@ -65,7 +67,7 @@ if (googleTask.links && googleTask.links.length > 0) {
 
 #### Apple Reminders properties without Google Tasks equivalent:
 
-- `priority` (0-9 scale) - Only partially mapped via `starred`
+- `alarms` - No equivalent in Google Tasks
 - `location` - No equivalent in Google Tasks
 - `alarms` - No equivalent in Google Tasks
 - `recurrence` - Google Tasks doesn't support recurring tasks
@@ -89,7 +91,7 @@ const createGoogleTaskFromAppleReminder = async (reminder: AppleReminder) => {
     reminder.title,
     reminder.notes,
     reminder.dueDate?.toISOString(),
-    reminder.isFlagged, // Maps to starred
+    reminder.priority >= 5, // High priority if 5 or above
     reminder.parentId,
     reminder.url // Maps to links[0]
   );
@@ -111,7 +113,7 @@ const updateGoogleTaskFromAppleReminder = async (
     notes: reminder.notes,
     due: reminder.dueDate?.toISOString(),
     status: reminder.isCompleted ? 'completed' : 'needsAction',
-    starred: reminder.isFlagged,
+    priority: reminder.priority >= 5,
   };
 
   // Handle URL update
@@ -146,7 +148,7 @@ const createAppleReminderFromGoogleTask = (task: GoogleTask) => {
     dueDate: task.due ? new Date(task.due) : undefined,
     isCompleted: task.status === 'completed',
     completionDate: task.completed ? new Date(task.completed) : undefined,
-    isFlagged: task.starred || false,
+    priority: extractedMetadata.priority ? 9 : 0,
     url: task.links?.[0]?.link,
     parentId: task.parent,
   };
@@ -157,10 +159,10 @@ const createAppleReminderFromGoogleTask = (task: GoogleTask) => {
 
 ## Best Practices
 
-1. **Priority Handling**: Since Apple Reminders has a 0-9 priority scale but Google Tasks only has `starred`, consider:
-   - Priority 0-4 → `starred: false`
-   - Priority 5-9 → `starred: true`
-   - Or use only `isFlagged` for cleaner mapping
+1. **Priority Handling**: Since Apple Reminders has a 0-9 priority scale:
+   - Priority 0-4 → Normal priority (false in metadata)
+   - Priority 5-9 → High priority (true in metadata)
+   - The priority is stored in the notes metadata section
 
 2. **URL Handling**:
    - Always use the first link when converting from Google Tasks
