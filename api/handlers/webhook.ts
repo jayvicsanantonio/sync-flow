@@ -62,6 +62,8 @@ export function createCreateTaskWebhookHandler(
         syncId
       );
 
+      await userService.saveTaskMapping(userId, syncId, task.id);
+
       return c.json(
         {
           message: 'Task created successfully.',
@@ -103,14 +105,28 @@ export function createUpdateTaskWebhookHandler(
       const { syncId: _, ...updates } = payload;
 
       if (!taskId && syncId) {
-        const task = await googleTasksService.findTaskBySyncId(
-          accessToken,
+        const mappedTaskId = await userService.getGoogleTaskIdBySyncId(
+          userId,
           syncId
         );
-        if (task) {
-          taskId = task.id;
-        } else {
-          return c.json({ error: 'Task not found for provided syncId.' }, 404);
+        if (mappedTaskId) {
+          taskId = mappedTaskId;
+        }
+
+        if (!taskId) {
+          const task = await googleTasksService.findTaskBySyncId(
+            accessToken,
+            syncId
+          );
+          if (task) {
+            taskId = task.id;
+            await userService.saveTaskMapping(userId, syncId, task.id);
+          } else {
+            return c.json(
+              { error: 'Task not found for provided syncId.' },
+              404
+            );
+          }
         }
       }
 
@@ -164,14 +180,28 @@ export function createDeleteTaskWebhookHandler(
       const accessToken = await userService.getAccessToken(userId);
 
       if (!taskId && syncId) {
-        const task = await googleTasksService.findTaskBySyncId(
-          accessToken,
+        const mappedTaskId = await userService.getGoogleTaskIdBySyncId(
+          userId,
           syncId
         );
-        if (task) {
-          taskId = task.id;
-        } else {
-          return c.json({ error: 'Task not found for provided syncId.' }, 404);
+        if (mappedTaskId) {
+          taskId = mappedTaskId;
+        }
+
+        if (!taskId) {
+          const task = await googleTasksService.findTaskBySyncId(
+            accessToken,
+            syncId
+          );
+          if (task) {
+            taskId = task.id;
+            await userService.saveTaskMapping(userId, syncId, task.id);
+          } else {
+            return c.json(
+              { error: 'Task not found for provided syncId.' },
+              404
+            );
+          }
         }
       }
 
@@ -180,6 +210,18 @@ export function createDeleteTaskWebhookHandler(
       }
 
       await googleTasksService.deleteTask(accessToken, taskId);
+
+      if (syncId) {
+        await userService.deleteTaskMapping(userId, syncId, taskId);
+      } else {
+        const mappedSyncId = await userService.getSyncIdByGoogleTaskId(
+          userId,
+          taskId
+        );
+        if (mappedSyncId) {
+          await userService.deleteTaskMapping(userId, mappedSyncId, taskId);
+        }
+      }
 
       return c.json(
         {

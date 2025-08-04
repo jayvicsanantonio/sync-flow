@@ -666,4 +666,55 @@ export class GoogleTasksService {
 
     return null;
   }
+
+  /**
+   * Repair sync mappings by scanning all tasks and rebuilding Redis mappings
+   * Useful for recovering from data loss or fixing inconsistencies
+   */
+  async repairSyncMappings(
+    accessToken: string,
+    userId: string,
+    userService: any
+  ): Promise<{ repaired: number; errors: string[] }> {
+    const errors: string[] = [];
+    let repairedCount = 0;
+
+    try {
+      const allTasks = await this.listAllTasks(accessToken, {
+        showCompleted: true,
+        showHidden: true,
+      });
+
+      for (const task of allTasks) {
+        try {
+          const metadata = this.extractTaskMetadata(task);
+          if (metadata.syncId) {
+            const existingTaskId = await userService.getGoogleTaskIdBySyncId(
+              userId,
+              metadata.syncId
+            );
+
+            if (!existingTaskId || existingTaskId !== task.id) {
+              await userService.saveTaskMapping(
+                userId,
+                metadata.syncId,
+                task.id
+              );
+              repairedCount++;
+            }
+          }
+        } catch (error) {
+          errors.push(
+            `Failed to repair task ${task.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
+        }
+      }
+    } catch (error) {
+      errors.push(
+        `Failed to list tasks: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+
+    return { repaired: repairedCount, errors };
+  }
 }
