@@ -56,7 +56,6 @@ export function createCreateTaskWebhookHandler(
         payload.notes,
         parseToRFC3339(payload.due),
         payload.priority,
-        payload.isFlagged,
         payload.url,
         payload.tags
       );

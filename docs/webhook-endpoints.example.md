@@ -21,7 +21,6 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
     "notes": "Update README and API docs",
     "due": "2024-12-31T23:59:59Z",
     "priority": 5,
-    "isFlagged": true,
     "url": "https://github.com/user/project",
     "tags": ["documentation", "important"]
   }'
@@ -33,7 +32,6 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
     "title": "Review pull request",
     "notes": "Check the new implementation",
     "priority": 7,
-    "isFlagged": true,
     "url": "https://github.com/user/repo/pull/123",
     "tags": ["code-review", "urgent"]
   }'
@@ -43,7 +41,7 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
   "task": {
     "id": "task-id-123",
     "title": "Review pull request",
-    "notes": "Check the new implementation\n\n--- Metadata ---\nPriority: 7\nFlagged: Yes\nURL: https://github.com/user/repo/pull/123\nTags: #code-review #urgent",
+    "notes": "Check the new implementation\n\n--- Metadata ---\nPriority: High\nURL: https://github.com/user/repo/pull/123\nTags: #code-review #urgent",
     "status": "needsAction",
     "kind": "tasks#task",
     "updated": "2024-01-31T10:00:00.000Z"
@@ -62,8 +60,7 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -d '{
     "taskId": "task-id-123",
     "title": "Complete project documentation v2",
-    "status": "completed",
-    "isFlagged": true
+    "status": "completed"
   }'
 
 # Example 2: Update only the due date
@@ -90,12 +87,12 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
     "status": "needsAction"
   }'
 
-# Example 5: Star/unstar a task (sync Apple Reminders flagged status)
+# Example 5: Update task priority
 curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "taskId": "task-id-123",
-    "isFlagged": false  # Maps to/from Apple Reminders isFlagged
+    "priority": true  # High priority
   }'
 
 # Example 6: Update task URL (sync Apple Reminders URL)
@@ -112,8 +109,7 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -d '{
     "taskId": "task-id-123",
     "title": "Updated task title",
-    "priority": 3,
-    "isFlagged": false
+    "priority": 3
   }'
 
 # Example 8: Update priority and tags
@@ -190,14 +186,13 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
 - Update endpoint allows partial updates (only send fields you want to change)
 
 ### Metadata Storage
-- All metadata (priority, isFlagged, url, tags) is stored in the notes field
+- All metadata (priority, url, tags) is stored in the notes field
 - Metadata is appended in a structured format for easy parsing:
   ```
   [User's notes]
   
   --- Metadata ---
-  Priority: 7
-  Flagged: Yes
+  Priority: High
   URL: https://example.com
   Tags: #tag1 #tag2
   ```
@@ -209,7 +204,6 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
   - `due`: Due date (RFC 3339 format)
   - `status`: Task status ('needsAction' or 'completed')
   - `priority`: Priority level (0-9) - stored in notes
-  - `isFlagged`: Boolean flag - stored in notes
   - `url`: URL - stored in notes
   - `tags`: Array of tags - stored in notes
 - Create endpoint supports:
@@ -217,7 +211,6 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
   - `notes`: Task description/notes
   - `due`: Due date (RFC 3339 format)
   - `priority`: Priority level (0-9) - stored in notes
-  - `isFlagged`: Boolean flag - stored in notes
   - `url`: URL associated with the task - stored in notes
   - `tags`: Array of tags for categorization - stored in notes
 - Delete endpoint is fully implemented - permanently removes tasks from Google Tasks

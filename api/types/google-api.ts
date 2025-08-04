@@ -73,7 +73,7 @@ export interface GoogleTasksListResponse {
  * Inherits user-editable fields and adds properties available at creation time.
  */
 export interface CreateTaskRequest extends GoogleTaskData {
-  // All metadata (priority, isFlagged, url, tags) is now stored in the notes field
+  // All metadata (priority, url, tags) is now stored in the notes field
 }
 
 /**
@@ -95,7 +95,6 @@ export interface UpdateTaskRequest {
 
   // Metadata fields that will be appended to notes
   priority?: boolean;
-  isFlagged?: string;
   url?: string;
   tags?: string;
 }

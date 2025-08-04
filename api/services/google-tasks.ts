@@ -34,7 +34,6 @@ function parseToRFC3339(dateString: string | undefined): string | undefined {
 
 interface TaskMetadata {
   priority?: boolean;
-  isFlagged?: string;
   url?: string;
   tags?: string;
 }
@@ -56,9 +55,6 @@ function buildNotesWithMetadata(
     metadataLines.push(`Priority: ${metadata.priority ? 'High' : 'Normal'}`);
   }
 
-  if (metadata.isFlagged !== undefined) {
-    metadataLines.push(`Flagged: ${metadata.isFlagged}`);
-  }
 
   if (metadata.url) {
     metadataLines.push(`URL: ${metadata.url}`);
@@ -115,9 +111,6 @@ function extractMetadataFromNotes(notes: string): {
       case 'Priority':
         metadata.priority = value === 'High';
         break;
-      case 'Flagged':
-        metadata.isFlagged = value;
-        break;
       case 'URL':
         metadata.url = value;
         break;
@@ -137,7 +130,6 @@ export class GoogleTasksService {
     notes?: string,
     due?: string,
     priority?: boolean,
-    isFlagged?: string,
     url?: string,
     tags?: string
   ): Promise<GoogleTask> {
@@ -147,7 +139,6 @@ export class GoogleTasksService {
 
     const finalNotes = buildNotesWithMetadata(notes, {
       priority,
-      isFlagged,
       url,
       tags,
     });
@@ -301,7 +292,6 @@ export class GoogleTasksService {
 
     const hasMetadata =
       updates.priority !== undefined ||
-      updates.isFlagged !== undefined ||
       updates.url !== undefined ||
       updates.tags !== undefined;
 
@@ -309,7 +299,6 @@ export class GoogleTasksService {
       let finalNotes = updates.notes;
       let finalMetadata: TaskMetadata = {
         priority: updates.priority,
-        isFlagged: updates.isFlagged,
         url: updates.url,
         tags: updates.tags,
       };
@@ -326,10 +315,6 @@ export class GoogleTasksService {
               updates.priority !== undefined
                 ? updates.priority
                 : existingMetadata.priority,
-            isFlagged:
-              updates.isFlagged !== undefined
-                ? updates.isFlagged
-                : existingMetadata.isFlagged,
             url: updates.url !== undefined ? updates.url : existingMetadata.url,
             tags:
               updates.tags !== undefined ? updates.tags : existingMetadata.tags,
