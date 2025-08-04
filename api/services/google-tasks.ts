@@ -33,7 +33,7 @@ function parseToRFC3339(dateString: string | undefined): string | undefined {
 }
 
 interface TaskMetadata {
-  priority?: boolean;
+  priority?: number; // 0: None, 1: Low, 2: Medium, 3: High
   url?: string;
   tags?: string;
   syncId?: string;
@@ -53,7 +53,8 @@ function buildNotesWithMetadata(
   const metadataLines: string[] = [];
 
   if (metadata.priority !== undefined) {
-    metadataLines.push(`Priority: ${metadata.priority ? 'High' : 'Normal'}`);
+    const priorityMap = ['None', 'Low', 'Medium', 'High'];
+    metadataLines.push(`Priority: ${priorityMap[metadata.priority] || 'None'}`);
   }
 
   if (metadata.url) {
@@ -113,7 +114,13 @@ function extractMetadataFromNotes(notes: string): {
 
     switch (key) {
       case 'Priority':
-        metadata.priority = value === 'High';
+        const priorityMap: Record<string, number> = {
+          'None': 0,
+          'Low': 1,
+          'Medium': 2,
+          'High': 3
+        };
+        metadata.priority = priorityMap[value] ?? 0;
         break;
       case 'URL':
         metadata.url = value;
@@ -136,7 +143,7 @@ export class GoogleTasksService {
     title: string,
     notes?: string,
     due?: string,
-    priority?: boolean,
+    priority?: number,
     url?: string,
     tags?: string,
     syncId?: string
