@@ -98,6 +98,7 @@ const createTaskWebhookBodySchema = z.object({
   url: z.string().optional(),
   tags: z.string().optional(),
   syncId: z.string().optional(),
+  isCompleted: z.boolean().optional(),
 });
 
 const updateTaskWebhookBodySchema = z

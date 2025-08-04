@@ -44,6 +44,15 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
     "notes": "Remember milk and eggs",
     "syncId": "sync_apple_reminder_12345"
   }'
+
+# Example - Create completed task:
+curl -X POST https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Finished report",
+    "notes": "Q4 2024 report completed",
+    "isCompleted": true
+  }'
 {
   "message": "Task created successfully.",
   "taskId": "task-id-123",
@@ -137,7 +146,7 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -d '{
     "syncId": "sync_apple_reminder_12345",
     "title": "Buy groceries - Updated",
-    "status": "completed"
+    "isCompleted": true
   }'
 
 # Response:
@@ -239,7 +248,7 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
   - `title`: Task title
   - `notes`: Task description/notes (metadata will be appended)
   - `due`: Due date (RFC 3339 format)
-  - `status`: Task status ('needsAction' or 'completed')
+  - `isCompleted`: Boolean to mark task as completed or not (maps to status)
   - `priority`: Priority level (0-3) - stored in notes
   - `url`: URL - stored in notes
   - `tags`: Array of tags - stored in notes
@@ -247,6 +256,7 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
   - `title`: Task title (required)
   - `notes`: Task description/notes
   - `due`: Due date (RFC 3339 format)
+  - `isCompleted`: Boolean to create task as completed (default: false)
   - `priority`: Priority level (0-3) - stored in notes
   - `url`: URL associated with the task - stored in notes
   - `tags`: Array of tags for categorization - stored in notes

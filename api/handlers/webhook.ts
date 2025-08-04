@@ -138,10 +138,22 @@ export function createUpdateTaskWebhookHandler(
         updates.due = parseToRFC3339(updates.due);
       }
 
+      // Map isCompleted to status for Google Tasks API
+      const taskUpdates =
+        'isCompleted' in updates
+          ? {
+              ...updates,
+              status: updates.isCompleted
+                ? ('completed' as const)
+                : ('needsAction' as const),
+              isCompleted: undefined,
+            }
+          : updates;
+
       const task = await googleTasksService.updateTask(
         accessToken,
         taskId,
-        updates
+        taskUpdates
       );
       return c.json(
         {

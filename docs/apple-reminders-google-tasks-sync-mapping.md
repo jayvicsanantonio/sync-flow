@@ -19,20 +19,25 @@ This document explains how properties are mapped between Apple Reminders and Goo
 // Map Apple's 0-9 scale to 0-3 scale
 const mapApplePriority = (applePriority) => {
   if (applePriority === 0) return 0; // None
-  if (applePriority <= 3) return 1;  // Low
-  if (applePriority <= 6) return 2;  // Medium
+  if (applePriority <= 3) return 1; // Low
+  if (applePriority <= 6) return 2; // Medium
   return 3; // High (7-9)
 };
 
 // Google Tasks → Apple Reminders
 // Map 0-3 scale to Apple's 0-9 scale
 const mapGooglePriority = (googlePriority) => {
-  switch(googlePriority) {
-    case 0: return 0;  // None
-    case 1: return 3;  // Low
-    case 2: return 5;  // Medium
-    case 3: return 9;  // High
-    default: return 0;
+  switch (googlePriority) {
+    case 0:
+      return 0; // None
+    case 1:
+      return 3; // Low
+    case 2:
+      return 5; // Medium
+    case 3:
+      return 9; // High
+    default:
+      return 0;
   }
 };
 ```
@@ -105,8 +110,8 @@ const createGoogleTaskFromAppleReminder = async (reminder: AppleReminder) => {
   // Map Apple's 0-9 priority to 0-3 scale
   const mapPriority = (applePriority: number): number => {
     if (applePriority === 0) return 0; // None
-    if (applePriority <= 3) return 1;  // Low
-    if (applePriority <= 6) return 2;  // Medium
+    if (applePriority <= 3) return 1; // Low
+    if (applePriority <= 6) return 2; // Medium
     return 3; // High (7-9)
   };
 
