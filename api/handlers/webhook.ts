@@ -47,6 +47,7 @@ export function createCreateTaskWebhookHandler(
 
     console.log('Creating task for userId:', userId);
     console.log('Create payload:', payload);
+    const syncId = payload.syncId || `sync_${Date.now()}`;
 
     try {
       const accessToken = await userService.getAccessToken(userId);
@@ -57,13 +58,15 @@ export function createCreateTaskWebhookHandler(
         parseToRFC3339(payload.due),
         payload.priority,
         payload.url,
-        payload.tags
+        payload.tags,
+        syncId
       );
 
       return c.json(
         {
           message: 'Task created successfully.',
           taskId: task.id,
+          syncId,
           task,
         },
         201
@@ -88,6 +91,7 @@ export function createUpdateTaskWebhookHandler(
   ) {
     const { userId } = c.req.valid('param');
     const payload = c.req.valid('json');
+    const syncId = payload.syncId;
 
     console.log('Updating task for userId:', userId);
     console.log('Update payload:', payload);
@@ -95,7 +99,24 @@ export function createUpdateTaskWebhookHandler(
     try {
       const accessToken = await userService.getAccessToken(userId);
 
-      const { taskId, ...updates } = payload;
+      let { taskId } = payload;
+      const { syncId: _, ...updates } = payload;
+
+      if (!taskId && syncId) {
+        const task = await googleTasksService.findTaskBySyncId(
+          accessToken,
+          syncId
+        );
+        if (task) {
+          taskId = task.id;
+        } else {
+          return c.json({ error: 'Task not found for provided syncId.' }, 404);
+        }
+      }
+
+      if (!taskId) {
+        return c.json({ error: 'Task ID is required.' }, 400);
+      }
 
       if (updates.due) {
         updates.due = parseToRFC3339(updates.due);
@@ -133,12 +154,30 @@ export function createDeleteTaskWebhookHandler(
     >
   ) {
     const { userId } = c.req.valid('param');
-    const { taskId } = c.req.valid('json');
+    const payload = c.req.valid('json');
+    let { taskId } = payload;
+    const { syncId } = payload;
 
-    console.log('Deleting task:', { userId, taskId });
+    console.log('Deleting task:', { userId, taskId, syncId });
 
     try {
       const accessToken = await userService.getAccessToken(userId);
+
+      if (!taskId && syncId) {
+        const task = await googleTasksService.findTaskBySyncId(
+          accessToken,
+          syncId
+        );
+        if (task) {
+          taskId = task.id;
+        } else {
+          return c.json({ error: 'Task not found for provided syncId.' }, 404);
+        }
+      }
+
+      if (!taskId) {
+        return c.json({ error: 'Task ID is required.' }, 400);
+      }
 
       await googleTasksService.deleteTask(accessToken, taskId);
 
