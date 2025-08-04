@@ -52,6 +52,61 @@ export class UserService {
     await this.saveUser(user);
   }
 
+  async saveTaskMapping(
+    userId: string,
+    syncId: string,
+    googleTaskId: string
+  ): Promise<void> {
+    await this.redis.set(`taskmap:${userId}:sync:${syncId}`, googleTaskId);
+    await this.redis.set(`taskmap:${userId}:google:${googleTaskId}`, syncId);
+
+    const user = await this.getUserById(userId);
+    if (user) {
+      if (!user.taskMappings) {
+        user.taskMappings = {};
+      }
+      user.taskMappings[syncId] = {
+        googleTaskId,
+        createdAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
+      };
+      await this.saveUser(user);
+    }
+  }
+
+  async getGoogleTaskIdBySyncId(
+    userId: string,
+    syncId: string
+  ): Promise<string | null> {
+    const taskId = await this.redis.get(`taskmap:${userId}:sync:${syncId}`);
+    return taskId as string | null;
+  }
+
+  async getSyncIdByGoogleTaskId(
+    userId: string,
+    googleTaskId: string
+  ): Promise<string | null> {
+    const syncId = await this.redis.get(
+      `taskmap:${userId}:google:${googleTaskId}`
+    );
+    return syncId as string | null;
+  }
+
+  async deleteTaskMapping(
+    userId: string,
+    syncId: string,
+    googleTaskId: string
+  ): Promise<void> {
+    await this.redis.del(`taskmap:${userId}:sync:${syncId}`);
+    await this.redis.del(`taskmap:${userId}:google:${googleTaskId}`);
+
+    const user = await this.getUserById(userId);
+    if (user && user.taskMappings) {
+      delete user.taskMappings[syncId];
+      await this.saveUser(user);
+    }
+  }
+
   async getAccessToken(userId: string): Promise<string> {
     let user = await this.getUserById(userId);
 

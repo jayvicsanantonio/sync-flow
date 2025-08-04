@@ -36,6 +36,7 @@ interface TaskMetadata {
   priority?: boolean;
   url?: string;
   tags?: string;
+  syncId?: string;
 }
 
 /**
@@ -55,13 +56,16 @@ function buildNotesWithMetadata(
     metadataLines.push(`Priority: ${metadata.priority ? 'High' : 'Normal'}`);
   }
 
-
   if (metadata.url) {
     metadataLines.push(`URL: ${metadata.url}`);
   }
 
   if (metadata.tags) {
     metadataLines.push(`Tags: ${metadata.tags}`);
+  }
+
+  if (metadata.syncId) {
+    metadataLines.push(`SyncID: ${metadata.syncId}`);
   }
 
   if (metadataLines.length > 0) {
@@ -117,6 +121,9 @@ function extractMetadataFromNotes(notes: string): {
       case 'Tags':
         metadata.tags = value;
         break;
+      case 'SyncID':
+        metadata.syncId = value;
+        break;
     }
   }
 
@@ -131,7 +138,8 @@ export class GoogleTasksService {
     due?: string,
     priority?: boolean,
     url?: string,
-    tags?: string
+    tags?: string,
+    syncId?: string
   ): Promise<GoogleTask> {
     const taskData: CreateTaskRequest = {
       title: title || 'New Reminder',
@@ -141,6 +149,7 @@ export class GoogleTasksService {
       priority,
       url,
       tags,
+      syncId,
     });
 
     if (finalNotes) taskData.notes = finalNotes;
@@ -623,5 +632,89 @@ export class GoogleTasksService {
     } while (pageToken);
 
     return allTasks;
+  }
+
+  /**
+   * Extract metadata from a Google Task
+   * Useful for getting syncId and other metadata from tasks
+   */
+  extractTaskMetadata(task: GoogleTask): TaskMetadata {
+    if (!task.notes) return {};
+    const { metadata } = extractMetadataFromNotes(task.notes);
+    return metadata;
+  }
+
+  /**
+   * Find a task by sync ID
+   * Searches through all tasks to find one with matching sync ID
+   */
+  async findTaskBySyncId(
+    accessToken: string,
+    syncId: string
+  ): Promise<GoogleTask | null> {
+    const allTasks = await this.listAllTasks(accessToken, {
+      showCompleted: true,
+      showHidden: true,
+    });
+
+    for (const task of allTasks) {
+      const metadata = this.extractTaskMetadata(task);
+      if (metadata.syncId === syncId) {
+        return task;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Repair sync mappings by scanning all tasks and rebuilding Redis mappings
+   * Useful for recovering from data loss or fixing inconsistencies
+   */
+  async repairSyncMappings(
+    accessToken: string,
+    userId: string,
+    userService: any
+  ): Promise<{ repaired: number; errors: string[] }> {
+    const errors: string[] = [];
+    let repairedCount = 0;
+
+    try {
+      const allTasks = await this.listAllTasks(accessToken, {
+        showCompleted: true,
+        showHidden: true,
+      });
+
+      for (const task of allTasks) {
+        try {
+          const metadata = this.extractTaskMetadata(task);
+          if (metadata.syncId) {
+            const existingTaskId = await userService.getGoogleTaskIdBySyncId(
+              userId,
+              metadata.syncId
+            );
+
+            if (!existingTaskId || existingTaskId !== task.id) {
+              await userService.saveTaskMapping(
+                userId,
+                metadata.syncId,
+                task.id
+              );
+              repairedCount++;
+            }
+          }
+        } catch (error) {
+          errors.push(
+            `Failed to repair task ${task.id}: ${error instanceof Error ? error.message : 'Unknown error'}`
+          );
+        }
+      }
+    } catch (error) {
+      errors.push(
+        `Failed to list tasks: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+
+    return { repaired: repairedCount, errors };
   }
 }

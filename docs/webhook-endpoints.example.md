@@ -35,13 +35,23 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
     "url": "https://github.com/user/repo/pull/123",
     "tags": ["code-review", "urgent"]
   }'
+
+# Example - Create with custom sync ID (for Apple Reminders):
+curl -X POST https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Buy groceries",
+    "notes": "Remember milk and eggs",
+    "syncId": "sync_apple_reminder_12345"
+  }'
 {
   "message": "Task created successfully.",
   "taskId": "task-id-123",
+  "syncId": "sync_1706697600000",
   "task": {
     "id": "task-id-123",
     "title": "Review pull request",
-    "notes": "Check the new implementation\n\n--- Metadata ---\nPriority: High\nURL: https://github.com/user/repo/pull/123\nTags: #code-review #urgent",
+    "notes": "Check the new implementation\n\n--- Metadata ---\nPriority: High\nURL: https://github.com/user/repo/pull/123\nTags: #code-review #urgent\nSyncID: sync_1706697600000",
     "status": "needsAction",
     "kind": "tasks#task",
     "updated": "2024-01-31T10:00:00.000Z"
@@ -121,6 +131,15 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
     "tags": ["urgent", "high-priority", "review"]
   }'
 
+# Example 9: Update using sync ID (for Apple Reminders):
+curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "syncId": "sync_apple_reminder_12345",
+    "title": "Buy groceries - Updated",
+    "status": "completed"
+  }'
+
 # Response:
 {
   "message": "Task updated successfully.",
@@ -147,6 +166,13 @@ curl -X DELETE https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "taskId": "task-id-123"
+  }'
+
+# Example - Delete using sync ID (for Apple Reminders):
+curl -X DELETE https://your-domain.com/api/webhook/user123/tasks \
+  -H "Content-Type: application/json" \
+  -d '{
+    "syncId": "sync_apple_reminder_12345"
   }'
 
 # Response:
@@ -182,22 +208,33 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
   - PUT for update
   - DELETE for delete
 - All endpoints require a valid `userId` parameter
-- Update and Delete endpoints now require `taskId` to be passed in the request body (JSON)
+- Update and Delete endpoints accept either `taskId` or `syncId` in the request body (JSON)
 - Update endpoint allows partial updates (only send fields you want to change)
 
 ### Metadata Storage
-- All metadata (priority, url, tags) is stored in the notes field
+
+- All metadata (priority, url, tags, syncId) is stored in the notes field
 - Metadata is appended in a structured format for easy parsing:
+
   ```
   [User's notes]
-  
+
   --- Metadata ---
   Priority: High
   URL: https://example.com
   Tags: #tag1 #tag2
+  SyncID: sync_1706697600000
   ```
 
+### Sync ID Usage
+
+- When creating a task from Apple Reminders, include a `syncId` in the request
+- If no `syncId` is provided, one will be generated automatically
+- Use the `syncId` to update or delete tasks without knowing the Google Task ID
+- The `syncId` is stored in the task's notes metadata and persists across syncs
+
 ### Supported Fields
+
 - Update endpoint supports:
   - `title`: Task title
   - `notes`: Task description/notes (metadata will be appended)
