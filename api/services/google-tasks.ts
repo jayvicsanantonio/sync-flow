@@ -9,6 +9,14 @@ const TASKS_API_BASE_URL = 'https://tasks.googleapis.com/tasks/v1';
 const DEFAULT_TASK_LIST = '@default';
 const MAX_PAGE_SIZE = 100;
 
+const PRIORITY_NAMES = ['None', 'Low', 'Medium', 'High'] as const;
+const PRIORITY_VALUES: Record<string, number> = {
+  None: 0,
+  Low: 1,
+  Medium: 2,
+  High: 3,
+} as const;
+
 /**
  * Parses various date formats and returns RFC 3339 format
  * @param dateString - The date string to parse
@@ -53,8 +61,9 @@ function buildNotesWithMetadata(
   const metadataLines: string[] = [];
 
   if (metadata.priority !== undefined) {
-    const priorityMap = ['None', 'Low', 'Medium', 'High'];
-    metadataLines.push(`Priority: ${priorityMap[metadata.priority] || 'None'}`);
+    metadataLines.push(
+      `Priority: ${PRIORITY_NAMES[metadata.priority] || 'None'}`
+    );
   }
 
   if (metadata.url) {
@@ -114,13 +123,7 @@ function extractMetadataFromNotes(notes: string): {
 
     switch (key) {
       case 'Priority':
-        const priorityMap: Record<string, number> = {
-          'None': 0,
-          'Low': 1,
-          'Medium': 2,
-          'High': 3
-        };
-        metadata.priority = priorityMap[value] ?? 0;
+        metadata.priority = PRIORITY_VALUES[value] ?? 0;
         break;
       case 'URL':
         metadata.url = value;
