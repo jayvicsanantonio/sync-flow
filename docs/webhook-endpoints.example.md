@@ -20,7 +20,7 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
     "title": "Complete project documentation",
     "notes": "Update README and API docs",
     "due": "2024-12-31T23:59:59Z",
-    "priority": 2,
+    "priority": "Medium",
     "url": "https://github.com/user/project",
     "tags": ["documentation", "important"]
   }'
@@ -31,7 +31,7 @@ curl -X POST https://your-domain.com/api/webhook/user123/tasks \
   -d '{
     "title": "Review pull request",
     "notes": "Check the new implementation",
-    "priority": 3,
+    "priority": "High",
     "url": "https://github.com/user/repo/pull/123",
     "tags": ["code-review", "urgent"]
   }'
@@ -111,7 +111,7 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "taskId": "task-id-123",
-    "priority": 3  # High priority
+    "priority": "High"
   }'
 
 # Example 6: Update task URL (sync Apple Reminders URL)
@@ -128,7 +128,7 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -d '{
     "taskId": "task-id-123",
     "title": "Updated task title",
-    "priority": 3
+    "priority": "High"
   }'
 
 # Example 8: Update priority and tags
@@ -136,7 +136,7 @@ curl -X PUT https://your-domain.com/api/webhook/user123/tasks \
   -H "Content-Type: application/json" \
   -d '{
     "taskId": "task-id-123",
-    "priority": 3,
+    "priority": "High",
     "tags": ["urgent", "high-priority", "review"]
   }'
 
@@ -249,7 +249,7 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
   - `notes`: Task description/notes (metadata will be appended)
   - `due`: Due date (RFC 3339 format)
   - `isCompleted`: Boolean to mark task as completed or not (maps to status)
-  - `priority`: Priority level (0-3) - stored in notes
+  - `priority`: Priority level ('None', 'Low', 'Medium', 'High') - stored in notes
   - `url`: URL - stored in notes
   - `tags`: Array of tags - stored in notes
 - Create endpoint supports:
@@ -257,7 +257,7 @@ curl -X POST https://your-domain.com/api/webhook/user123 \
   - `notes`: Task description/notes
   - `due`: Due date (RFC 3339 format)
   - `isCompleted`: Boolean to create task as completed (default: false)
-  - `priority`: Priority level (0-3) - stored in notes
+  - `priority`: Priority level ('None', 'Low', 'Medium', 'High') - stored in notes
   - `url`: URL associated with the task - stored in notes
   - `tags`: Array of tags for categorization - stored in notes
 - Delete endpoint is fully implemented - permanently removes tasks from Google Tasks

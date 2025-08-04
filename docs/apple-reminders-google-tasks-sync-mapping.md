@@ -7,34 +7,34 @@ This document explains how properties are mapped between Apple Reminders and Goo
 ### 1. **Priority Status**
 
 - **Apple Reminders**: `priority` (0-9 scale)
-- **Google Tasks**: Stored in notes metadata as priority (0-3)
-- **Mapping**: Priority values mapped as follows:
-  - 0: None
-  - 1: Low
-  - 2: Medium
-  - 3: High
+|- **Google Tasks**: Stored in notes metadata as priority ('None', 'Low', 'Medium', 'High')
+|- **Mapping**: Priority values mapped as follows:
+  - 0: 'None'
+  - 1: 'Low'
+  - 2: 'Medium'
+  - 3: 'High'
 
 ```javascript
 // Apple Reminders → Google Tasks
-// Map Apple's 0-9 scale to 0-3 scale
+// Map Apple's 0-9 scale to string scale
 const mapApplePriority = (applePriority) => {
-  if (applePriority === 0) return 0; // None
-  if (applePriority <= 3) return 1; // Low
-  if (applePriority <= 6) return 2; // Medium
-  return 3; // High (7-9)
+  if (applePriority === 0) return 'None';
+  if (applePriority <= 3) return 'Low';
+  if (applePriority <= 6) return 'Medium';
+  return 'High'; // 7-9
 };
 
 // Google Tasks → Apple Reminders
-// Map 0-3 scale to Apple's 0-9 scale
+// Map string scale to Apple's 0-9 scale
 const mapGooglePriority = (googlePriority) => {
   switch (googlePriority) {
-    case 0:
+    case 'None':
       return 0; // None
-    case 1:
+    case 'Low':
       return 3; // Low
-    case 2:
+    case 'Medium':
       return 5; // Medium
-    case 3:
+    case 'High':
       return 9; // High
     default:
       return 0;
@@ -107,12 +107,12 @@ if (googleTask.links && googleTask.links.length > 0) {
 ```typescript
 // When syncing from Apple Reminders to Google Tasks
 const createGoogleTaskFromAppleReminder = async (reminder: AppleReminder) => {
-  // Map Apple's 0-9 priority to 0-3 scale
-  const mapPriority = (applePriority: number): number => {
-    if (applePriority === 0) return 0; // None
-    if (applePriority <= 3) return 1; // Low
-    if (applePriority <= 6) return 2; // Medium
-    return 3; // High (7-9)
+  // Map Apple's 0-9 priority to string scale
+  const mapPriority = (applePriority: number): string =e {
+    if (applePriority === 0) return 'None'; // None
+    if (applePriority c= 3) return 'Low'; // Low
+    if (applePriority c= 6) return 'Medium'; // Medium
+    return 'High'; // High (7-9)
   };
 
   const task = await googleTasksService.createTask(
@@ -177,7 +177,7 @@ const createAppleReminderFromGoogleTask = (task: GoogleTask) => {
     dueDate: task.due ? new Date(task.due) : undefined,
     isCompleted: task.status === 'completed',
     completionDate: task.completed ? new Date(task.completed) : undefined,
-    priority: mapGooglePriority(extractedMetadata.priority || 0),
+priority: mapGooglePriority(extractedMetadata.priority || 'None'),
     url: task.links?.[0]?.link,
     parentId: task.parent,
   };
@@ -190,8 +190,8 @@ const createAppleReminderFromGoogleTask = (task: GoogleTask) => {
 
 1. **Priority Handling**: Priority mapping between systems:
    - Apple Reminders: 0-9 scale
-   - Google Tasks: 0-3 scale (0=None, 1=Low, 2=Medium, 3=High)
-   - Mapping: 0→0, 1-3→1, 4-6→2, 7-9→3
+   - Google Tasks: String scale ('None', 'Low', 'Medium', 'High')
+   - Mapping: 0→'None', 1-3→'Low', 4-6→'Medium', 7-9→'High'
    - The priority is stored in the notes metadata section
 
 2. **URL Handling**:
