@@ -1,14 +1,27 @@
 import type { Redis } from '@upstash/redis';
 import type { User } from '../types/user';
 import type { GoogleAuthService } from './google-auth';
+import type { GoogleTasksService } from './google-tasks';
+
+interface SyncSnapshot {
+  taskIds: string[];
+  taskDetails: Record<string, { syncId: string; updated: string }>;
+  timestamp: string;
+}
 
 export class UserService {
   private redis: Redis;
   private googleAuthService: GoogleAuthService;
+  public googleTasksService?: GoogleTasksService;
 
-  constructor(redis: Redis, googleAuthService: GoogleAuthService) {
+  constructor(
+    redis: Redis,
+    googleAuthService: GoogleAuthService,
+    googleTasksService?: GoogleTasksService
+  ) {
     this.redis = redis;
     this.googleAuthService = googleAuthService;
+    this.googleTasksService = googleTasksService;
   }
 
   async getUserById(userId: string): Promise<User | null> {
@@ -151,5 +164,23 @@ export class UserService {
     }
 
     return user.tokens.access_token;
+  }
+  async getLastSyncSnapshot(userId: string): Promise<SyncSnapshot | null> {
+    const snapshot = await this.redis.get<SyncSnapshot>(
+      `sync-snapshot:${userId}`
+    );
+
+    if (!snapshot) {
+      return null;
+    }
+
+    return snapshot;
+  }
+
+  async saveLastSyncSnapshot(
+    userId: string,
+    snapshot: SyncSnapshot
+  ): Promise<void> {
+    await this.redis.set(`sync-snapshot:${userId}`, JSON.stringify(snapshot));
   }
 }
