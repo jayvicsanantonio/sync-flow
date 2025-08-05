@@ -149,11 +149,10 @@ async function handleFetchUpdated(
     );
   }
 
-  // Fetch tasks updated since last sync
+  // Fetch all tasks once for both updated task detection and snapshot update
   const allTasks = await googleTasksService.listAllTasks(accessToken, {
     showCompleted: false,
     showHidden: false,
-    updatedMin: lastSnapshot.timestamp,
   });
 
   const updatedTasks: TaskWithSyncId[] = [];
@@ -161,8 +160,12 @@ async function handleFetchUpdated(
   for (const task of allTasks) {
     const lastTaskData = lastSnapshot.taskDetails[task.id];
 
-    // Task exists in snapshot and has been updated
-    if (lastTaskData && task.updated > lastTaskData.updated) {
+    // Task exists in snapshot and has been updated since last sync
+    if (
+      lastTaskData &&
+      task.updated > lastTaskData.updated &&
+      task.updated >= lastSnapshot.timestamp
+    ) {
       const metadata = googleTasksService.extractTaskMetadata(task);
       const syncId = metadata.syncId || lastTaskData.syncId;
 
@@ -173,15 +176,8 @@ async function handleFetchUpdated(
     }
   }
 
-  // Update sync snapshot
-  await updateSyncSnapshot(
-    userId,
-    await googleTasksService.listAllTasks(accessToken, {
-      showCompleted: false,
-      showHidden: false,
-    }),
-    userService
-  );
+  // Update sync snapshot using the already fetched tasks
+  await updateSyncSnapshot(userId, allTasks, userService);
 
   return c.json(
     {
