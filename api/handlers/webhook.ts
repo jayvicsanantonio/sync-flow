@@ -101,20 +101,10 @@ export function createUpdateTaskWebhookHandler(
     try {
       const accessToken = await userService.getAccessToken(userId);
 
-      let taskId = await userService.getGoogleTaskIdBySyncId(userId, syncId);
+      const taskId = await userService.getGoogleTaskIdBySyncId(userId, syncId);
 
       if (!taskId) {
-        const task = await googleTasksService.findTaskBySyncId(
-          accessToken,
-          syncId
-        );
-
-        if (task) {
-          taskId = task.id;
-          await userService.saveTaskMapping(userId, syncId, task.id);
-        } else {
-          return c.json({ error: 'Task not found for provided syncId.' }, 404);
-        }
+        return c.json({ error: 'Task not found for provided syncId.' }, 404);
       }
 
       const task = await googleTasksService.updateTask(
@@ -122,6 +112,7 @@ export function createUpdateTaskWebhookHandler(
         taskId,
         payload
       );
+
       return c.json(
         {
           message: 'Task updated successfully.',
@@ -157,19 +148,10 @@ export function createDeleteTaskWebhookHandler(
     try {
       const accessToken = await userService.getAccessToken(userId);
 
-      let taskId = await userService.getGoogleTaskIdBySyncId(userId, syncId);
+      const taskId = await userService.getGoogleTaskIdBySyncId(userId, syncId);
 
       if (!taskId) {
-        const task = await googleTasksService.findTaskBySyncId(
-          accessToken,
-          syncId
-        );
-        if (task) {
-          taskId = task.id;
-          await userService.saveTaskMapping(userId, syncId, task.id);
-        } else {
-          return c.json({ error: 'Task not found for provided syncId.' }, 404);
-        }
+        return c.json({ error: 'Task not found for provided syncId.' }, 404);
       }
 
       await googleTasksService.deleteTask(accessToken, taskId);
