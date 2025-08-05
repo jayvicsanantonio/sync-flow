@@ -348,12 +348,11 @@ export class GoogleTasksService {
         taskData.due = parsedDue;
       }
     }
-    if (updates.status !== undefined) {
-      taskData.status = updates.isCompleted ? 'completed' : 'needsAction';
 
-      if (taskData.status === 'completed') {
-        taskData.completed = new Date().toISOString();
-      }
+    taskData.status = updates.isCompleted ? 'completed' : 'needsAction';
+
+    if (taskData.status === 'completed') {
+      taskData.completed = new Date().toISOString();
     }
 
     const headers: Record<string, string> = {

@@ -102,7 +102,7 @@ const createTaskWebhookBodySchema = z.object({
 });
 
 const updateTaskWebhookBodySchema = z.object({
-  syncId: z.string(),
+  syncId: z.string().min(1).trim(),
   title: z.string().min(1).trim().optional(),
   notes: z.string().trim().optional(),
   due: z.string().optional(),
@@ -113,7 +113,7 @@ const updateTaskWebhookBodySchema = z.object({
 });
 
 const deleteTaskWebhookBodySchema = z.object({
-  syncId: z.string(),
+  syncId: z.string().min(1).trim(),
 });
 
 const authCallbackQuerySchema = z.object({
