@@ -3,6 +3,7 @@ import type { GoogleTasksService } from '../services/google-tasks';
 import type { UserService } from '../services/user';
 import type { GoogleTask } from '../types/google-api';
 import type { UserIdParam } from '../index';
+import { NotFoundError } from '../utils/errors';
 
 export function createSyncHandler(
   googleTasksService: GoogleTasksService,
@@ -13,57 +14,58 @@ export function createSyncHandler(
   ) {
     const { userId } = c.req.valid('param');
 
+    console.log('Fetching updates for userId:', userId);
+
     try {
       const accessToken = await userService.getAccessToken(userId);
-
       const user = await userService.getUserById(userId);
+
       if (!user) {
-        return c.json({ error: 'User not found.' }, 404);
+        throw new NotFoundError('User');
       }
 
       const lastSyncTime = user.lastSyncTime || new Date(0).toISOString();
-
-      const response = await googleTasksService.listTasks(accessToken, {
+      const allTasks = await googleTasksService.listAllTasks(accessToken, {
         showCompleted: false,
         showHidden: false,
         updatedMin: lastSyncTime,
-        maxResults: 100,
       });
 
-      const allTasks = response.items || [];
-      const newTasks = allTasks.filter(
-        (task: GoogleTask) => !user.syncedTaskIds.includes(task.id)
+      await handleTaskUpdates(
+        userId,
+        new Set(user.syncedTaskIds),
+        allTasks,
+        userService
       );
-
-      if (newTasks.length > 0) {
-        const newTaskIds = newTasks.map((task: GoogleTask) => task.id);
-        await userService.updateSyncedTaskIds(userId, newTaskIds);
-      }
 
       const syncedAt = new Date().toISOString();
       await userService.updateLastSyncTime(userId, syncedAt);
 
-      return c.json({
-        tasks: newTasks,
-        hasMore: !!response.nextPageToken,
-        syncedAt,
-      });
+      return c.json(
+        {
+          message: 'Tasks fetched successfully.',
+          syncedAt,
+          tasks: allTasks,
+        },
+        200
+      );
     } catch (error) {
-      console.error('Fetch-updates error:', error);
-
-      if (
-        error instanceof Error &&
-        error.message.includes('User needs to re-authenticate')
-      ) {
-        return c.json(
-          {
-            error: 'Authentication expired. Please re-authorize the app.',
-          },
-          401
-        );
-      }
-
-      return c.json({ error: 'Failed to fetch tasks from Google.' }, 500);
+      console.error('Error fetching updates:', error);
+      throw error;
     }
   };
+}
+
+async function handleTaskUpdates(
+  userId: string,
+  syncedTaskIds: Set<string>,
+  tasks: GoogleTask[],
+  userService: UserService
+) {
+  const newTasks = tasks.filter((task) => !syncedTaskIds.has(task.id));
+
+  if (newTasks.length > 0) {
+    const newTaskIds = newTasks.map((task) => task.id);
+    await userService.updateSyncedTaskIds(userId, newTaskIds);
+  }
 }

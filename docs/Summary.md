@@ -69,23 +69,25 @@ Sync Flow is a well-architected serverless application that bridges Apple Remind
 ### Immediate Priority
 
 1. **Add Rate Limiting**
+
    ```typescript
    // Example using Upstash rate limiting
-   import { Ratelimit } from "@upstash/ratelimit";
-   import { Redis } from "@upstash/redis";
-   
+   import { Ratelimit } from '@upstash/ratelimit';
+   import { Redis } from '@upstash/redis';
+
    const ratelimit = new Ratelimit({
      redis: Redis.fromEnv(),
-     limiter: Ratelimit.slidingWindow(10, "10 s"),
+     limiter: Ratelimit.slidingWindow(10, '10 s'),
    });
    ```
 
 2. **Implement Health Checks**
+
    ```typescript
    app.get('/health', async (c) => {
      const checks = {
        redis: await checkRedis(),
-       googleAuth: await checkGoogleAuth()
+       googleAuth: await checkGoogleAuth(),
      };
      return c.json({ status: 'healthy', checks });
    });

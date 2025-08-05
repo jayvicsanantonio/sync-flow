@@ -5,6 +5,7 @@ This guide covers development best practices, coding standards, and contribution
 ## Development Environment
 
 ### Required Tools
+
 - Node.js 18+ or 20+ (LTS recommended)
 - pnpm (preferred) or npm
 - Git
@@ -12,6 +13,7 @@ This guide covers development best practices, coding standards, and contribution
 - Vercel CLI
 
 ### Recommended VS Code Extensions
+
 - ESLint
 - Prettier
 - TypeScript and JavaScript Language Features
@@ -22,12 +24,13 @@ This guide covers development best practices, coding standards, and contribution
 ### TypeScript Guidelines
 
 1. **Type Safety**
+
    ```typescript
    // ✅ Good - Explicit types
    export function createTask(title: string, priority?: Priority): Task {
      // ...
    }
-   
+
    // ❌ Bad - Using any
    export function createTask(data: any) {
      // ...
@@ -35,10 +38,11 @@ This guide covers development best practices, coding standards, and contribution
    ```
 
 2. **Type Imports**
+
    ```typescript
    // ✅ Good - Use type imports
    import type { User } from '../types/user';
-   
+
    // ❌ Bad - Regular import for types
    import { User } from '../types/user';
    ```
@@ -62,15 +66,16 @@ This guide covers development best practices, coding standards, and contribution
    - Types: `PascalCase`
 
 3. **Import Order**
+
    ```typescript
    // 1. External dependencies
    import { Hono } from 'hono';
    import { z } from 'zod';
-   
-   // 2. Internal dependencies  
+
+   // 2. Internal dependencies
    import type { User } from '../types/user';
    import { UserService } from '../services/user';
-   
+
    // 3. Local dependencies
    import { validateRequest } from './utils';
    ```
@@ -78,10 +83,11 @@ This guide covers development best practices, coding standards, and contribution
 ### Error Handling
 
 1. **Use Custom Error Classes**
+
    ```typescript
    // ✅ Good
    throw new AuthenticationError('Invalid token');
-   
+
    // ❌ Bad
    throw new Error('Invalid token');
    ```
@@ -94,7 +100,7 @@ This guide covers development best practices, coding standards, and contribution
      console.error('Operation failed:', {
        error: error instanceof Error ? error.message : error,
        stack: error instanceof Error ? error.stack : undefined,
-       context: { userId, operation: 'someOperation' }
+       context: { userId, operation: 'someOperation' },
      });
      throw error;
    }
@@ -108,22 +114,24 @@ This guide covers development best practices, coding standards, and contribution
    - Use consistent URL patterns
 
 2. **Request Validation**
+
    ```typescript
    // Always validate incoming data
    const schema = z.object({
      title: z.string().min(1),
-     priority: z.enum(['None', 'Low', 'Medium', 'High'])
+     priority: z.enum(['None', 'Low', 'Medium', 'High']),
    });
    ```
 
 3. **Response Format**
+
    ```typescript
    // Success response
    {
      "data": { ... },
      "message": "Operation successful"
    }
-   
+
    // Error response
    {
      "error": "Error message",
@@ -143,7 +151,7 @@ describe('UserService', () => {
     it('should return valid access token', async () => {
       // Test implementation
     });
-    
+
     it('should refresh expired token', async () => {
       // Test implementation
     });
@@ -166,13 +174,16 @@ describe('UserService', () => {
 ## Git Workflow
 
 ### Branch Naming
+
 - Feature: `feature/description`
 - Bug fix: `fix/description`
 - Refactor: `refactor/description`
 - Docs: `docs/description`
 
 ### Commit Messages
+
 Follow conventional commits:
+
 ```
 type(scope): subject
 
@@ -182,6 +193,7 @@ footer (optional)
 ```
 
 Types:
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation
@@ -191,6 +203,7 @@ Types:
 - `chore`: Maintenance
 
 Examples:
+
 ```
 feat(auth): add automatic token refresh
 fix(tasks): handle empty metadata correctly
@@ -206,21 +219,26 @@ docs(api): update endpoint documentation
    - Test manually
 
 2. **PR Description Template**
+
    ```markdown
    ## Description
+
    Brief description of changes
-   
+
    ## Type of Change
+
    - [ ] Bug fix
    - [ ] New feature
    - [ ] Breaking change
    - [ ] Documentation update
-   
+
    ## Testing
+
    - [ ] Tested locally
    - [ ] Added/updated tests
-   
+
    ## Checklist
+
    - [ ] Code follows style guidelines
    - [ ] Self-reviewed code
    - [ ] Updated documentation
@@ -231,13 +249,15 @@ docs(api): update endpoint documentation
 ### Adding a New Endpoint
 
 1. **Define Validation Schema** (`/api/index.ts`)
+
    ```typescript
    const newEndpointSchema = z.object({
-     field: z.string()
+     field: z.string(),
    });
    ```
 
 2. **Create Handler** (`/api/handlers/new-handler.ts`)
+
    ```typescript
    export function createNewHandler(services: Dependencies) {
      return async function handleRequest(c: Context) {
@@ -274,12 +294,13 @@ docs(api): update endpoint documentation
 ### Local Development
 
 1. **Enable Detailed Logging**
+
    ```typescript
    console.log('🔵 Request:', {
      method: c.req.method,
      url: c.req.url,
      headers: c.req.headers,
-     body: await c.req.json()
+     body: await c.req.json(),
    });
    ```
 

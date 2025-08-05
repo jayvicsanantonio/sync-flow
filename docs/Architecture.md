@@ -22,6 +22,7 @@ Sync Flow is a serverless application built on Vercel Edge Functions that provid
 ### Core Components
 
 #### 1. API Layer (Hono Framework)
+
 - **Route Management**: Centralized route definitions in `/api/index.ts`
 - **Middleware Stack**:
   - CORS handling for cross-origin requests
@@ -31,6 +32,7 @@ Sync Flow is a serverless application built on Vercel Edge Functions that provid
 - **Edge Runtime**: Optimized for Vercel Edge Functions
 
 #### 2. Handler Layer
+
 - **Factory Pattern**: All handlers use factory functions accepting service dependencies
 - **Handlers**:
   - `home.ts`: Serves OAuth login page with inline styles
@@ -39,6 +41,7 @@ Sync Flow is a serverless application built on Vercel Edge Functions that provid
   - `sync.ts`: Provides polling endpoint for fetching updates
 
 #### 3. Service Layer
+
 - **GoogleAuthService**:
   - OAuth token exchange and refresh
   - User profile fetching
@@ -54,6 +57,7 @@ Sync Flow is a serverless application built on Vercel Edge Functions that provid
   - Access token retrieval with automatic refresh
 
 #### 4. Data Storage (Upstash Redis)
+
 - **Key Patterns**:
   - `user:{userId}` - User object with tokens and profile
   - `taskmap:{userId}:sync:{syncId}` - Maps syncId to Google Task ID
@@ -64,6 +68,7 @@ Sync Flow is a serverless application built on Vercel Edge Functions that provid
 ## Data Flow Patterns
 
 ### Authentication Flow
+
 1. User clicks "Sign in with Google" on landing page
 2. Redirect to Google OAuth consent screen with scopes:
    - `https://www.googleapis.com/auth/userinfo.email`
@@ -74,24 +79,28 @@ Sync Flow is a serverless application built on Vercel Edge Functions that provid
 5. Store user data in Redis with expiry tracking
 
 ### Task Creation Flow (Apple → Google)
+
 1. Apple Reminders sends POST to `/api/webhook/:userId/tasks`
 2. Validate request body with Zod schema
 3. Retrieve user's access token (auto-refresh if needed)
 4. Build task with embedded metadata in notes:
+
    ```
    Original notes content
-   
+
    --- Metadata ---
    Priority: High
    URL: https://example.com
    Tags: work, urgent
    SyncID: sync_1234567890
    ```
+
 5. Create task via Google Tasks API
 6. Store bidirectional mapping in Redis
 7. Return task details to Apple Reminders
 
 ### Task Update Flow
+
 1. Apple Reminders sends PUT with syncId
 2. Look up Google Task ID from Redis mapping
 3. Fetch existing task to preserve metadata
@@ -100,6 +109,7 @@ Sync Flow is a serverless application built on Vercel Edge Functions that provid
 6. Return success response
 
 ### Sync Flow (Google → Apple)
+
 1. Apple Reminders polls `/api/fetch-updates/:userId`
 2. Query Google Tasks API with `updatedMin` parameter
 3. Filter tasks already synced (check syncedTaskIds)
@@ -110,16 +120,20 @@ Sync Flow is a serverless application built on Vercel Edge Functions that provid
 ## Key Design Decisions
 
 ### 1. Metadata Embedding Strategy
+
 **Problem**: Google Tasks API lacks fields for priority, URLs, and tags that Apple Reminders supports.
 
 **Solution**: Embed metadata in notes field with structured format:
+
 - Preserves data integrity during sync
 - Allows bidirectional metadata flow
 - Human-readable format
 - Easy to parse and update
 
 ### 2. Token Management Architecture
+
 **Implementation**:
+
 ```typescript
 // Automatic refresh 60 seconds before expiry
 if (now >= expiresAt - 60000) {
@@ -132,6 +146,7 @@ if (now >= expiresAt - 60000) {
 ```
 
 ### 3. Error Handling Hierarchy
+
 ```
 SyncFlowError (base)
 ├── AuthenticationError (401)
@@ -141,6 +156,7 @@ SyncFlowError (base)
 ```
 
 ### 4. Dependency Injection Pattern
+
 ```typescript
 // Factory functions for all handlers
 export function createAuthHandler(
@@ -154,6 +170,7 @@ export function createAuthHandler(
 ```
 
 ### 5. Redis Key Design
+
 - Namespaced keys prevent collisions
 - Bidirectional mappings enable fast lookups
 - User data stored as JSON for flexibility
