@@ -304,7 +304,8 @@ export class GoogleTasksService {
     const hasMetadata =
       updates.priority !== undefined ||
       updates.url !== undefined ||
-      updates.tags !== undefined;
+      updates.tags !== undefined ||
+      updates.syncId !== undefined;
 
     if (updates.notes !== undefined || hasMetadata) {
       let finalNotes = updates.notes;
@@ -312,6 +313,7 @@ export class GoogleTasksService {
         priority: updates.priority,
         url: updates.url,
         tags: updates.tags,
+        syncId: updates.syncId,
       };
 
       if (hasMetadata && updates.notes === undefined) {
@@ -329,6 +331,10 @@ export class GoogleTasksService {
             url: updates.url !== undefined ? updates.url : existingMetadata.url,
             tags:
               updates.tags !== undefined ? updates.tags : existingMetadata.tags,
+            syncId:
+              updates.syncId !== undefined
+                ? updates.syncId
+                : existingMetadata.syncId,
           };
         }
       }
@@ -343,13 +349,12 @@ export class GoogleTasksService {
       }
     }
     if (updates.status !== undefined) {
-      taskData.status = updates.status;
+      taskData.status = updates.isCompleted ? 'completed' : 'needsAction';
 
-      if (updates.status === 'completed' && !updates.completed) {
+      if (taskData.status === 'completed') {
         taskData.completed = new Date().toISOString();
       }
     }
-    if (updates.completed !== undefined) taskData.completed = updates.completed;
 
     const headers: Record<string, string> = {
       Authorization: `Bearer ${accessToken}`,

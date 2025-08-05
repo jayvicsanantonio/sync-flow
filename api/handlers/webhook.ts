@@ -101,59 +101,30 @@ export function createUpdateTaskWebhookHandler(
     try {
       const accessToken = await userService.getAccessToken(userId);
 
-      let { taskId } = payload;
-      const { syncId: _, ...updates } = payload;
-
-      if (!taskId && syncId) {
-        const mappedTaskId = await userService.getGoogleTaskIdBySyncId(
-          userId,
-          syncId
-        );
-        if (mappedTaskId) {
-          taskId = mappedTaskId;
-        }
-
-        if (!taskId) {
-          const task = await googleTasksService.findTaskBySyncId(
-            accessToken,
-            syncId
-          );
-          if (task) {
-            taskId = task.id;
-            await userService.saveTaskMapping(userId, syncId, task.id);
-          } else {
-            return c.json(
-              { error: 'Task not found for provided syncId.' },
-              404
-            );
-          }
-        }
-      }
+      let taskId = await userService.getGoogleTaskIdBySyncId(userId, syncId);
 
       if (!taskId) {
-        return c.json({ error: 'Task ID is required.' }, 400);
+        const task = await googleTasksService.findTaskBySyncId(
+          accessToken,
+          syncId
+        );
+
+        if (task) {
+          taskId = task.id;
+          await userService.saveTaskMapping(userId, syncId, task.id);
+        } else {
+          return c.json({ error: 'Task not found for provided syncId.' }, 404);
+        }
       }
 
-      if (updates.due) {
-        updates.due = parseToRFC3339(updates.due);
+      if (payload.due) {
+        payload.due = parseToRFC3339(payload.due);
       }
-
-      // Map isCompleted to status for Google Tasks API
-      const taskUpdates =
-        'isCompleted' in updates
-          ? {
-              ...updates,
-              status: updates.isCompleted
-                ? ('completed' as const)
-                : ('needsAction' as const),
-              isCompleted: undefined,
-            }
-          : updates;
 
       const task = await googleTasksService.updateTask(
         accessToken,
         taskId,
-        taskUpdates
+        payload
       );
       return c.json(
         {
@@ -183,57 +154,30 @@ export function createDeleteTaskWebhookHandler(
   ) {
     const { userId } = c.req.valid('param');
     const payload = c.req.valid('json');
-    let { taskId } = payload;
     const { syncId } = payload;
 
-    console.log('Deleting task:', { userId, taskId, syncId });
+    console.log('Deleting task:', { userId, syncId });
 
     try {
       const accessToken = await userService.getAccessToken(userId);
 
-      if (!taskId && syncId) {
-        const mappedTaskId = await userService.getGoogleTaskIdBySyncId(
-          userId,
-          syncId
-        );
-        if (mappedTaskId) {
-          taskId = mappedTaskId;
-        }
-
-        if (!taskId) {
-          const task = await googleTasksService.findTaskBySyncId(
-            accessToken,
-            syncId
-          );
-          if (task) {
-            taskId = task.id;
-            await userService.saveTaskMapping(userId, syncId, task.id);
-          } else {
-            return c.json(
-              { error: 'Task not found for provided syncId.' },
-              404
-            );
-          }
-        }
-      }
+      let taskId = await userService.getGoogleTaskIdBySyncId(userId, syncId);
 
       if (!taskId) {
-        return c.json({ error: 'Task ID is required.' }, 400);
+        const task = await googleTasksService.findTaskBySyncId(
+          accessToken,
+          syncId
+        );
+        if (task) {
+          taskId = task.id;
+          await userService.saveTaskMapping(userId, syncId, task.id);
+        } else {
+          return c.json({ error: 'Task not found for provided syncId.' }, 404);
+        }
       }
 
       await googleTasksService.deleteTask(accessToken, taskId);
-
-      if (syncId) {
-        await userService.deleteTaskMapping(userId, syncId, taskId);
-      } else {
-        const mappedSyncId = await userService.getSyncIdByGoogleTaskId(
-          userId,
-          taskId
-        );
-        if (mappedSyncId) {
-          await userService.deleteTaskMapping(userId, mappedSyncId, taskId);
-        }
-      }
+      await userService.deleteTaskMapping(userId, syncId, taskId);
 
       return c.json(
         {

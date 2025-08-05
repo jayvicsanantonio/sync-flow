@@ -7,8 +7,8 @@ This document explains how properties are mapped between Apple Reminders and Goo
 ### 1. **Priority Status**
 
 - **Apple Reminders**: `priority` (0-9 scale)
-|- **Google Tasks**: Stored in notes metadata as priority ('None', 'Low', 'Medium', 'High')
-|- **Mapping**: Priority values mapped as follows:
+  |- **Google Tasks**: Stored in notes metadata as priority ('None', 'Low', 'Medium', 'High')
+  |- **Mapping**: Priority values mapped as follows:
   - 0: 'None'
   - 1: 'Low'
   - 2: 'Medium'
@@ -177,7 +177,7 @@ const createAppleReminderFromGoogleTask = (task: GoogleTask) => {
     dueDate: task.due ? new Date(task.due) : undefined,
     isCompleted: task.status === 'completed',
     completionDate: task.completed ? new Date(task.completed) : undefined,
-priority: mapGooglePriority(extractedMetadata.priority || 'None'),
+    priority: mapGooglePriority(extractedMetadata.priority || 'None'),
     url: task.links?.[0]?.link,
     parentId: task.parent,
   };

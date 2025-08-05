@@ -85,7 +85,8 @@ export interface UpdateTaskRequest {
   notes?: string;
   due?: string;
   status?: 'needsAction' | 'completed';
-
+  isCompleted?: boolean;
+  syncId?: string;
   /**
    * @description To mark a task as complete, you should set `status: 'completed'`.
    * The `completed` timestamp is generally managed by the API, not set directly.
