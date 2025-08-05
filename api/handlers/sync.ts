@@ -221,15 +221,21 @@ async function handleFetchDeleted(
 
   const currentTaskIds = new Set(allTasks.map((task) => task.id));
   const deletedSyncIds: string[] = [];
+  const deletionPromises: Promise<void>[] = [];
 
   // Find tasks that were in the snapshot but are no longer present
   for (const [taskId, taskData] of Object.entries(lastSnapshot.taskDetails)) {
     if (!currentTaskIds.has(taskId)) {
       deletedSyncIds.push(taskData.syncId);
-      // Clean up the mapping
-      await userService.deleteTaskMapping(userId, taskData.syncId, taskId);
+      // Collect deletion promises for parallel execution
+      deletionPromises.push(
+        userService.deleteTaskMapping(userId, taskData.syncId, taskId)
+      );
     }
   }
+
+  // Execute all deletion operations in parallel
+  await Promise.all(deletionPromises);
 
   // Update sync snapshot
   await updateSyncSnapshot(userId, allTasks, userService);
@@ -258,18 +264,33 @@ async function updateSyncSnapshot(
     timestamp: new Date().toISOString(),
   };
 
-  for (const task of tasks) {
+  // Create promises for all database lookups in parallel
+  const taskProcessingPromises = tasks.map(async (task) => {
     const metadata =
       userService.googleTasksService?.extractTaskMetadata(task) || {};
+
+    // Only make database call if syncId is not already in metadata
     const syncId =
       metadata.syncId ||
       (await userService.getSyncIdByGoogleTaskId(userId, task.id)) ||
       '';
 
-    snapshot.taskIds.push(task.id);
-    snapshot.taskDetails[task.id] = {
+    return {
+      taskId: task.id,
       syncId,
       updated: task.updated,
+    };
+  });
+
+  // Execute all database lookups in parallel
+  const processedTasks = await Promise.all(taskProcessingPromises);
+
+  // Build the snapshot from the processed results
+  for (const processedTask of processedTasks) {
+    snapshot.taskIds.push(processedTask.taskId);
+    snapshot.taskDetails[processedTask.taskId] = {
+      syncId: processedTask.syncId,
+      updated: processedTask.updated,
     };
   }
 
