@@ -117,10 +117,11 @@ export function createUpdateTaskWebhookHandler(
         }
       }
 
-      const task = await googleTasksService.updateTask(accessToken, taskId, {
-        ...payload,
-        due: parseToRFC3339(payload.due),
-      });
+      const task = await googleTasksService.updateTask(
+        accessToken,
+        taskId,
+        payload
+      );
       return c.json(
         {
           message: 'Task updated successfully.',
