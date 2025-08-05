@@ -113,7 +113,7 @@ async function handleFetchAdded(
   }
 
   // Update sync snapshot
-  await updateSyncSnapshot(userId, allTasks, userService);
+  await updateSyncSnapshot(userId, allTasks, googleTasksService, userService);
 
   return c.json(
     {
@@ -177,7 +177,7 @@ async function handleFetchUpdated(
   }
 
   // Update sync snapshot using the already fetched tasks
-  await updateSyncSnapshot(userId, allTasks, userService);
+  await updateSyncSnapshot(userId, allTasks, googleTasksService, userService);
 
   return c.json(
     {
@@ -238,7 +238,7 @@ async function handleFetchDeleted(
   await Promise.all(deletionPromises);
 
   // Update sync snapshot
-  await updateSyncSnapshot(userId, allTasks, userService);
+  await updateSyncSnapshot(userId, allTasks, googleTasksService, userService);
 
   return c.json(
     {
@@ -256,6 +256,7 @@ async function handleFetchDeleted(
 async function updateSyncSnapshot(
   userId: string,
   tasks: GoogleTask[],
+  googleTasksService: GoogleTasksService,
   userService: UserService
 ): Promise<void> {
   const snapshot: SyncSnapshot = {
@@ -266,8 +267,7 @@ async function updateSyncSnapshot(
 
   // Create promises for all database lookups in parallel
   const taskProcessingPromises = tasks.map(async (task) => {
-    const metadata =
-      userService.googleTasksService?.extractTaskMetadata(task) || {};
+    const metadata = googleTasksService.extractTaskMetadata(task) || {};
 
     // Only make database call if syncId is not already in metadata
     const syncId =
