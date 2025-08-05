@@ -18,6 +18,7 @@ Sync Flow uses Google OAuth 2.0 for authentication. Users must complete the OAut
 Displays the landing page with Google sign-in button.
 
 #### Response
+
 - **Content-Type**: `text/html`
 - **Body**: HTML page with OAuth login interface
 
@@ -30,15 +31,18 @@ Displays the landing page with Google sign-in button.
 Handles the OAuth callback from Google after user authorization.
 
 #### Query Parameters
+
 | Parameter | Type   | Required | Description                    |
-|-----------|--------|----------|--------------------------------|
+| --------- | ------ | -------- | ------------------------------ |
 | code      | string | Yes      | Authorization code from Google |
 
 #### Success Response
+
 - **Content-Type**: `text/html`
 - **Body**: Success page showing user profile and ID
 
 #### Error Response
+
 - **Status**: 500
 - **Content-Type**: `text/html`
 - **Body**: Error page with details
@@ -52,11 +56,13 @@ Handles the OAuth callback from Google after user authorization.
 Creates a new task in Google Tasks from Apple Reminders.
 
 #### URL Parameters
+
 | Parameter | Type   | Required | Description    |
-|-----------|--------|----------|----------------|
+| --------- | ------ | -------- | -------------- |
 | userId    | string | Yes      | Google user ID |
 
 #### Request Body
+
 ```json
 {
   "title": "Task Title",
@@ -71,8 +77,9 @@ Creates a new task in Google Tasks from Apple Reminders.
 ```
 
 #### Field Descriptions
+
 | Field       | Type    | Required | Description                                      |
-|-------------|---------|----------|--------------------------------------------------|
+| ----------- | ------- | -------- | ------------------------------------------------ |
 | title       | string  | Yes      | Task title (min 1 character)                     |
 | notes       | string  | No       | Task description                                 |
 | due         | string  | No       | Due date in ISO 8601 format                      |
@@ -83,7 +90,9 @@ Creates a new task in Google Tasks from Apple Reminders.
 | isCompleted | boolean | No       | Task completion status                           |
 
 #### Success Response
+
 - **Status**: 201 Created
+
 ```json
 {
   "message": "Task created successfully.",
@@ -108,11 +117,13 @@ Creates a new task in Google Tasks from Apple Reminders.
 Updates an existing task in Google Tasks.
 
 #### URL Parameters
+
 | Parameter | Type   | Required | Description    |
-|-----------|--------|----------|----------------|
+| --------- | ------ | -------- | -------------- |
 | userId    | string | Yes      | Google user ID |
 
 #### Request Body
+
 ```json
 {
   "syncId": "sync_123456",
@@ -127,19 +138,22 @@ Updates an existing task in Google Tasks.
 ```
 
 #### Field Descriptions
-| Field       | Type    | Required | Description                                |
-|-------------|---------|----------|--------------------------------------------|
-| syncId      | string  | Yes      | Sync identifier of the task to update      |
-| title       | string  | No       | Updated task title                         |
-| notes       | string  | No       | Updated task description                   |
-| due         | string  | No       | Updated due date                           |
-| priority    | string  | No       | Updated priority                           |
-| isCompleted | boolean | No       | Updated completion status                  |
-| url         | string  | No       | Updated URL                                |
-| tags        | string  | No       | Updated tags                               |
+
+| Field       | Type    | Required | Description                           |
+| ----------- | ------- | -------- | ------------------------------------- |
+| syncId      | string  | Yes      | Sync identifier of the task to update |
+| title       | string  | No       | Updated task title                    |
+| notes       | string  | No       | Updated task description              |
+| due         | string  | No       | Updated due date                      |
+| priority    | string  | No       | Updated priority                      |
+| isCompleted | boolean | No       | Updated completion status             |
+| url         | string  | No       | Updated URL                           |
+| tags        | string  | No       | Updated tags                          |
 
 #### Success Response
+
 - **Status**: 200 OK
+
 ```json
 {
   "message": "Task updated successfully.",
@@ -154,7 +168,9 @@ Updates an existing task in Google Tasks.
 ```
 
 #### Error Response
+
 - **Status**: 404 Not Found
+
 ```json
 {
   "error": "Task not found for provided syncId."
@@ -170,11 +186,13 @@ Updates an existing task in Google Tasks.
 Deletes a task from Google Tasks.
 
 #### URL Parameters
+
 | Parameter | Type   | Required | Description    |
-|-----------|--------|----------|----------------|
+| --------- | ------ | -------- | -------------- |
 | userId    | string | Yes      | Google user ID |
 
 #### Request Body
+
 ```json
 {
   "syncId": "sync_123456"
@@ -182,7 +200,9 @@ Deletes a task from Google Tasks.
 ```
 
 #### Success Response
+
 - **Status**: 200 OK
+
 ```json
 {
   "message": "Task deleted successfully.",
@@ -192,7 +212,9 @@ Deletes a task from Google Tasks.
 ```
 
 #### Error Response
+
 - **Status**: 404 Not Found
+
 ```json
 {
   "error": "Task not found for provided syncId."
@@ -208,12 +230,15 @@ Deletes a task from Google Tasks.
 Fetches tasks from Google Tasks that have been created or updated since the last sync.
 
 #### URL Parameters
+
 | Parameter | Type   | Required | Description    |
-|-----------|--------|----------|----------------|
+| --------- | ------ | -------- | -------------- |
 | userId    | string | Yes      | Google user ID |
 
 #### Success Response
+
 - **Status**: 200 OK
+
 ```json
 {
   "tasks": [
@@ -235,6 +260,7 @@ Fetches tasks from Google Tasks that have been created or updated since the last
 #### Error Responses
 
 - **Status**: 401 Unauthorized
+
 ```json
 {
   "error": "Authentication expired. Please re-authorize the app."
@@ -242,6 +268,7 @@ Fetches tasks from Google Tasks that have been created or updated since the last
 ```
 
 - **Status**: 404 Not Found
+
 ```json
 {
   "error": "User not found."
@@ -249,6 +276,7 @@ Fetches tasks from Google Tasks that have been created or updated since the last
 ```
 
 - **Status**: 500 Internal Server Error
+
 ```json
 {
   "error": "Failed to fetch tasks from Google."
@@ -269,13 +297,13 @@ All endpoints use consistent error response format:
 
 ### Error Codes
 
-| Code                | HTTP Status | Description                           |
-|---------------------|-------------|---------------------------------------|
-| AUTHENTICATION_ERROR| 401         | Invalid or expired authentication     |
-| VALIDATION_ERROR    | 400         | Invalid request data                  |
-| NOT_FOUND           | 404         | Resource not found                    |
-| GOOGLE_API_ERROR    | 500         | Google API request failed             |
-| INTERNAL_ERROR      | 500         | Unexpected server error               |
+| Code                 | HTTP Status | Description                       |
+| -------------------- | ----------- | --------------------------------- |
+| AUTHENTICATION_ERROR | 401         | Invalid or expired authentication |
+| VALIDATION_ERROR     | 400         | Invalid request data              |
+| NOT_FOUND            | 404         | Resource not found                |
+| GOOGLE_API_ERROR     | 500         | Google API request failed         |
+| INTERNAL_ERROR       | 500         | Unexpected server error           |
 
 ## Rate Limiting
 
@@ -284,6 +312,7 @@ Currently, the API does not implement rate limiting. This is planned for future 
 ## Webhook Integration
 
 For Apple Reminders integration, configure webhooks to point to:
+
 - Create: `POST /api/webhook/{userId}/tasks`
 - Update: `PUT /api/webhook/{userId}/tasks`
 - Delete: `DELETE /api/webhook/{userId}/tasks`

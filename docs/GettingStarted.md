@@ -162,6 +162,7 @@ curl http://localhost:3000/api/fetch-updates/YOUR_USER_ID
 ### Debug Logging
 
 The application includes comprehensive logging. Check the console output for:
+
 - API request/response details (with sensitive data redacted)
 - Token refresh attempts
 - Error stack traces
