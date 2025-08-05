@@ -101,30 +101,20 @@ const createTaskWebhookBodySchema = z.object({
   isCompleted: z.boolean().optional(),
 });
 
-const updateTaskWebhookBodySchema = z
-  .object({
-    taskId: z.string().min(1).trim().optional(),
-    syncId: z.string().optional(),
-    title: z.string().min(1).trim().optional(),
-    notes: z.string().trim().optional(),
-    due: z.string().optional(),
-    priority: z.enum(['None', 'Low', 'Medium', 'High']).optional(),
-    isCompleted: z.boolean().optional(),
-    url: z.string().optional(),
-    tags: z.string().optional(),
-  })
-  .refine((data) => data.taskId || data.syncId, {
-    message: 'Either taskId or syncId must be provided',
-  });
+const updateTaskWebhookBodySchema = z.object({
+  syncId: z.string().min(1).trim(),
+  title: z.string().min(1).trim().optional(),
+  notes: z.string().trim().optional(),
+  due: z.string().optional(),
+  priority: z.enum(['None', 'Low', 'Medium', 'High']).optional(),
+  isCompleted: z.boolean().optional(),
+  url: z.string().optional(),
+  tags: z.string().optional(),
+});
 
-const deleteTaskWebhookBodySchema = z
-  .object({
-    taskId: z.string().min(1).trim().optional(),
-    syncId: z.string().optional(),
-  })
-  .refine((data) => data.taskId || data.syncId, {
-    message: 'Either taskId or syncId must be provided',
-  });
+const deleteTaskWebhookBodySchema = z.object({
+  syncId: z.string().min(1).trim(),
+});
 
 const authCallbackQuerySchema = z.object({
   code: z.string().min(1),
