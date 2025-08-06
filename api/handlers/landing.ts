@@ -564,39 +564,196 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           .particle:nth-child(4) { animation-delay: 1.2s; }
           .particle:nth-child(5) { animation-delay: 1.6s; }
           
-          /* Responsive Design */
+          /* Responsive Design - Tablet */
           @media (max-width: 1024px) {
             .hero-container {
               grid-template-columns: 1fr;
-              text-align: center;
+              gap: 40px;
+              padding-top: 80px;
             }
             
-            .hero-left {
+            .hero-content {
               text-align: center;
-            }
-            
-            .hero-description {
               max-width: 600px;
+              margin: 0 auto;
+            }
+            
+            .hero-subtitle {
               margin-left: auto;
               margin-right: auto;
             }
             
-            .hero-cta-group {
+            .hero-actions {
               justify-content: center;
             }
             
-            .hero-trust {
+            .sync-diagram {
+              max-width: 500px;
+              gap: 40px;
+            }
+            
+            .platform-card {
+              padding: 24px;
+            }
+            
+            .platform-icon {
+              width: 60px;
+              height: 60px;
+              font-size: 30px;
+            }
+          }
+          
+          /* Responsive Design - Mobile */
+          @media (max-width: 640px) {
+            :root {
+              --page-margin: 16px;
+            }
+            
+            /* Hero Section Mobile */
+            .hero {
+              min-height: auto;
+              padding: 80px 0 40px;
+            }
+            
+            .hero-nav {
+              padding: 0 16px;
+            }
+            
+            .hero-logo {
+              font-size: 18px;
+            }
+            
+            .hero-logo-icon {
+              width: 32px;
+              height: 32px;
+            }
+            
+            .hero-container {
+              padding-top: 60px;
+            }
+            
+            .hero-badge {
+              font-size: 12px;
+              padding: 4px 6px 4px 12px;
+            }
+            
+            .hero-badge-accent {
+              font-size: 10px;
+              padding: 2px 6px;
+            }
+            
+            .hero-title {
+              font-size: 2rem;
+              line-height: 1.3;
+              margin-bottom: 16px;
+            }
+            
+            .hero-subtitle {
+              font-size: 1rem;
+              margin-bottom: 24px;
+            }
+            
+            .hero-actions {
+              flex-direction: column;
+              width: 100%;
+              gap: 10px;
+            }
+            
+            .btn-primary,
+            .btn-secondary {
+              width: 100%;
               justify-content: center;
+              padding: 14px 24px;
             }
             
-            .hero-right {
-              height: 400px;
-              margin-top: 40px;
+            /* Sync Diagram Mobile */
+            .sync-diagram {
+              flex-direction: column;
+              gap: 30px;
+              max-width: 280px;
             }
             
-            .hero-phone-mockup {
-              width: 240px;
-              height: 480px;
+            .platform-card {
+              width: 100%;
+              padding: 20px;
+              border-radius: 16px;
+            }
+            
+            .platform-icon {
+              width: 50px;
+              height: 50px;
+              font-size: 24px;
+              border-radius: 12px;
+              margin-bottom: 12px;
+            }
+            
+            .platform-name {
+              font-size: 16px;
+            }
+            
+            .platform-desc {
+              font-size: 12px;
+              margin-bottom: 16px;
+            }
+            
+            .task-mini {
+              font-size: 12px;
+              padding: 6px 10px;
+              margin-bottom: 6px;
+            }
+            
+            .task-check {
+              width: 14px;
+              height: 14px;
+            }
+            
+            /* Sync Flow Center Mobile */
+            .sync-flow-center {
+              position: relative;
+              transform: none;
+              left: auto;
+              top: auto;
+              margin: -15px 0;
+              z-index: 10;
+            }
+            
+            .sync-badge {
+              padding: 10px 16px;
+              font-size: 12px;
+            }
+            
+            .sync-badge-icon {
+              width: 24px;
+              height: 24px;
+            }
+            
+            .sync-badge-text {
+              font-size: 12px;
+            }
+            
+            /* Hide horizontal arrows on mobile */
+            .sync-arrows {
+              display: none;
+            }
+            
+            /* Add vertical flow indicator */
+            .sync-flow-center::before,
+            .sync-flow-center::after {
+              content: '';
+              position: absolute;
+              left: 50%;
+              width: 2px;
+              height: 30px;
+              background: linear-gradient(to bottom, transparent, var(--primary-light), transparent);
+              transform: translateX(-50%);
+            }
+            
+            .sync-flow-center::before {
+              top: -30px;
+            }
+            
+            .sync-flow-center::after {
+              bottom: -30px;
             }
           }
           
@@ -1045,29 +1202,200 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             font-size: 14px;
           }
           
-          /* Responsive */
+          /* Additional Mobile Responsive Styles */
           @media (max-width: 768px) {
-            .hero-visual {
-              flex-direction: column;
-              align-items: center;
+            /* Features Section Mobile */
+            .features {
+              padding: 60px 0;
             }
             
-            .sync-arrow {
-              transform: rotate(90deg);
-              animation: bounce-vertical 2s infinite;
+            .section-header {
+              margin-bottom: 40px;
             }
             
-            @keyframes bounce-vertical {
-              0%, 100% { transform: rotate(90deg) translateX(0); }
-              50% { transform: rotate(90deg) translateX(10px); }
+            .section-title {
+              font-size: 1.75rem;
             }
             
-            .transparency-content {
+            .section-subtitle {
+              font-size: 16px;
+              padding: 0 16px;
+            }
+            
+            .features-grid {
               grid-template-columns: 1fr;
+              gap: 16px;
+            }
+            
+            .feature-card {
+              padding: 24px;
+            }
+            
+            .feature-icon {
+              width: 44px;
+              height: 44px;
+              margin-bottom: 16px;
+            }
+            
+            .feature-title {
+              font-size: 18px;
+            }
+            
+            .feature-description {
+              font-size: 14px;
+            }
+            
+            /* How It Works Mobile */
+            .how-it-works {
+              padding: 60px 0;
+            }
+            
+            .steps-container {
+              grid-template-columns: 1fr;
+              gap: 24px;
+              margin-top: 32px;
+            }
+            
+            .step-number {
+              width: 50px;
+              height: 50px;
+              font-size: 20px;
+            }
+            
+            .step-title {
+              font-size: 18px;
+            }
+            
+            .step-description {
+              font-size: 14px;
+              padding: 0 16px;
             }
             
             .step:not(:last-child)::after {
               display: none;
+            }
+            
+            /* Transparency Section Mobile */
+            .transparency {
+              padding: 60px 0;
+            }
+            
+            .transparency-content {
+              grid-template-columns: 1fr;
+              gap: 24px;
+            }
+            
+            .current-status,
+            .roadmap {
+              padding: 24px;
+            }
+            
+            .current-status h3,
+            .roadmap h3 {
+              font-size: 18px;
+            }
+            
+            .sync-direction {
+              padding: 12px;
+            }
+            
+            .sync-label {
+              font-size: 13px;
+            }
+            
+            .sync-status {
+              font-size: 11px;
+            }
+            
+            .roadmap-item {
+              padding: 16px;
+            }
+            
+            .roadmap-title {
+              font-size: 14px;
+            }
+            
+            .roadmap-description {
+              font-size: 12px;
+            }
+            
+            /* FAQ Mobile */
+            .faq {
+              padding: 60px 0;
+            }
+            
+            .faq-container {
+              padding: 0 16px;
+            }
+            
+            .faq-item {
+              margin-bottom: 8px;
+            }
+            
+            .faq-question {
+              padding: 16px 20px;
+              font-size: 15px;
+            }
+            
+            .faq-answer {
+              font-size: 14px;
+            }
+            
+            .faq-item.active .faq-answer {
+              padding: 0 20px 16px;
+            }
+            
+            /* CTA Section Mobile */
+            .cta-section {
+              padding: 60px 0;
+            }
+            
+            .cta-box {
+              padding: 40px 24px;
+              border-radius: 16px;
+              margin: 0 16px;
+            }
+            
+            .cta-title {
+              font-size: 28px;
+            }
+            
+            .cta-description {
+              font-size: 16px;
+              margin-bottom: 24px;
+            }
+            
+            .cta-button {
+              padding: 12px 24px;
+              font-size: 15px;
+            }
+            
+            /* Footer Mobile */
+            .footer {
+              padding: 32px 16px;
+            }
+            
+            .footer-text {
+              font-size: 13px;
+            }
+          }
+          
+          /* Small Mobile Devices */
+          @media (max-width: 400px) {
+            .features-grid {
+              grid-template-columns: 1fr;
+            }
+            
+            .hero-title {
+              font-size: 1.75rem;
+            }
+            
+            .section-title {
+              font-size: 1.5rem;
+            }
+            
+            .cta-title {
+              font-size: 24px;
             }
           }
         </style>
