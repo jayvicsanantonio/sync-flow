@@ -38,7 +38,7 @@ sync-flow/
 │   ├── index.ts         # Main entry point & route definitions
 │   ├── handlers/        # Request handlers for each endpoint
 │   │   ├── auth.ts      # OAuth callback handler
-│   │   ├── landing.ts   # Landing page handler
+│   │   ├── home.ts      # Landing page handler
 │   │   ├── sync.ts      # Fetch updates handler
 │   │   └── webhook.ts   # Task CRUD webhook handlers
 │   ├── services/        # Business logic layer

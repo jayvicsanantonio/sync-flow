@@ -1635,7 +1635,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
         <footer class="footer">
           <div class="container">
             <p class="footer-text">
-              © 2025 SyncFlow. Built with
+              © 2024 SyncFlow. Built with
               <iconify-icon icon="ph:heart-fill" width="14" style="color: var(--accent); vertical-align: -2px;"></iconify-icon>
               for productivity enthusiasts everywhere.
             </p>
