@@ -131,266 +131,170 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             vertical-align: middle;
           }
           
-          /* Hero Section - Complete Redesign */
+          /* Hero Section - Simplified & Elegant */
           .hero {
             min-height: 100vh;
-            position: relative;
             display: flex;
             align-items: center;
-            background: var(--background);
+            background: linear-gradient(to bottom, var(--background), rgba(139, 92, 246, 0.02));
+            position: relative;
             overflow: hidden;
           }
           
-          /* Background Design Elements */
-          .hero-background {
+          /* Subtle gradient backdrop */
+          .hero::before {
+            content: '';
             position: absolute;
             inset: 0;
+            background: radial-gradient(circle at 30% 50%, rgba(139, 92, 246, 0.08), transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(236, 72, 153, 0.08), transparent 50%);
             z-index: 0;
           }
           
-          .hero-gradient-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.3;
-          }
-          
-          .orb-1 {
-            width: 600px;
-            height: 600px;
-            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-            top: -200px;
-            right: -100px;
-            animation: orb-float-1 20s ease-in-out infinite;
-          }
-          
-          .orb-2 {
-            width: 400px;
-            height: 400px;
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            bottom: -150px;
-            left: -100px;
-            animation: orb-float-2 15s ease-in-out infinite;
-          }
-          
-          @keyframes orb-float-1 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(-50px, 50px) scale(1.1); }
-          }
-          
-          @keyframes orb-float-2 {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, -30px) scale(0.9); }
-          }
-          
-          .hero-grid-pattern {
-            position: absolute;
-            inset: 0;
-            background-image: 
-              linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            mask-image: radial-gradient(ellipse at center, transparent 0%, black 100%);
-          }
-          
-          /* Main Hero Content */
+          /* Container */
           .hero-container {
             position: relative;
-            z-index: 10;
+            z-index: 1;
             width: 100%;
             max-width: var(--page-width);
             margin: 0 auto;
             padding: 0 var(--page-margin);
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 80px;
+            gap: 60px;
             align-items: center;
           }
           
-          /* Left Content */
-          .hero-left {
-            text-align: left;
-          }
-          
+          /* Navigation */
           .hero-nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             position: absolute;
             top: 24px;
             left: 0;
             right: 0;
-            z-index: 20;
+            z-index: 10;
             padding: 0 var(--page-margin);
             max-width: var(--page-width);
             margin: 0 auto;
           }
           
           .hero-logo {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 10px;
             font-size: 20px;
-            font-weight: 800;
+            font-weight: 700;
             color: var(--foreground);
           }
           
           .hero-logo-icon {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: var(--primary-gradient);
-            border-radius: 10px;
+            border-radius: 8px;
             color: white;
-            animation: logo-pulse 2s ease-in-out infinite;
           }
           
-          @keyframes logo-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+          /* Content */
+          .hero-content {
+            padding: 40px 0;
           }
           
-          .hero-logo-text {
-            letter-spacing: -0.02em;
-          }
-          
-          .hero-announcement {
+          .hero-badge {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 4px 6px 4px 16px;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            padding: 6px 8px 6px 16px;
+            background: rgba(139, 92, 246, 0.08);
             border: 1px solid rgba(139, 92, 246, 0.2);
             border-radius: 50px;
             margin-bottom: 24px;
             font-size: 14px;
-            font-weight: 500;
+            color: var(--muted-foreground);
           }
           
-          .hero-announcement-badge {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 2px 10px;
-            background: var(--primary-gradient);
+          .hero-badge-accent {
+            padding: 2px 8px;
+            background: var(--primary);
             color: white;
             border-radius: 50px;
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
           }
           
-          .hero-headline {
-            font-size: clamp(3rem, 5vw, 4.5rem);
-            font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -0.03em;
-            margin-bottom: 24px;
+          .hero-title {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
             color: var(--foreground);
           }
           
-          .hero-headline-gradient {
+          .hero-gradient-text {
             background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            display: inline-block;
           }
           
-          .hero-description {
-            font-size: clamp(1.1rem, 1.5vw, 1.25rem);
-            line-height: 1.6;
+          .hero-subtitle {
+            font-size: 1.125rem;
+            line-height: 1.7;
             color: var(--muted-foreground);
-            margin-bottom: 40px;
-            max-width: 540px;
+            margin-bottom: 32px;
+            max-width: 480px;
           }
           
-          .hero-cta-group {
+          .hero-actions {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
             flex-wrap: wrap;
           }
           
-          .hero-cta-primary {
+          .btn-primary {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 14px 28px;
+            padding: 12px 24px;
             background: var(--primary-gradient);
             color: white;
             text-decoration: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 
-              0 4px 14px 0 rgba(139, 92, 246, 0.35),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.25);
           }
           
-          .hero-cta-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-              0 8px 20px 0 rgba(139, 92, 246, 0.45),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+          .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px 0 rgba(139, 92, 246, 0.35);
           }
           
-          .hero-cta-secondary {
+          .btn-secondary {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 14px 28px;
+            padding: 12px 24px;
             background: var(--card);
             color: var(--foreground);
             text-decoration: none;
             border: 1px solid var(--border);
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: 600;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
           }
           
-          .hero-cta-secondary:hover {
+          .btn-secondary:hover {
             background: var(--muted);
-            border-color: var(--primary-light);
-            transform: translateY(-2px);
-          }
-          
-          .hero-trust {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            margin-top: 48px;
-            padding-top: 48px;
-            border-top: 1px solid var(--border);
-          }
-          
-          .hero-trust-text {
-            font-size: 13px;
-            color: var(--muted-foreground);
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-          }
-          
-          .hero-trust-items {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex-wrap: wrap;
-          }
-          
-          .hero-trust-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--foreground);
+            transform: translateY(-1px);
           }
           
           /* Right Visual - Sync Diagram */
@@ -660,39 +564,196 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           .particle:nth-child(4) { animation-delay: 1.2s; }
           .particle:nth-child(5) { animation-delay: 1.6s; }
           
-          /* Responsive Design */
+          /* Responsive Design - Tablet */
           @media (max-width: 1024px) {
             .hero-container {
               grid-template-columns: 1fr;
-              text-align: center;
+              gap: 40px;
+              padding-top: 80px;
             }
             
-            .hero-left {
+            .hero-content {
               text-align: center;
-            }
-            
-            .hero-description {
               max-width: 600px;
+              margin: 0 auto;
+            }
+            
+            .hero-subtitle {
               margin-left: auto;
               margin-right: auto;
             }
             
-            .hero-cta-group {
+            .hero-actions {
               justify-content: center;
             }
             
-            .hero-trust {
+            .sync-diagram {
+              max-width: 500px;
+              gap: 40px;
+            }
+            
+            .platform-card {
+              padding: 24px;
+            }
+            
+            .platform-icon {
+              width: 60px;
+              height: 60px;
+              font-size: 30px;
+            }
+          }
+          
+          /* Responsive Design - Mobile */
+          @media (max-width: 640px) {
+            :root {
+              --page-margin: 16px;
+            }
+            
+            /* Hero Section Mobile */
+            .hero {
+              min-height: auto;
+              padding: 80px 0 40px;
+            }
+            
+            .hero-nav {
+              padding: 0 16px;
+            }
+            
+            .hero-logo {
+              font-size: 18px;
+            }
+            
+            .hero-logo-icon {
+              width: 32px;
+              height: 32px;
+            }
+            
+            .hero-container {
+              padding-top: 60px;
+            }
+            
+            .hero-badge {
+              font-size: 12px;
+              padding: 4px 6px 4px 12px;
+            }
+            
+            .hero-badge-accent {
+              font-size: 10px;
+              padding: 2px 6px;
+            }
+            
+            .hero-title {
+              font-size: 2rem;
+              line-height: 1.3;
+              margin-bottom: 16px;
+            }
+            
+            .hero-subtitle {
+              font-size: 1rem;
+              margin-bottom: 24px;
+            }
+            
+            .hero-actions {
+              flex-direction: column;
+              width: 100%;
+              gap: 10px;
+            }
+            
+            .btn-primary,
+            .btn-secondary {
+              width: 100%;
               justify-content: center;
+              padding: 14px 24px;
             }
             
-            .hero-right {
-              height: 400px;
-              margin-top: 40px;
+            /* Sync Diagram Mobile */
+            .sync-diagram {
+              flex-direction: column;
+              gap: 30px;
+              max-width: 280px;
             }
             
-            .hero-phone-mockup {
-              width: 240px;
-              height: 480px;
+            .platform-card {
+              width: 100%;
+              padding: 20px;
+              border-radius: 16px;
+            }
+            
+            .platform-icon {
+              width: 50px;
+              height: 50px;
+              font-size: 24px;
+              border-radius: 12px;
+              margin-bottom: 12px;
+            }
+            
+            .platform-name {
+              font-size: 16px;
+            }
+            
+            .platform-desc {
+              font-size: 12px;
+              margin-bottom: 16px;
+            }
+            
+            .task-mini {
+              font-size: 12px;
+              padding: 6px 10px;
+              margin-bottom: 6px;
+            }
+            
+            .task-check {
+              width: 14px;
+              height: 14px;
+            }
+            
+            /* Sync Flow Center Mobile */
+            .sync-flow-center {
+              position: relative;
+              transform: none;
+              left: auto;
+              top: auto;
+              margin: -15px 0;
+              z-index: 10;
+            }
+            
+            .sync-badge {
+              padding: 10px 16px;
+              font-size: 12px;
+            }
+            
+            .sync-badge-icon {
+              width: 24px;
+              height: 24px;
+            }
+            
+            .sync-badge-text {
+              font-size: 12px;
+            }
+            
+            /* Hide horizontal arrows on mobile */
+            .sync-arrows {
+              display: none;
+            }
+            
+            /* Add vertical flow indicator */
+            .sync-flow-center::before,
+            .sync-flow-center::after {
+              content: '';
+              position: absolute;
+              left: 50%;
+              width: 2px;
+              height: 30px;
+              background: linear-gradient(to bottom, transparent, var(--primary-light), transparent);
+              transform: translateX(-50%);
+            }
+            
+            .sync-flow-center::before {
+              top: -30px;
+            }
+            
+            .sync-flow-center::after {
+              bottom: -30px;
             }
           }
           
@@ -1141,104 +1202,245 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             font-size: 14px;
           }
           
-          /* Responsive */
+          /* Additional Mobile Responsive Styles */
           @media (max-width: 768px) {
-            .hero-visual {
-              flex-direction: column;
-              align-items: center;
+            /* Features Section Mobile */
+            .features {
+              padding: 60px 0;
             }
             
-            .sync-arrow {
-              transform: rotate(90deg);
-              animation: bounce-vertical 2s infinite;
+            .section-header {
+              margin-bottom: 40px;
             }
             
-            @keyframes bounce-vertical {
-              0%, 100% { transform: rotate(90deg) translateX(0); }
-              50% { transform: rotate(90deg) translateX(10px); }
+            .section-title {
+              font-size: 1.75rem;
             }
             
-            .transparency-content {
+            .section-subtitle {
+              font-size: 16px;
+              padding: 0 16px;
+            }
+            
+            .features-grid {
               grid-template-columns: 1fr;
+              gap: 16px;
+            }
+            
+            .feature-card {
+              padding: 24px;
+            }
+            
+            .feature-icon {
+              width: 44px;
+              height: 44px;
+              margin-bottom: 16px;
+            }
+            
+            .feature-title {
+              font-size: 18px;
+            }
+            
+            .feature-description {
+              font-size: 14px;
+            }
+            
+            /* How It Works Mobile */
+            .how-it-works {
+              padding: 60px 0;
+            }
+            
+            .steps-container {
+              grid-template-columns: 1fr;
+              gap: 24px;
+              margin-top: 32px;
+            }
+            
+            .step-number {
+              width: 50px;
+              height: 50px;
+              font-size: 20px;
+            }
+            
+            .step-title {
+              font-size: 18px;
+            }
+            
+            .step-description {
+              font-size: 14px;
+              padding: 0 16px;
             }
             
             .step:not(:last-child)::after {
               display: none;
             }
+            
+            /* Transparency Section Mobile */
+            .transparency {
+              padding: 60px 0;
+            }
+            
+            .transparency-content {
+              grid-template-columns: 1fr;
+              gap: 24px;
+            }
+            
+            .current-status,
+            .roadmap {
+              padding: 24px;
+            }
+            
+            .current-status h3,
+            .roadmap h3 {
+              font-size: 18px;
+            }
+            
+            .sync-direction {
+              padding: 12px;
+            }
+            
+            .sync-label {
+              font-size: 13px;
+            }
+            
+            .sync-status {
+              font-size: 11px;
+            }
+            
+            .roadmap-item {
+              padding: 16px;
+            }
+            
+            .roadmap-title {
+              font-size: 14px;
+            }
+            
+            .roadmap-description {
+              font-size: 12px;
+            }
+            
+            /* FAQ Mobile */
+            .faq {
+              padding: 60px 0;
+            }
+            
+            .faq-container {
+              padding: 0 16px;
+            }
+            
+            .faq-item {
+              margin-bottom: 8px;
+            }
+            
+            .faq-question {
+              padding: 16px 20px;
+              font-size: 15px;
+            }
+            
+            .faq-answer {
+              font-size: 14px;
+            }
+            
+            .faq-item.active .faq-answer {
+              padding: 0 20px 16px;
+            }
+            
+            /* CTA Section Mobile */
+            .cta-section {
+              padding: 60px 0;
+            }
+            
+            .cta-box {
+              padding: 40px 24px;
+              border-radius: 16px;
+              margin: 0 16px;
+            }
+            
+            .cta-title {
+              font-size: 28px;
+            }
+            
+            .cta-description {
+              font-size: 16px;
+              margin-bottom: 24px;
+            }
+            
+            .cta-button {
+              padding: 12px 24px;
+              font-size: 15px;
+            }
+            
+            /* Footer Mobile */
+            .footer {
+              padding: 32px 16px;
+            }
+            
+            .footer-text {
+              font-size: 13px;
+            }
+          }
+          
+          /* Small Mobile Devices */
+          @media (max-width: 400px) {
+            .features-grid {
+              grid-template-columns: 1fr;
+            }
+            
+            .hero-title {
+              font-size: 1.75rem;
+            }
+            
+            .section-title {
+              font-size: 1.5rem;
+            }
+            
+            .cta-title {
+              font-size: 24px;
+            }
           }
         </style>
       </head>
       <body>
-        <!-- Hero Section - Complete Redesign -->
+        <!-- Hero Section - Simplified & Elegant -->
         <section class="hero">
-          <!-- Background Elements -->
-          <div class="hero-background">
-            <div class="hero-gradient-orb orb-1"></div>
-            <div class="hero-gradient-orb orb-2"></div>
-            <div class="hero-grid-pattern"></div>
-          </div>
-          
-          <!-- Navigation Bar -->
+          <!-- Navigation -->
           <nav class="hero-nav">
             <div class="hero-logo">
               <div class="hero-logo-icon">
-                <iconify-icon icon="ph:arrows-clockwise-bold" width="24"></iconify-icon>
+                <iconify-icon icon="ph:arrows-clockwise-bold" width="20"></iconify-icon>
               </div>
-              <span class="hero-logo-text">SyncFlow</span>
+              <span>SyncFlow</span>
             </div>
           </nav>
           
-          <!-- Main Content -->
+          <!-- Container -->
           <div class="hero-container">
-            <!-- Left Content -->
-            <div class="hero-left">
-              <div class="hero-announcement">
-                <span>⚡ Real-time sync in under 2 seconds</span>
-                <span class="hero-announcement-badge">
-                  <iconify-icon icon="ph:lightning" width="12"></iconify-icon>
-                  FAST
-                </span>
+            <!-- Content -->
+            <div class="hero-content">
+              <div class="hero-badge">
+                ⚡ Real-time sync in under 2 seconds
+                <span class="hero-badge-accent">FAST</span>
               </div>
               
-              <h1 class="hero-headline">
-                Never lose a task between 
-                <span class="hero-headline-gradient">Apple & Google</span> 
-                again
+              <h1 class="hero-title">
+                Never lose a task between<br/>
+                <span class="hero-gradient-text">Apple & Google</span> again
               </h1>
               
-              <p class="hero-description">
-                SyncFlow is the missing link between Apple Reminders and Google Tasks. 
-                Real-time, automatic synchronization that just works. Set it up once, 
-                and never worry about task management fragmentation again.
+              <p class="hero-subtitle">
+                The missing link between Apple Reminders and Google Tasks. 
+                Real-time, automatic synchronization that just works.
               </p>
               
-              <div class="hero-cta-group">
-                <a href="${authUrl}" class="hero-cta-primary">
-                  <iconify-icon icon="ph:rocket-launch-bold" width="18"></iconify-icon>
-                  Start Syncing for Free
+              <div class="hero-actions">
+                <a href="${authUrl}" class="btn-primary">
+                  <iconify-icon icon="ph:rocket-launch-bold" width="16"></iconify-icon>
+                  Start Syncing Free
                 </a>
-                <a href="#how-it-works" class="hero-cta-secondary">
-                  <iconify-icon icon="ph:play-circle" width="18"></iconify-icon>
-                  Watch Demo
+                <a href="#how-it-works" class="btn-secondary">
+                  <iconify-icon icon="ph:play-circle" width="16"></iconify-icon>
+                  See How It Works
                 </a>
-              </div>
-              
-              <div class="hero-trust">
-                <span class="hero-trust-text">Key Features</span>
-                <div class="hero-trust-items">
-                  <span class="hero-trust-item">
-                    <iconify-icon icon="ph:check-circle-fill" width="16" style="color: var(--success);"></iconify-icon>
-                    Free Forever
-                  </span>
-                  <span class="hero-trust-item">
-                    <iconify-icon icon="ph:shield-check-fill" width="16" style="color: var(--primary);"></iconify-icon>
-                    OAuth 2.0 Secure
-                  </span>
-                  <span class="hero-trust-item">
-                    <iconify-icon icon="ph:timer-fill" width="16" style="color: var(--accent);"></iconify-icon>
-                    2-Min Setup
-                  </span>
-                </div>
               </div>
             </div>
             
@@ -1635,7 +1837,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
         <footer class="footer">
           <div class="container">
             <p class="footer-text">
-              © 2024 SyncFlow. Built with
+              © 2025 SyncFlow. Built with
               <iconify-icon icon="ph:heart-fill" width="14" style="color: var(--accent); vertical-align: -2px;"></iconify-icon>
               for productivity enthusiasts everywhere.
             </p>
