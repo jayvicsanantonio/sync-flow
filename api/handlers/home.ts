@@ -11,21 +11,27 @@ export function createHomeHandler(googleAuthService: GoogleAuthService) {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Sync Flow - Seamlessly sync your Apple Reminders with Google Tasks">
-        <title>Sync Flow - Connect Your Tasks</title>
+        <meta name="description" content="Sync Flow - Never lose a task again. Seamlessly sync Apple Reminders with Google Tasks in real-time.">
+        <meta property="og:title" content="Sync Flow - Unified Task Management Across Platforms">
+        <meta property="og:description" content="Bridge the gap between Apple and Google ecosystems. Real-time, bidirectional task synchronization that just works.">
+        <meta property="og:type" content="website">
+        <meta name="twitter:card" content="summary_large_image">
+        <title>Sync Flow - Bridge Your Apple & Google Tasks Seamlessly</title>
         <style>
-          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+          @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
           
-          /* Vercel Geist Design System */
+          /* Enhanced Design System */
           :root {
-            /* Colors */
-            --geist-background: #000;
-            --geist-foreground: #fff;
-            --geist-background-secondary: #111;
-            --geist-foreground-secondary: #888;
-            --geist-foreground-tertiary: #666;
-            --geist-border: #333;
-            --geist-border-hover: #555;
+            /* Base Colors */
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #111111;
+            --bg-card: #0f0f0f;
+            --text-primary: #ffffff;
+            --text-secondary: #a3a3a3;
+            --text-tertiary: #666666;
+            --border-primary: #262626;
+            --border-secondary: #404040;
             
             /* Accent colors */
             --geist-accent: #0070f3;
