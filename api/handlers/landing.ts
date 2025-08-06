@@ -28,44 +28,44 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
           
           :root {
-            /* Geist Design System - Dark Theme */
-            --geist-background: #000;
-            --geist-foreground: #fff;
+            /* BuildUI-inspired Color Palette */
+            --background: #fafafa;
+            --foreground: #09090b;
+            --card: #ffffff;
+            --card-foreground: #09090b;
+            --muted: #f4f4f5;
+            --muted-foreground: #71717a;
+            --border: #e4e4e7;
             
-            /* Gray Scale */
-            --gray-1: #111;
-            --gray-2: #222;
-            --gray-3: #333;
-            --gray-4: #444;
-            --gray-5: #555;
-            --gray-6: #666;
-            --gray-7: #777;
-            --gray-8: #888;
-            --gray-9: #999;
-            --gray-10: #aaa;
-            --gray-11: #bbb;
-            --gray-12: #ccc;
+            /* Primary Purple Gradient */
+            --primary: #8b5cf6;
+            --primary-light: #a78bfa;
+            --primary-dark: #7c3aed;
+            --primary-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            --primary-gradient-hover: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
             
             /* Accent Colors */
-            --blue: #0070f3;
-            --blue-lighter: #3291ff;
-            --blue-light: #0761d1;
-            --blue-dark: #0051cc;
+            --accent: #ec4899;
+            --accent-light: #f9a8d4;
+            --accent-dark: #db2777;
             
-            --green: #0cce6b;
-            --green-lighter: #6ccf7f;
-            --green-light: #0ac660;
-            --green-dark: #06a854;
+            /* Status Colors */
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
             
-            --red: #ff0000;
-            --red-lighter: #f33;
-            --red-light: #e00;
-            --red-dark: #c00;
-            
-            --yellow: #f5a623;
-            --yellow-lighter: #ffb347;
-            --yellow-light: #f39c12;
-            --yellow-dark: #e67e22;
+            /* Gray Scale */
+            --gray-50: #fafafa;
+            --gray-100: #f4f4f5;
+            --gray-200: #e4e4e7;
+            --gray-300: #d4d4d8;
+            --gray-400: #a1a1aa;
+            --gray-500: #71717a;
+            --gray-600: #52525b;
+            --gray-700: #3f3f46;
+            --gray-800: #27272a;
+            --gray-900: #18181b;
             
             /* Spacing */
             --gap-quarter: 4px;
@@ -74,28 +74,32 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             --gap-double: 32px;
             --gap-triple: 48px;
             --page-margin: 24px;
-            --page-width: 1000px;
-            --breakpoint-mobile: 600px;
-            --breakpoint-tablet: 960px;
+            --page-width: 1280px;
+            --breakpoint-mobile: 640px;
+            --breakpoint-tablet: 1024px;
             
             /* Typography */
             --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            --font-mono: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+            --font-mono: 'JetBrains Mono', 'SFMono-Regular', 'Consolas', monospace;
             --line-height: 1.5;
-            --line-height-large: 1.7;
+            --line-height-large: 1.8;
             
             /* Shadows */
-            --shadow-smallest: 0px 2px 4px rgba(0, 0, 0, 0.1);
-            --shadow-small: 0px 4px 8px rgba(0, 0, 0, 0.12);
-            --shadow-medium: 0px 8px 16px rgba(0, 0, 0, 0.16);
-            --shadow-large: 0px 20px 48px rgba(0, 0, 0, 0.2);
-            --shadow-hover: 0px 30px 60px rgba(0, 0, 0, 0.12);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+            --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
             
             /* Borders */
-            --radius-small: 5px;
+            --radius-sm: 6px;
             --radius: 8px;
-            --radius-large: 12px;
-            --radius-extra: 16px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
           }
           
           html {
@@ -104,9 +108,9 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           
           body {
             font-family: var(--font-sans);
-            font-size: 14px;
-            background: var(--geist-background);
-            color: var(--geist-foreground);
+            font-size: 15px;
+            background: var(--background);
+            color: var(--foreground);
             line-height: var(--line-height-large);
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -133,20 +137,27 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             display: flex;
             align-items: center;
             position: relative;
-            background: var(--geist-background);
+            background: linear-gradient(180deg, var(--background) 0%, var(--gray-50) 100%);
+            overflow: hidden;
           }
           
           .hero::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-              radial-gradient(circle at 20% 50%, rgba(0, 112, 243, 0.05) 0%, transparent 50%),
-              radial-gradient(circle at 80% 50%, rgba(12, 206, 107, 0.05) 0%, transparent 50%);
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 40%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.06) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
             pointer-events: none;
+          }
+          
+          @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(120deg); }
+            66% { transform: translate(-20px, 20px) rotate(240deg); }
           }
           
           .hero-content {
@@ -160,53 +171,80 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             display: inline-flex;
             align-items: center;
             gap: var(--gap-half);
-            padding: var(--gap-quarter) var(--gap);
-            background: rgba(0, 112, 243, 0.1);
-            border: 1px solid var(--blue);
-            border-radius: 100px;
-            font-size: 12px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: var(--radius-full);
+            font-size: 13px;
             font-weight: 500;
-            color: var(--blue);
+            color: var(--primary);
             margin-bottom: var(--gap-double);
-            letter-spacing: 0.5px;
+            letter-spacing: 0.02em;
+            backdrop-filter: blur(10px);
           }
           
           .hero-title {
-            font-size: clamp(2.5rem, 8vw, 4.5rem);
-            font-weight: 700;
-            line-height: 1.1;
+            font-size: clamp(3rem, 7vw, 5rem);
+            font-weight: 800;
+            line-height: 1.05;
             margin-bottom: var(--gap);
-            letter-spacing: -0.03em;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, var(--foreground) 0%, var(--primary) 50%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
           }
           
           .hero-subtitle {
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            color: var(--gray-9);
-            max-width: 640px;
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            color: var(--muted-foreground);
+            max-width: 680px;
             margin: 0 auto var(--gap-triple);
             line-height: var(--line-height-large);
+            font-weight: 400;
           }
           
           .hero-cta {
             display: inline-flex;
             align-items: center;
             gap: var(--gap-half);
-            padding: 12px 24px;
-            background: var(--blue);
-            color: var(--geist-foreground);
+            padding: 14px 28px;
+            background: var(--primary-gradient);
+            color: white;
             text-decoration: none;
             border-radius: var(--radius);
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.15s ease;
-            border: 1px solid var(--blue);
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.35);
+            position: relative;
+            overflow: hidden;
+          }
+          
+          .hero-cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--primary-gradient-hover);
+            opacity: 0;
+            transition: opacity 0.2s;
           }
           
           .hero-cta:hover {
-            background: var(--blue-dark);
-            border-color: var(--blue-dark);
-            transform: translateY(-1px);
-            box-shadow: var(--shadow-medium);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px 0 rgba(139, 92, 246, 0.45);
+          }
+          
+          .hero-cta:hover::before {
+            opacity: 1;
+          }
+          
+          .hero-cta > * {
+            position: relative;
+            z-index: 1;
           }
           
           .hero-visual {
@@ -219,41 +257,55 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
           
           .ecosystem-badge {
-            padding: var(--gap) var(--gap-double);
-            background: var(--gray-1);
-            border: 1px solid var(--gray-3);
-            border-radius: var(--radius-large);
+            padding: 20px 32px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             gap: var(--gap);
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--shadow);
           }
           
           .ecosystem-badge:hover {
-            transform: translateY(-2px);
-            border-color: var(--gray-4);
-            background: var(--gray-2);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
           }
           
           .ecosystem-icon {
-            font-size: 32px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border-radius: var(--radius-md);
+            color: var(--primary);
           }
           
           .ecosystem-text h3 {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 600;
-            margin-bottom: var(--gap-quarter);
+            margin-bottom: 2px;
+            color: var(--foreground);
           }
           
           .ecosystem-text p {
-            color: var(--gray-9);
-            font-size: 13px;
+            color: var(--muted-foreground);
+            font-size: 14px;
           }
           
           .sync-arrow {
             font-size: 24px;
-            color: var(--green);
-            animation: pulse 2s infinite;
+            color: var(--primary);
+            animation: pulse-scale 2s infinite;
+          }
+          
+          @keyframes pulse-scale {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
           }
           
           @keyframes bounce-horizontal {
@@ -263,10 +315,9 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           
           /* Features Section */
           .features {
-            padding: calc(var(--gap-triple) * 2) 0;
-            background: var(--geist-background);
+            padding: 80px 0;
+            background: var(--gray-50);
             position: relative;
-            border-top: 1px solid var(--gray-2);
           }
           
           .section-header {
@@ -276,84 +327,87 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           
           .section-badge {
             display: inline-block;
-            padding: var(--gap-quarter) var(--gap-half);
-            background: rgba(12, 206, 107, 0.1);
-            color: var(--green);
-            border-radius: var(--radius-small);
-            font-size: 11px;
+            padding: 4px 10px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            color: var(--primary);
+            border-radius: var(--radius-full);
+            font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1px;
             margin-bottom: var(--gap);
+            border: 1px solid rgba(139, 92, 246, 0.2);
           }
           
           .section-title {
-            font-size: clamp(2rem, 4vw, 2.5rem);
-            font-weight: 700;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
             margin-bottom: var(--gap);
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
+            color: var(--foreground);
           }
           
           .section-subtitle {
-            font-size: 16px;
-            color: var(--gray-9);
-            max-width: 560px;
+            font-size: 18px;
+            color: var(--muted-foreground);
+            max-width: 600px;
             margin: 0 auto;
             line-height: var(--line-height-large);
           }
           
           .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: var(--gap);
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 24px;
           }
           
           .feature-card {
-            padding: var(--gap-double);
-            background: var(--gray-1);
-            border: 1px solid var(--gray-3);
-            border-radius: var(--radius-large);
-            transition: all 0.2s ease;
+            padding: 28px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
+            box-shadow: var(--shadow-sm);
           }
           
           .feature-card:hover {
-            transform: translateY(-2px);
-            border-color: var(--gray-4);
-            background: var(--gray-2);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
           }
           
           .feature-icon {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--gray-2);
-            border: 1px solid var(--gray-3);
-            border-radius: var(--radius);
-            margin-bottom: var(--gap);
-            font-size: 24px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            color: var(--primary);
           }
           
           .feature-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: var(--gap-half);
-            letter-spacing: -0.01em;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+            color: var(--foreground);
           }
           
           .feature-description {
-            color: var(--gray-10);
-            line-height: var(--line-height-large);
-            font-size: 14px;
+            color: var(--muted-foreground);
+            line-height: 1.7;
+            font-size: 15px;
           }
           
           /* How It Works Section */
           .how-it-works {
-            padding: calc(var(--gap-triple) * 2) 0;
-            background: var(--geist-background);
-            border-top: 1px solid var(--gray-2);
+            padding: 80px 0;
+            background: var(--background);
+            position: relative;
           }
           
           .steps-container {
@@ -369,30 +423,32 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
           
           .step-number {
-            width: 56px;
-            height: 56px;
-            margin: 0 auto var(--gap);
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--blue);
+            background: var(--primary-gradient);
             border-radius: 50%;
-            font-size: 20px;
-            font-weight: 600;
-            color: var(--geist-foreground);
+            font-size: 22px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.35);
           }
           
           .step-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: var(--gap-half);
-            letter-spacing: -0.01em;
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+            color: var(--foreground);
           }
           
           .step-description {
-            color: var(--gray-9);
-            font-size: 14px;
-            line-height: var(--line-height-large);
+            color: var(--muted-foreground);
+            font-size: 15px;
+            line-height: 1.7;
           }
           
           .step:not(:last-child)::after {
@@ -406,9 +462,8 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           
           /* Transparency Section */
           .transparency {
-            padding: calc(var(--gap-triple) * 2) 0;
-            background: var(--geist-background);
-            border-top: 1px solid var(--gray-2);
+            padding: 80px 0;
+            background: var(--gray-50);
           }
           
           .transparency-content {
@@ -419,10 +474,11 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
           
           .current-status {
-            padding: var(--gap-double);
-            background: var(--gray-1);
-            border: 1px solid var(--gray-3);
-            border-radius: var(--radius-large);
+            padding: 32px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
           }
           
           .status-badge {
@@ -465,11 +521,16 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             display: flex;
             align-items: center;
             gap: var(--gap);
-            padding: var(--gap);
-            background: var(--gray-2);
-            border: 1px solid var(--gray-3);
-            border-radius: var(--radius);
-            margin-bottom: var(--gap-half);
+            padding: 16px;
+            background: var(--gray-50);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            transition: all 0.2s;
+          }
+          
+          .sync-direction:hover {
+            background: var(--muted);
           }
           
           .sync-icon {
@@ -500,10 +561,11 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
           
           .roadmap {
-            padding: var(--gap-double);
-            background: var(--gray-1);
-            border: 1px solid var(--gray-3);
-            border-radius: var(--radius-large);
+            padding: 32px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
           }
           
           .roadmap h3 {
@@ -514,18 +576,18 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
           
           .roadmap-item {
-            padding: var(--gap);
-            background: var(--gray-2);
-            border-radius: var(--radius);
-            margin-bottom: var(--gap-half);
-            border-left: 2px solid var(--blue);
-            transition: all 0.15s ease;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            border-left: 3px solid var(--primary);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
           }
           
           .roadmap-item:hover {
-            transform: translateX(4px);
-            background: var(--gray-2);
-            border-left-color: var(--blue-lighter);
+            transform: translateX(6px);
+            background: var(--muted);
+            border-left-color: var(--accent);
           }
           
           .roadmap-title {
@@ -543,9 +605,8 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           
           /* FAQ Section */
           .faq {
-            padding: calc(var(--gap-triple) * 2) 0;
-            background: var(--geist-background);
-            border-top: 1px solid var(--gray-2);
+            padding: 80px 0;
+            background: var(--background);
           }
           
           .faq-container {
@@ -554,37 +615,40 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
           
           .faq-item {
-            margin-bottom: var(--gap-half);
-            border: 1px solid var(--gray-3);
-            border-radius: var(--radius);
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
             overflow: hidden;
-            transition: all 0.15s ease;
-            background: var(--gray-1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--card);
+            box-shadow: var(--shadow-sm);
           }
           
           .faq-item:hover {
-            border-color: var(--gray-4);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
           }
           
           .faq-question {
-            padding: var(--gap);
+            padding: 20px 24px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-weight: 500;
-            font-size: 15px;
-            transition: all 0.15s ease;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.2s;
             user-select: none;
+            color: var(--foreground);
           }
           
           .faq-question:hover {
-            background: var(--gray-2);
+            background: var(--gray-50);
           }
           
           .faq-arrow {
-            transition: transform 0.2s ease;
-            color: var(--gray-9);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--muted-foreground);
             font-size: 12px;
           }
           
@@ -593,37 +657,36 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
           
           .faq-answer {
-            padding: 0 var(--gap);
+            padding: 0 24px;
             max-height: 0;
             overflow: hidden;
-            transition: all 0.2s ease;
-            color: var(--gray-10);
-            font-size: 14px;
-            line-height: var(--line-height-large);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--muted-foreground);
+            font-size: 15px;
+            line-height: 1.7;
           }
           
           .faq-item.active .faq-answer {
-            padding: 0 var(--gap) var(--gap);
+            padding: 0 24px 20px;
             max-height: 500px;
           }
           
           /* CTA Section */
           .cta-section {
-            padding: calc(var(--gap-triple) * 2) 0;
-            background: var(--geist-background);
+            padding: 100px 0;
+            background: linear-gradient(180deg, var(--gray-50) 0%, var(--background) 100%);
             text-align: center;
-            border-top: 1px solid var(--gray-2);
           }
           
           .cta-box {
-            max-width: 560px;
+            max-width: 640px;
             margin: 0 auto;
-            padding: var(--gap-triple);
-            background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
-            border-radius: var(--radius-extra);
+            padding: 60px;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-xl);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 112, 243, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.4);
           }
           
           .cta-box::before {
@@ -648,51 +711,51 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
           
           .cta-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: var(--gap-half);
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 12px;
             color: white;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.03em;
           }
           
           .cta-description {
-            font-size: 16px;
-            margin-bottom: var(--gap-double);
-            color: rgba(255, 255, 255, 0.85);
-            line-height: var(--line-height);
+            font-size: 18px;
+            margin-bottom: 32px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
           }
           
           .cta-button {
             display: inline-flex;
             align-items: center;
             gap: var(--gap-half);
-            padding: 12px 28px;
+            padding: 14px 32px;
             background: white;
-            color: var(--blue);
+            color: var(--primary);
             text-decoration: none;
-            border-radius: var(--radius);
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.15s ease;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            font-weight: 700;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
           }
           
           .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
           }
           
           /* Footer */
           .footer {
-            padding: var(--gap-triple) 0;
-            background: var(--geist-background);
-            border-top: 1px solid var(--gray-2);
+            padding: 48px 0;
+            background: var(--background);
+            border-top: 1px solid var(--border);
             text-align: center;
           }
           
           .footer-text {
-            color: var(--gray-8);
-            font-size: 13px;
+            color: var(--muted-foreground);
+            font-size: 14px;
           }
           
           /* Responsive */
@@ -798,7 +861,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 <h3 class="feature-title">Enterprise-Grade Security</h3>
                 <p class="feature-description">
                   Your data is protected with OAuth 2.0 authentication and encrypted connections. 
-                  We never store your tasks—we simply bridge the gap between your existing services.
+                  Sync Flow never stores your tasks—it simply bridges the gap between your existing services.
                 </p>
               </div>
               
@@ -809,7 +872,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 <h3 class="feature-title">Priority & Metadata Preservation</h3>
                 <p class="feature-description">
                   Task priorities, URLs, and tags seamlessly transfer between platforms. 
-                  Our intelligent mapping ensures no detail gets lost in translation.
+                  Intelligent mapping ensures no detail gets lost in translation.
                 </p>
               </div>
               
@@ -830,7 +893,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 </div>
                 <h3 class="feature-title">Automatic Token Management</h3>
                 <p class="feature-description">
-                  Set it and forget it. Our service automatically refreshes authentication tokens, 
+                  Set it and forget it. The service automatically refreshes authentication tokens, 
                   ensuring uninterrupted sync without requiring you to re-login.
                 </p>
               </div>
@@ -855,7 +918,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 <h3 class="step-title">Authenticate Securely</h3>
                 <p class="step-description">
                   Sign in with your Google account using OAuth 2.0. 
-                  We only request access to your Tasks, nothing more.
+                  Sync Flow only requests access to your Tasks, nothing more.
                 </p>
               </div>
               
@@ -864,7 +927,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 <h3 class="step-title">Connect Apple Reminders</h3>
                 <p class="step-description">
                   Configure Apple Shortcuts to send your reminders 
-                  through our secure webhook endpoints.
+                  through secure webhook endpoints.
                 </p>
               </div>
               
@@ -894,9 +957,9 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           <div class="container">
             <div class="section-header">
               <span class="section-badge">Transparency</span>
-              <h2 class="section-title">Our Commitment to Honesty</h2>
+              <h2 class="section-title">A Commitment to Honesty</h2>
               <p class="section-subtitle">
-                We believe in building trust through complete transparency about our service
+                Building trust through complete transparency about the service
               </p>
             </div>
             
@@ -908,7 +971,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 </div>
                 <h3>Sync Status Overview</h3>
                 <p>
-                  We're committed to being upfront about our current capabilities. 
+                  Full transparency about current capabilities. 
                   Here's exactly what's working and what's coming:
                 </p>
                 
@@ -944,7 +1007,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 
                 <p style="margin-top: 24px; font-size: 14px;">
                   <strong>What this means:</strong> Currently, tasks created in Apple Reminders 
-                  sync instantly to Google Tasks. The reverse sync is our top priority and 
+                  sync instantly to Google Tasks. The reverse sync is the top priority and 
                   will be released in the coming weeks.
                 </p>
               </div>
@@ -998,10 +1061,10 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                   <iconify-icon icon="ph:caret-down-bold" width="12" class="faq-arrow"></iconify-icon>
                 </div>
                 <div class="faq-answer">
-                  Absolutely. We use OAuth 2.0 for authentication, which means we never see your 
-                  Google password. Your tasks are transmitted over encrypted HTTPS connections, 
-                  and we don't store your task data—we simply facilitate the sync between services. 
-                  Our infrastructure runs on Vercel's secure edge network with enterprise-grade protection.
+                  Absolutely. Sync Flow uses OAuth 2.0 for authentication, which means your 
+                  Google password remains completely private. Tasks are transmitted over encrypted HTTPS connections, 
+                  and no task data is stored—the service simply facilitates the sync between platforms. 
+                  The infrastructure runs on Vercel's secure edge network with enterprise-grade protection.
                 </div>
               </div>
               
@@ -1011,9 +1074,9 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                   <iconify-icon icon="ph:caret-down-bold" width="12" class="faq-arrow"></iconify-icon>
                 </div>
                 <div class="faq-answer">
-                  For Apple to Google sync, changes appear within 1-2 seconds thanks to our 
-                  webhook-based architecture. We're built on Vercel's global edge network, 
-                  ensuring low latency regardless of your location. The upcoming Google to Apple 
+                  For Apple to Google sync, changes appear within 1-2 seconds thanks to the 
+                  webhook-based architecture. Built on Vercel's global edge network, 
+                  the service ensures low latency regardless of your location. The upcoming Google to Apple 
                   sync will use intelligent polling to maintain near real-time updates.
                 </div>
               </div>
@@ -1037,9 +1100,9 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                   <iconify-icon icon="ph:caret-down-bold" width="12" class="faq-arrow"></iconify-icon>
                 </div>
                 <div class="faq-answer">
-                  Yes! Sync Flow is currently free to use. We believe in making productivity 
-                  tools accessible to everyone. As we add more advanced features, we may 
-                  introduce optional premium tiers, but the core synchronization functionality 
+                  Yes! Sync Flow is currently free to use. The mission is making productivity 
+                  tools accessible to everyone. As more advanced features are added, optional 
+                  premium tiers may be introduced, but the core synchronization functionality 
                   will always have a generous free tier.
                 </div>
               </div>
@@ -1051,8 +1114,8 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 </div>
                 <div class="faq-answer">
                   Currently, Sync Flow supports one Google account and syncs with your default 
-                  task list. Support for multiple accounts and custom list mapping is on our 
-                  roadmap. This will allow you to sync different Apple Reminders lists to 
+                  task list. Support for multiple accounts and custom list mapping is on the 
+                  roadmap. This will allow syncing different Apple Reminders lists to 
                   specific Google Task lists, giving you granular control over your organization.
                 </div>
               </div>
@@ -1083,7 +1146,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           <div class="container">
             <p class="footer-text">
               © 2024 Sync Flow. Built with 
-              <iconify-icon icon="ph:heart-fill" width="14" style="color: var(--red); vertical-align: -2px;"></iconify-icon>
+              <iconify-icon icon="ph:heart-fill" width="14" style="color: var(--accent); vertical-align: -2px;"></iconify-icon>
               for productivity enthusiasts everywhere.
             </p>
           </div>
