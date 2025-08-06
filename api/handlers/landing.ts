@@ -393,177 +393,272 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             color: var(--foreground);
           }
           
-          /* Right Visual */
+          /* Right Visual - Sync Diagram */
           .hero-right {
             position: relative;
-            height: 600px;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 40px 0;
           }
           
-          .hero-visual-container {
+          .sync-diagram {
             position: relative;
-            width: 100%;
-            height: 100%;
             display: flex;
             align-items: center;
-            justify-content: center;
-          }
-          
-          .hero-phone-mockup {
-            position: relative;
-            width: 320px;
-            height: 640px;
-            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
-            border-radius: 40px;
-            padding: 12px;
-            box-shadow: 
-              0 50px 100px -20px rgba(0, 0, 0, 0.25),
-              0 30px 60px -30px rgba(0, 0, 0, 0.3),
-              inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-            transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
-            animation: phone-float 6s ease-in-out infinite;
-          }
-          
-          @keyframes phone-float {
-            0%, 100% { transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) translateY(0); }
-            50% { transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) translateY(-20px); }
-          }
-          
-          .hero-phone-screen {
+            gap: 60px;
             width: 100%;
-            height: 100%;
+            max-width: 600px;
+          }
+          
+          .platform-card {
+            flex: 1;
+            padding: 32px;
             background: var(--card);
-            border-radius: 32px;
-            overflow: hidden;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            text-align: center;
             position: relative;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
           }
           
-          .hero-app-header {
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-            border-bottom: 1px solid var(--border);
+          .platform-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+            border-color: var(--primary-light);
           }
           
-          .hero-app-logo {
+          .platform-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            background: var(--gray-50);
+            border-radius: 20px;
+            font-size: 40px;
+          }
+          
+          .platform-apple .platform-icon {
+            background: linear-gradient(135deg, #000 0%, #333 100%);
+            color: white;
+          }
+          
+          .platform-google .platform-icon {
+            background: linear-gradient(135deg, #4285f4 0%, #1a73e8 100%);
+            color: white;
+          }
+          
+          .platform-name {
             font-size: 18px;
             font-weight: 700;
+            margin-bottom: 8px;
             color: var(--foreground);
           }
           
-          .hero-app-content {
-            padding: 20px;
+          .platform-desc {
+            font-size: 14px;
+            color: var(--muted-foreground);
+            margin-bottom: 20px;
           }
           
-          .hero-task-item {
+          .task-list {
+            text-align: left;
+          }
+          
+          .task-mini {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px;
+            gap: 8px;
+            padding: 8px 12px;
             background: var(--gray-50);
             border-radius: 8px;
-            margin-bottom: 12px;
-            animation: task-slide-in 0.5s ease-out forwards;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--foreground);
             opacity: 0;
+            animation: task-fade-in 0.5s ease-out forwards;
           }
           
-          .hero-task-item:nth-child(1) { animation-delay: 0.1s; }
-          .hero-task-item:nth-child(2) { animation-delay: 0.2s; }
-          .hero-task-item:nth-child(3) { animation-delay: 0.3s; }
+          .task-mini:nth-child(1) { animation-delay: 0.2s; }
+          .task-mini:nth-child(2) { animation-delay: 0.4s; }
+          .task-mini:nth-child(3) { animation-delay: 0.6s; }
           
-          @keyframes task-slide-in {
+          @keyframes task-fade-in {
             from {
               opacity: 0;
-              transform: translateX(-20px);
+              transform: translateY(10px);
             }
             to {
               opacity: 1;
-              transform: translateX(0);
+              transform: translateY(0);
             }
           }
           
-          .hero-task-checkbox {
-            width: 20px;
-            height: 20px;
+          .task-check {
+            width: 16px;
+            height: 16px;
             border: 2px solid var(--primary);
-            border-radius: 4px;
+            border-radius: 3px;
+            flex-shrink: 0;
+          }
+          
+          .task-check.checked {
+            background: var(--primary);
             display: flex;
             align-items: center;
             justify-content: center;
-          }
-          
-          .hero-task-checkbox.checked {
-            background: var(--primary);
             color: white;
+            font-size: 10px;
           }
           
-          .hero-task-text {
-            flex: 1;
-            font-size: 14px;
-            color: var(--foreground);
-          }
-          
-          .hero-task-sync {
-            padding: 4px 8px;
-            background: var(--primary-gradient);
-            color: white;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 600;
-            animation: pulse 2s ease-in-out infinite;
-          }
-          
-          @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-          }
-          
-          .hero-floating-cards {
+          .sync-flow-center {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
           }
           
-          .hero-float-card {
-            position: absolute;
-            padding: 12px 16px;
+          .sync-badge {
+            padding: 12px 20px;
             background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--primary);
+            border-radius: 50px;
             display: flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+            animation: sync-pulse 2s ease-in-out infinite;
+          }
+          
+          @keyframes sync-pulse {
+            0%, 100% { 
+              transform: scale(1);
+              box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+            }
+            50% { 
+              transform: scale(1.05);
+              box-shadow: 0 12px 32px rgba(139, 92, 246, 0.35);
+            }
+          }
+          
+          .sync-badge-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            color: white;
+            animation: rotate-continuous 3s linear infinite;
+          }
+          
+          @keyframes rotate-continuous {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+          
+          .sync-badge-text {
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
+            color: var(--foreground);
           }
           
-          .float-apple {
-            top: 20%;
-            left: -60px;
-            animation: float-card-1 8s ease-in-out infinite;
+          .sync-arrows {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            transform: translateY(-50%);
           }
           
-          .float-google {
-            bottom: 30%;
-            right: -60px;
-            animation: float-card-2 10s ease-in-out infinite;
+          .sync-arrow-line {
+            position: absolute;
+            top: 0;
+            left: 25%;
+            right: 25%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+              transparent 0%, 
+              var(--primary-light) 20%, 
+              var(--primary) 50%, 
+              var(--primary-light) 80%, 
+              transparent 100%);
+            opacity: 0.3;
           }
           
-          @keyframes float-card-1 {
-            0%, 100% { transform: translateY(0) rotate(-5deg); }
-            50% { transform: translateY(-20px) rotate(-3deg); }
+          .sync-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
           }
           
-          @keyframes float-card-2 {
-            0%, 100% { transform: translateY(0) rotate(5deg); }
-            50% { transform: translateY(-15px) rotate(3deg); }
+          .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: -1px;
           }
+          
+          .particle-left {
+            animation: particle-left 2s linear infinite;
+          }
+          
+          .particle-right {
+            animation: particle-right 2s linear infinite;
+          }
+          
+          @keyframes particle-left {
+            from {
+              left: 25%;
+              opacity: 0;
+            }
+            10% {
+              opacity: 1;
+            }
+            90% {
+              opacity: 1;
+            }
+            to {
+              left: 75%;
+              opacity: 0;
+            }
+          }
+          
+          @keyframes particle-right {
+            from {
+              right: 25%;
+              opacity: 0;
+            }
+            10% {
+              opacity: 1;
+            }
+            90% {
+              opacity: 1;
+            }
+            to {
+              right: 75%;
+              opacity: 0;
+            }
+          }
+          
+          .particle:nth-child(2) { animation-delay: 0.4s; }
+          .particle:nth-child(3) { animation-delay: 0.8s; }
+          .particle:nth-child(4) { animation-delay: 1.2s; }
+          .particle:nth-child(5) { animation-delay: 1.6s; }
           
           /* Responsive Design */
           @media (max-width: 1024px) {
@@ -1147,49 +1242,78 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
               </div>
             </div>
             
-            <!-- Right Visual -->
+            <!-- Right Visual - Sync Diagram -->
             <div class="hero-right">
-              <div class="hero-visual-container">
-                <!-- Phone Mockup -->
-                <div class="hero-phone-mockup">
-                  <div class="hero-phone-screen">
-                    <div class="hero-app-header">
-                      <div class="hero-app-logo">
-                        <iconify-icon icon="ph:arrows-clockwise-bold" width="20" style="color: var(--primary);"></iconify-icon>
-                        <span>SyncFlow</span>
+              <div class="sync-diagram">
+                <!-- Apple Platform -->
+                <div class="platform-card platform-apple">
+                  <div class="platform-icon">
+                    <iconify-icon icon="simple-icons:apple" width="40"></iconify-icon>
+                  </div>
+                  <h3 class="platform-name">Apple Reminders</h3>
+                  <p class="platform-desc">Native iOS & macOS app</p>
+                  <div class="task-list">
+                    <div class="task-mini">
+                      <div class="task-check checked">
+                        <iconify-icon icon="ph:check-bold" width="10"></iconify-icon>
                       </div>
+                      <span>Morning workout</span>
                     </div>
-                    <div class="hero-app-content">
-                      <div class="hero-task-item">
-                        <div class="hero-task-checkbox checked">
-                          <iconify-icon icon="ph:check-bold" width="12"></iconify-icon>
-                        </div>
-                        <span class="hero-task-text">Review quarterly goals</span>
-                        <span class="hero-task-sync">Synced</span>
-                      </div>
-                      <div class="hero-task-item">
-                        <div class="hero-task-checkbox"></div>
-                        <span class="hero-task-text">Team standup at 10 AM</span>
-                        <span class="hero-task-sync">Syncing...</span>
-                      </div>
-                      <div class="hero-task-item">
-                        <div class="hero-task-checkbox"></div>
-                        <span class="hero-task-text">Prepare presentation deck</span>
-                        <span class="hero-task-sync">Synced</span>
-                      </div>
+                    <div class="task-mini">
+                      <div class="task-check"></div>
+                      <span>Team meeting notes</span>
+                    </div>
+                    <div class="task-mini">
+                      <div class="task-check"></div>
+                      <span>Buy groceries</span>
                     </div>
                   </div>
                 </div>
                 
-                <!-- Floating Cards -->
-                <div class="hero-floating-cards">
-                  <div class="hero-float-card float-apple">
-                    <iconify-icon icon="simple-icons:apple" width="20" style="color: #000;"></iconify-icon>
-                    <span>Apple Reminders</span>
+                <!-- Sync Flow in Center -->
+                <div class="sync-flow-center">
+                  <div class="sync-badge">
+                    <div class="sync-badge-icon">
+                      <iconify-icon icon="ph:arrows-clockwise-bold" width="18"></iconify-icon>
+                    </div>
+                    <span class="sync-badge-text">SyncFlow</span>
                   </div>
-                  <div class="hero-float-card float-google">
-                    <iconify-icon icon="simple-icons:google" width="20" style="color: #4285f4;"></iconify-icon>
-                    <span>Google Tasks</span>
+                </div>
+                
+                <!-- Animated Sync Arrows -->
+                <div class="sync-arrows">
+                  <div class="sync-arrow-line"></div>
+                  <div class="sync-particles">
+                    <div class="particle particle-left"></div>
+                    <div class="particle particle-left"></div>
+                    <div class="particle particle-left"></div>
+                    <div class="particle particle-right"></div>
+                    <div class="particle particle-right"></div>
+                  </div>
+                </div>
+                
+                <!-- Google Platform -->
+                <div class="platform-card platform-google">
+                  <div class="platform-icon">
+                    <iconify-icon icon="simple-icons:google" width="40"></iconify-icon>
+                  </div>
+                  <h3 class="platform-name">Google Tasks</h3>
+                  <p class="platform-desc">Google ecosystem</p>
+                  <div class="task-list">
+                    <div class="task-mini">
+                      <div class="task-check checked">
+                        <iconify-icon icon="ph:check-bold" width="10"></iconify-icon>
+                      </div>
+                      <span>Morning workout</span>
+                    </div>
+                    <div class="task-mini">
+                      <div class="task-check"></div>
+                      <span>Team meeting notes</span>
+                    </div>
+                    <div class="task-mini">
+                      <div class="task-check"></div>
+                      <span>Buy groceries</span>
+                    </div>
                   </div>
                 </div>
               </div>
