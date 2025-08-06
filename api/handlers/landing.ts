@@ -11,12 +11,12 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
       <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Sync Flow - Never lose a task again. Bridge Apple Reminders and Google Tasks with real-time, intelligent synchronization.">
-        <meta property="og:title" content="Sync Flow - Your Tasks, Unified Across Platforms">
-        <meta property="og:description" content="Stop managing tasks in two places. Sync Flow seamlessly bridges Apple Reminders and Google Tasks with enterprise-grade security.">
+        <meta name="description" content="SyncFlow - Never lose a task again. Bridge Apple Reminders and Google Tasks with real-time, intelligent synchronization.">
+        <meta property="og:title" content="SyncFlow - Your Tasks, Unified Across Platforms">
+        <meta property="og:description" content="Stop managing tasks in two places. SyncFlow seamlessly bridges Apple Reminders and Google Tasks with enterprise-grade security.">
         <meta property="og:type" content="website">
         <meta name="twitter:card" content="summary_large_image">
-        <title>Sync Flow - Never Miss a Task Between Apple & Google</title>
+        <title>SyncFlow - Never Miss a Task Between Apple & Google</title>
         <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
         <style>
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -131,186 +131,489 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             vertical-align: middle;
           }
           
-          /* Hero Section */
+          /* Hero Section - Complete Redesign */
           .hero {
             min-height: 100vh;
+            position: relative;
             display: flex;
             align-items: center;
-            position: relative;
-            background: linear-gradient(180deg, var(--background) 0%, var(--gray-50) 100%);
+            background: var(--background);
             overflow: hidden;
           }
           
-          .hero::before {
-            content: '';
+          /* Background Design Elements */
+          .hero-background {
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 40%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-                        radial-gradient(circle at 70% 60%, rgba(236, 72, 153, 0.06) 0%, transparent 50%);
-            animation: float 20s ease-in-out infinite;
-            pointer-events: none;
+            inset: 0;
+            z-index: 0;
           }
           
-          @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(30px, -30px) rotate(120deg); }
-            66% { transform: translate(-20px, 20px) rotate(240deg); }
+          .hero-gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
           }
           
-          .hero-content {
+          .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            top: -200px;
+            right: -100px;
+            animation: orb-float-1 20s ease-in-out infinite;
+          }
+          
+          .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            bottom: -150px;
+            left: -100px;
+            animation: orb-float-2 15s ease-in-out infinite;
+          }
+          
+          @keyframes orb-float-1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 50px) scale(1.1); }
+          }
+          
+          @keyframes orb-float-2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(0.9); }
+          }
+          
+          .hero-grid-pattern {
+            position: absolute;
+            inset: 0;
+            background-image: 
+              linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(ellipse at center, transparent 0%, black 100%);
+          }
+          
+          /* Main Hero Content */
+          .hero-container {
             position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: calc(var(--gap-triple) * 2) 0;
+            z-index: 10;
+            width: 100%;
+            max-width: var(--page-width);
+            margin: 0 auto;
+            padding: 0 var(--page-margin);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
           }
           
-          .hero-badge {
+          /* Left Content */
+          .hero-left {
+            text-align: left;
+          }
+          
+          .hero-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: absolute;
+            top: 24px;
+            left: 0;
+            right: 0;
+            z-index: 20;
+            padding: 0 var(--page-margin);
+            max-width: var(--page-width);
+            margin: 0 auto;
+          }
+          
+          .hero-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--foreground);
+          }
+          
+          .hero-logo-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            color: white;
+            animation: logo-pulse 2s ease-in-out infinite;
+          }
+          
+          @keyframes logo-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+          }
+          
+          .hero-logo-text {
+            letter-spacing: -0.02em;
+          }
+          
+          .hero-announcement {
             display: inline-flex;
             align-items: center;
-            gap: var(--gap-half);
-            padding: 6px 12px;
+            gap: 8px;
+            padding: 4px 6px 4px 16px;
             background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
             border: 1px solid rgba(139, 92, 246, 0.2);
-            border-radius: var(--radius-full);
-            font-size: 13px;
+            border-radius: 50px;
+            margin-bottom: 24px;
+            font-size: 14px;
             font-weight: 500;
-            color: var(--primary);
-            margin-bottom: var(--gap-double);
-            letter-spacing: 0.02em;
-            backdrop-filter: blur(10px);
           }
           
-          .hero-title {
-            font-size: clamp(3rem, 7vw, 5rem);
+          .hero-announcement-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 50px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+          
+          .hero-headline {
+            font-size: clamp(3rem, 5vw, 4.5rem);
             font-weight: 800;
-            line-height: 1.05;
-            margin-bottom: var(--gap);
-            letter-spacing: -0.04em;
-            background: linear-gradient(135deg, var(--foreground) 0%, var(--primary) 50%, var(--accent) 100%);
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            color: var(--foreground);
+          }
+          
+          .hero-headline-gradient {
+            background: var(--primary-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            display: inline-block;
           }
           
-          .hero-subtitle {
-            font-size: clamp(1.1rem, 2vw, 1.4rem);
+          .hero-description {
+            font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+            line-height: 1.6;
             color: var(--muted-foreground);
-            max-width: 680px;
-            margin: 0 auto var(--gap-triple);
-            line-height: var(--line-height-large);
-            font-weight: 400;
+            margin-bottom: 40px;
+            max-width: 540px;
           }
           
-          .hero-cta {
+          .hero-cta-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+          }
+          
+          .hero-cta-primary {
             display: inline-flex;
             align-items: center;
-            gap: var(--gap-half);
+            gap: 8px;
             padding: 14px 28px;
             background: var(--primary-gradient);
             color: white;
             text-decoration: none;
-            border-radius: var(--radius);
-            font-size: 15px;
+            border-radius: 10px;
+            font-size: 16px;
             font-weight: 600;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.35);
-            position: relative;
-            overflow: hidden;
+            box-shadow: 
+              0 4px 14px 0 rgba(139, 92, 246, 0.35),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.1);
           }
           
-          .hero-cta::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--primary-gradient-hover);
-            opacity: 0;
-            transition: opacity 0.2s;
-          }
-          
-          .hero-cta:hover {
+          .hero-cta-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px 0 rgba(139, 92, 246, 0.45);
+            box-shadow: 
+              0 8px 20px 0 rgba(139, 92, 246, 0.45),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.2);
           }
           
-          .hero-cta:hover::before {
-            opacity: 1;
-          }
-          
-          .hero-cta > * {
-            position: relative;
-            z-index: 1;
-          }
-          
-          .hero-visual {
-            margin-top: calc(var(--gap-triple) * 1.5);
-            display: flex;
-            justify-content: center;
+          .hero-cta-secondary {
+            display: inline-flex;
             align-items: center;
-            gap: var(--gap-double);
-            flex-wrap: wrap;
-          }
-          
-          .ecosystem-badge {
-            padding: 20px 32px;
+            gap: 8px;
+            padding: 14px 28px;
             background: var(--card);
+            color: var(--foreground);
+            text-decoration: none;
             border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          
+          .hero-cta-secondary:hover {
+            background: var(--muted);
+            border-color: var(--primary-light);
+            transform: translateY(-2px);
+          }
+          
+          .hero-trust {
             display: flex;
             align-items: center;
-            gap: var(--gap);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: var(--shadow);
+            gap: 24px;
+            margin-top: 48px;
+            padding-top: 48px;
+            border-top: 1px solid var(--border);
           }
           
-          .ecosystem-badge:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--primary-light);
+          .hero-trust-text {
+            font-size: 13px;
+            color: var(--muted-foreground);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
           }
           
-          .ecosystem-icon {
-            width: 48px;
-            height: 48px;
+          .hero-trust-avatars {
+            display: flex;
+            align-items: center;
+          }
+          
+          .hero-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid var(--background);
+            margin-left: -8px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-            border-radius: var(--radius-md);
-            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
           }
           
-          .ecosystem-text h3 {
-            font-size: 17px;
+          .hero-avatar:first-child {
+            margin-left: 0;
+          }
+          
+          .hero-trust-count {
+            margin-left: 8px;
+            font-size: 14px;
             font-weight: 600;
-            margin-bottom: 2px;
             color: var(--foreground);
           }
           
-          .ecosystem-text p {
-            color: var(--muted-foreground);
+          /* Right Visual */
+          .hero-right {
+            position: relative;
+            height: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .hero-visual-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .hero-phone-mockup {
+            position: relative;
+            width: 320px;
+            height: 640px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 
+              0 50px 100px -20px rgba(0, 0, 0, 0.25),
+              0 30px 60px -30px rgba(0, 0, 0, 0.3),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            transform: perspective(1000px) rotateY(-15deg) rotateX(5deg);
+            animation: phone-float 6s ease-in-out infinite;
+          }
+          
+          @keyframes phone-float {
+            0%, 100% { transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) translateY(0); }
+            50% { transform: perspective(1000px) rotateY(-15deg) rotateX(5deg) translateY(-20px); }
+          }
+          
+          .hero-phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--card);
+            border-radius: 32px;
+            overflow: hidden;
+            position: relative;
+          }
+          
+          .hero-app-header {
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border-bottom: 1px solid var(--border);
+          }
+          
+          .hero-app-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--foreground);
+          }
+          
+          .hero-app-content {
+            padding: 20px;
+          }
+          
+          .hero-task-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--gray-50);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            animation: task-slide-in 0.5s ease-out forwards;
+            opacity: 0;
+          }
+          
+          .hero-task-item:nth-child(1) { animation-delay: 0.1s; }
+          .hero-task-item:nth-child(2) { animation-delay: 0.2s; }
+          .hero-task-item:nth-child(3) { animation-delay: 0.3s; }
+          
+          @keyframes task-slide-in {
+            from {
+              opacity: 0;
+              transform: translateX(-20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateX(0);
+            }
+          }
+          
+          .hero-task-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .hero-task-checkbox.checked {
+            background: var(--primary);
+            color: white;
+          }
+          
+          .hero-task-text {
+            flex: 1;
             font-size: 14px;
+            color: var(--foreground);
           }
           
-          .sync-arrow {
-            font-size: 24px;
-            color: var(--primary);
-            animation: pulse-scale 2s infinite;
+          .hero-task-sync {
+            padding: 4px 8px;
+            background: var(--primary-gradient);
+            color: white;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            animation: pulse 2s ease-in-out infinite;
           }
           
-          @keyframes pulse-scale {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
           }
           
-          @keyframes bounce-horizontal {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(10px); }
+          .hero-floating-cards {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+          }
+          
+          .hero-float-card {
+            position: absolute;
+            padding: 12px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+          }
+          
+          .float-apple {
+            top: 20%;
+            left: -60px;
+            animation: float-card-1 8s ease-in-out infinite;
+          }
+          
+          .float-google {
+            bottom: 30%;
+            right: -60px;
+            animation: float-card-2 10s ease-in-out infinite;
+          }
+          
+          @keyframes float-card-1 {
+            0%, 100% { transform: translateY(0) rotate(-5deg); }
+            50% { transform: translateY(-20px) rotate(-3deg); }
+          }
+          
+          @keyframes float-card-2 {
+            0%, 100% { transform: translateY(0) rotate(5deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+          }
+          
+          /* Responsive Design */
+          @media (max-width: 1024px) {
+            .hero-container {
+              grid-template-columns: 1fr;
+              text-align: center;
+            }
+            
+            .hero-left {
+              text-align: center;
+            }
+            
+            .hero-description {
+              max-width: 600px;
+              margin-left: auto;
+              margin-right: auto;
+            }
+            
+            .hero-cta-group {
+              justify-content: center;
+            }
+            
+            .hero-trust {
+              justify-content: center;
+            }
+            
+            .hero-right {
+              height: 400px;
+              margin-top: 40px;
+            }
+            
+            .hero-phone-mockup {
+              width: 240px;
+              height: 480px;
+            }
           }
           
           /* Features Section */
@@ -786,44 +1089,116 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
         </style>
       </head>
       <body>
-        <!-- Hero Section -->
+        <!-- Hero Section - Complete Redesign -->
         <section class="hero">
-          <div class="container">
-            <div class="hero-content">
-              <div class="hero-badge">
-                <iconify-icon icon="ph:sparkle-fill" width="14"></iconify-icon>
-                Trusted by thousands of productivity enthusiasts
+          <!-- Background Elements -->
+          <div class="hero-background">
+            <div class="hero-gradient-orb orb-1"></div>
+            <div class="hero-gradient-orb orb-2"></div>
+            <div class="hero-grid-pattern"></div>
+          </div>
+          
+          <!-- Navigation Bar -->
+          <nav class="hero-nav">
+            <div class="hero-logo">
+              <div class="hero-logo-icon">
+                <iconify-icon icon="ph:arrows-clockwise-bold" width="24"></iconify-icon>
               </div>
-              <h1 class="hero-title">Your Tasks, Finally United</h1>
-              <p class="hero-subtitle">
-                Stop the chaos of managing tasks in two places. Sync Flow seamlessly bridges 
-                Apple Reminders and Google Tasks, ensuring you never miss what matters.
-              </p>
-              <a href="${authUrl}" class="hero-cta">
-                <iconify-icon icon="ph:rocket-launch-bold" width="16"></iconify-icon>
-                Start Syncing Now - It's Free
-              </a>
+              <span class="hero-logo-text">SyncFlow</span>
+            </div>
+          </nav>
+          
+          <!-- Main Content -->
+          <div class="hero-container">
+            <!-- Left Content -->
+            <div class="hero-left">
+              <div class="hero-announcement">
+                <span>🎉 Now supporting bidirectional sync</span>
+                <span class="hero-announcement-badge">
+                  <iconify-icon icon="ph:sparkle" width="12"></iconify-icon>
+                  NEW
+                </span>
+              </div>
               
-              <div class="hero-visual">
-                <div class="ecosystem-badge">
-                  <div class="ecosystem-icon">
-                    <iconify-icon icon="simple-icons:apple" width="32"></iconify-icon>
-                  </div>
-                  <div class="ecosystem-text">
-                    <h3>Apple Reminders</h3>
-                    <p>Your native iOS tasks</p>
+              <h1 class="hero-headline">
+                Never lose a task between 
+                <span class="hero-headline-gradient">Apple & Google</span> 
+                again
+              </h1>
+              
+              <p class="hero-description">
+                SyncFlow is the missing link between Apple Reminders and Google Tasks. 
+                Real-time, automatic synchronization that just works. Set it up once, 
+                and never worry about task management fragmentation again.
+              </p>
+              
+              <div class="hero-cta-group">
+                <a href="${authUrl}" class="hero-cta-primary">
+                  <iconify-icon icon="ph:rocket-launch-bold" width="18"></iconify-icon>
+                  Start Syncing for Free
+                </a>
+                <a href="#how-it-works" class="hero-cta-secondary">
+                  <iconify-icon icon="ph:play-circle" width="18"></iconify-icon>
+                  Watch Demo
+                </a>
+              </div>
+              
+              <div class="hero-trust">
+                <span class="hero-trust-text">Trusted by</span>
+                <div class="hero-trust-avatars">
+                  <div class="hero-avatar">A</div>
+                  <div class="hero-avatar">M</div>
+                  <div class="hero-avatar">S</div>
+                  <div class="hero-avatar">J</div>
+                  <div class="hero-avatar">+</div>
+                </div>
+                <span class="hero-trust-count">5,000+ users</span>
+              </div>
+            </div>
+            
+            <!-- Right Visual -->
+            <div class="hero-right">
+              <div class="hero-visual-container">
+                <!-- Phone Mockup -->
+                <div class="hero-phone-mockup">
+                  <div class="hero-phone-screen">
+                    <div class="hero-app-header">
+                      <div class="hero-app-logo">
+                        <iconify-icon icon="ph:arrows-clockwise-bold" width="20" style="color: var(--primary);"></iconify-icon>
+                        <span>SyncFlow</span>
+                      </div>
+                    </div>
+                    <div class="hero-app-content">
+                      <div class="hero-task-item">
+                        <div class="hero-task-checkbox checked">
+                          <iconify-icon icon="ph:check-bold" width="12"></iconify-icon>
+                        </div>
+                        <span class="hero-task-text">Review quarterly goals</span>
+                        <span class="hero-task-sync">Synced</span>
+                      </div>
+                      <div class="hero-task-item">
+                        <div class="hero-task-checkbox"></div>
+                        <span class="hero-task-text">Team standup at 10 AM</span>
+                        <span class="hero-task-sync">Syncing...</span>
+                      </div>
+                      <div class="hero-task-item">
+                        <div class="hero-task-checkbox"></div>
+                        <span class="hero-task-text">Prepare presentation deck</span>
+                        <span class="hero-task-sync">Synced</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="sync-arrow">
-                  <iconify-icon icon="ph:arrows-left-right-bold" width="24"></iconify-icon>
-                </div>
-                <div class="ecosystem-badge">
-                  <div class="ecosystem-icon">
-                    <iconify-icon icon="simple-icons:google" width="32"></iconify-icon>
+                
+                <!-- Floating Cards -->
+                <div class="hero-floating-cards">
+                  <div class="hero-float-card float-apple">
+                    <iconify-icon icon="simple-icons:apple" width="20" style="color: #000;"></iconify-icon>
+                    <span>Apple Reminders</span>
                   </div>
-                  <div class="ecosystem-text">
-                    <h3>Google Tasks</h3>
-                    <p>Your workspace tasks</p>
+                  <div class="hero-float-card float-google">
+                    <iconify-icon icon="simple-icons:google" width="20" style="color: #4285f4;"></iconify-icon>
+                    <span>Google Tasks</span>
                   </div>
                 </div>
               </div>
@@ -861,7 +1236,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 <h3 class="feature-title">Enterprise-Grade Security</h3>
                 <p class="feature-description">
                   Your data is protected with OAuth 2.0 authentication and encrypted connections. 
-                  Sync Flow never stores your tasks—it simply bridges the gap between your existing services.
+                  SyncFlow never stores your tasks—it simply bridges the gap between your existing services.
                 </p>
               </div>
               
@@ -882,7 +1257,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 </div>
                 <h3 class="feature-title">Global Edge Performance</h3>
                 <p class="feature-description">
-                  Built on Vercel's Edge Network, Sync Flow delivers lightning-fast performance 
+                  Built on Vercel's Edge Network, SyncFlow delivers lightning-fast performance 
                   no matter where you are. Your tasks sync at the speed of thought.
                 </p>
               </div>
@@ -908,7 +1283,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
               <span class="section-badge">How It Works</span>
               <h2 class="section-title">From Setup to Daily Bliss in Minutes</h2>
               <p class="section-subtitle">
-                Getting started with Sync Flow is easier than making your morning coffee
+              Getting started with SyncFlow is easier than making your morning coffee
               </p>
             </div>
             
@@ -918,7 +1293,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                 <h3 class="step-title">Authenticate Securely</h3>
                 <p class="step-description">
                   Sign in with your Google account using OAuth 2.0. 
-                  Sync Flow only requests access to your Tasks, nothing more.
+                  SyncFlow only requests access to your Tasks, nothing more.
                 </p>
               </div>
               
@@ -1050,18 +1425,18 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
               <span class="section-badge">FAQ</span>
               <h2 class="section-title">Your Questions, Answered</h2>
               <p class="section-subtitle">
-                Everything you need to know about Sync Flow
+                Everything you need to know about SyncFlow
               </p>
             </div>
             
             <div class="faq-container">
               <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
-                  Is my data secure with Sync Flow?
+                  Is my data secure with SyncFlow?
                   <iconify-icon icon="ph:caret-down-bold" width="12" class="faq-arrow"></iconify-icon>
                 </div>
                 <div class="faq-answer">
-                  Absolutely. Sync Flow uses OAuth 2.0 for authentication, which means your 
+                  Absolutely. SyncFlow uses OAuth 2.0 for authentication, which means your 
                   Google password remains completely private. Tasks are transmitted over encrypted HTTPS connections, 
                   and no task data is stored—the service simply facilitates the sync between platforms. 
                   The infrastructure runs on Vercel's secure edge network with enterprise-grade protection.
@@ -1087,7 +1462,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                   <iconify-icon icon="ph:caret-down-bold" width="12" class="faq-arrow"></iconify-icon>
                 </div>
                 <div class="faq-answer">
-                  Your existing tasks remain exactly where they are. Sync Flow doesn't delete 
+                  Your existing tasks remain exactly where they are. SyncFlow doesn't delete 
                   or modify your existing tasks without your action. When you create new tasks 
                   or update existing ones, those changes are synchronized. You maintain full 
                   control over your data in both platforms.
@@ -1096,11 +1471,11 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
               
               <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
-                  Is Sync Flow free to use?
+                  Is SyncFlow free to use?
                   <iconify-icon icon="ph:caret-down-bold" width="12" class="faq-arrow"></iconify-icon>
                 </div>
                 <div class="faq-answer">
-                  Yes! Sync Flow is currently free to use. The mission is making productivity 
+                  Yes! SyncFlow is currently free to use. The mission is making productivity 
                   tools accessible to everyone. As more advanced features are added, optional 
                   premium tiers may be introduced, but the core synchronization functionality 
                   will always have a generous free tier.
@@ -1113,7 +1488,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
                   <iconify-icon icon="ph:caret-down-bold" width="12" class="faq-arrow"></iconify-icon>
                 </div>
                 <div class="faq-answer">
-                  Currently, Sync Flow supports one Google account and syncs with your default 
+                  Currently, SyncFlow supports one Google account and syncs with your default 
                   task list. Support for multiple accounts and custom list mapping is on the 
                   roadmap. This will allow syncing different Apple Reminders lists to 
                   specific Google Task lists, giving you granular control over your organization.
@@ -1145,7 +1520,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
         <footer class="footer">
           <div class="container">
             <p class="footer-text">
-              © 2024 Sync Flow. Built with 
+              © 2024 SyncFlow. Built with
               <iconify-icon icon="ph:heart-fill" width="14" style="color: var(--accent); vertical-align: -2px;"></iconify-icon>
               for productivity enthusiasts everywhere.
             </p>
