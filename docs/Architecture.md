@@ -35,7 +35,7 @@ Sync Flow is a serverless application built on Vercel Edge Functions that provid
 
 - **Factory Pattern**: All handlers use factory functions accepting service dependencies
 - **Handlers**:
-  - `home.ts`: Serves OAuth login page with inline styles
+  - `landing.ts`: Serves the landing page with OAuth login
   - `auth.ts`: Processes OAuth callbacks and user registration
   - `webhook.ts`: Handles task CRUD operations from Apple Reminders
   - `sync.ts`: Provides polling endpoint for fetching updates
