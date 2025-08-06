@@ -295,180 +295,351 @@ export function createAuthHandler(
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Sync Flow - Authentication Failed</title>
+          <meta name="description" content="SyncFlow - Authentication failed. Please try again to sync your tasks.">
+          <title>SyncFlow - Authentication Failed</title>
+          <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
           <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+            
             * {
+              margin: 0;
+              padding: 0;
               box-sizing: border-box;
             }
             
             :root {
-              --primary: #4285f4;
-              --error: #ea4335;
-              --text-primary: #202124;
-              --text-secondary: #5f6368;
-              --bg-secondary: #f8f9fa;
-              --shadow: 0 1px 3px rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+              /* BuildUI-inspired Color Palette */
+              --background: #fafafa;
+              --foreground: #09090b;
+              --card: #ffffff;
+              --card-foreground: #09090b;
+              --muted: #f4f4f5;
+              --muted-foreground: #71717a;
+              --border: #e4e4e7;
+              
+              /* Primary Purple Gradient */
+              --primary: #8b5cf6;
+              --primary-light: #a78bfa;
+              --primary-dark: #7c3aed;
+              --primary-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+              --primary-gradient-hover: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+              
+              /* Status Colors */
+              --error: #ef4444;
+              --error-light: #fef2f2;
+              --error-border: #fecaca;
+              --warning: #f59e0b;
+              --success: #10b981;
+              
+              /* Spacing */
+              --gap-quarter: 4px;
+              --gap-half: 8px;
+              --gap: 16px;
+              --gap-double: 32px;
+              --gap-triple: 48px;
+              --page-margin: 24px;
+              
+              /* Typography */
+              --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+              --line-height: 1.5;
+              --line-height-large: 1.8;
+              
+              /* Shadows */
+              --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+              --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+              --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+              --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+              --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+              
+              /* Borders */
+              --radius-sm: 6px;
+              --radius: 8px;
+              --radius-md: 12px;
+              --radius-lg: 16px;
+              --radius-xl: 24px;
             }
             
-            @media (prefers-color-scheme: dark) {
-              :root {
-                --text-primary: #e8eaed;
-                --text-secondary: #9aa0a6;
-                --bg-secondary: #292a2d;
-              }
-              body {
-                background-color: #202124;
-              }
-              .container {
-                background: #303134;
-              }
-              .error-box {
-                background: rgba(234, 67, 53, 0.1);
-                border-color: rgba(234, 67, 53, 0.3);
-              }
+            html {
+              scroll-behavior: smooth;
             }
             
             body {
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-              line-height: 1.6;
-              color: var(--text-primary);
+              font-family: var(--font-sans);
+              font-size: 15px;
+              background: var(--background);
+              color: var(--foreground);
+              line-height: var(--line-height-large);
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
               margin: 0;
               padding: 0;
               min-height: 100vh;
               display: flex;
               align-items: center;
               justify-content: center;
-              background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+              position: relative;
+              overflow: hidden;
+            }
+            
+            /* Background gradient orbs */
+            .background-orb {
+              position: absolute;
+              border-radius: 50%;
+              filter: blur(100px);
+              opacity: 0.15;
+            }
+            
+            .orb-1 {
+              width: 400px;
+              height: 400px;
+              background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+              top: -200px;
+              right: -100px;
+            }
+            
+            .orb-2 {
+              width: 300px;
+              height: 300px;
+              background: linear-gradient(135deg, #8b5cf6 0%, #ef4444 100%);
+              bottom: -150px;
+              left: -100px;
             }
             
             .container {
-              background: white;
-              border-radius: 16px;
-              box-shadow: var(--shadow);
-              padding: 48px;
               max-width: 480px;
-              width: 90%;
+              width: 100%;
+              margin: 0 auto;
+              padding: var(--page-margin);
+              position: relative;
+              z-index: 1;
+            }
+            
+            .card {
+              background: var(--card);
+              border: 1px solid var(--border);
+              border-radius: var(--radius-lg);
+              padding: var(--gap-triple);
+              box-shadow: var(--shadow-xl);
+              position: relative;
               text-align: center;
-              animation: fadeIn 0.3s ease-out;
+              animation: fadeInUp 0.3s ease-out;
             }
             
-            @keyframes fadeIn {
-              from { opacity: 0; transform: translateY(10px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            
-            h2 {
-              font-size: 2rem;
-              font-weight: 600;
-              margin: 0 0 24px 0;
-              color: var(--text-primary);
+            @keyframes fadeInUp {
+              from { 
+                opacity: 0; 
+                transform: translateY(20px);
+              }
+              to { 
+                opacity: 1; 
+                transform: translateY(0);
+              }
             }
             
             .error-icon {
-              display: inline-block;
+              width: 60px;
+              height: 60px;
+              margin: 0 auto var(--gap);
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+              border-radius: var(--radius-md);
               color: var(--error);
-              font-size: 3rem;
-              margin-bottom: 24px;
+            }
+            
+            h2 {
+              font-size: 28px;
+              font-weight: 800;
+              letter-spacing: -0.03em;
+              margin: 0 0 var(--gap-half) 0;
+              color: var(--foreground);
             }
             
             .error-box {
-              background: rgba(234, 67, 53, 0.08);
-              border: 1px solid rgba(234, 67, 53, 0.2);
-              border-radius: 8px;
-              padding: 20px;
-              margin: 24px 0;
+              background: var(--error-light);
+              border: 1px solid var(--error-border);
+              border-radius: var(--radius-md);
+              padding: var(--gap);
+              margin: var(--gap-double) 0;
             }
             
             .error-message {
               color: var(--error);
-              font-weight: 500;
+              font-weight: 600;
+              font-size: 14px;
               margin: 0;
             }
             
             .help-text {
-              color: var(--text-secondary);
-              margin: 24px 0;
-              font-size: 1rem;
+              color: var(--muted-foreground);
+              margin: var(--gap-double) 0;
+              font-size: 14px;
+              line-height: 1.6;
+              text-align: left;
+            }
+            
+            .help-list {
+              list-style: none;
+              padding: 0;
+              margin: var(--gap) 0;
+            }
+            
+            .help-list li {
+              display: flex;
+              align-items: flex-start;
+              gap: var(--gap-half);
+              margin-bottom: var(--gap-half);
+            }
+            
+            .help-list-icon {
+              color: var(--warning);
+              flex-shrink: 0;
+              margin-top: 2px;
+            }
+            
+            .buttons {
+              display: flex;
+              gap: var(--gap);
+              margin-top: var(--gap-double);
             }
             
             .button {
-              display: inline-block;
-              padding: 12px 24px;
-              font-size: 16px;
-              font-weight: 500;
-              text-decoration: none;
-              border-radius: 8px;
-              background: var(--primary);
+              flex: 1;
+              display: inline-flex;
+              align-items: center;
+              justify-content: center;
+              gap: var(--gap-half);
+              padding: 14px 28px;
+              background: var(--primary-gradient);
               color: white;
-              margin: 16px 8px;
-              transition: all 0.2s ease;
+              text-decoration: none;
+              border-radius: var(--radius-md);
+              font-size: 16px;
+              font-weight: 600;
+              transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+              box-shadow: 
+                0 4px 14px 0 rgba(139, 92, 246, 0.35),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.1);
               cursor: pointer;
-              box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+              border: none;
             }
             
             .button:hover {
-              background: #3367d6;
-              transform: translateY(-1px);
-              box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+              transform: translateY(-2px);
+              box-shadow: 
+                0 8px 20px 0 rgba(139, 92, 246, 0.45),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.2);
             }
             
             .button-secondary {
-              background: transparent;
-              color: var(--primary);
-              border: 1px solid var(--primary);
-              box-shadow: none;
+              background: var(--card);
+              color: var(--foreground);
+              border: 1px solid var(--border);
+              box-shadow: var(--shadow-sm);
             }
             
             .button-secondary:hover {
-              background: rgba(66, 133, 244, 0.08);
-              transform: none;
-              box-shadow: none;
+              background: var(--muted);
+              border-color: var(--primary-light);
+              transform: translateY(-2px);
+              box-shadow: var(--shadow-md);
             }
             
             .error-details {
-              margin-top: 24px;
-              font-size: 0.875rem;
-              color: var(--text-secondary);
+              margin-top: var(--gap-double);
+              padding-top: var(--gap-double);
+              border-top: 1px solid var(--border);
+              font-size: 12px;
+              color: var(--muted-foreground);
+              font-family: monospace;
+              word-break: break-all;
+            }
+            
+            .error-details-label {
+              font-family: var(--font-sans);
+              font-weight: 500;
+              margin-bottom: var(--gap-half);
+              display: block;
             }
             
             @media (max-width: 600px) {
               .container {
-                padding: 32px 24px;
-                width: 95%;
+                padding: var(--gap);
               }
-              h2 { font-size: 1.75rem; }
+              
+              .card {
+                padding: var(--gap-double);
+              }
+              
+              h2 {
+                font-size: 24px;
+              }
+              
+              .buttons {
+                flex-direction: column;
+              }
+              
               .button {
-                display: block;
                 width: 100%;
-                margin: 8px 0;
               }
             }
           </style>
         </head>
         <body>
+          <!-- Background gradient orbs -->
+          <div class="background-orb orb-1"></div>
+          <div class="background-orb orb-2"></div>
+          
           <div class="container">
-            <span class="error-icon">❌</span>
-            <h2>Authentication Failed</h2>
-            
-            <div class="error-box">
-              <p class="error-message">We couldn't complete the authentication process</p>
+            <div class="card">
+              <div class="error-icon">
+                <iconify-icon icon="ph:x-circle-fill" width="32"></iconify-icon>
+              </div>
+              
+              <h2>Authentication Failed</h2>
+              
+              <div class="error-box">
+                <p class="error-message">
+                  <iconify-icon icon="ph:warning" width="16" style="vertical-align: -2px; margin-right: 6px;"></iconify-icon>
+                  We couldn't complete the authentication process
+                </p>
+              </div>
+              
+              <div class="help-text">
+                <p style="margin: 0 0 var(--gap-half) 0; font-weight: 500; color: var(--foreground);">This might happen if:</p>
+                <ul class="help-list">
+                  <li>
+                    <iconify-icon icon="ph:dot-fill" width="16" class="help-list-icon"></iconify-icon>
+                    <span>The authorization was cancelled</span>
+                  </li>
+                  <li>
+                    <iconify-icon icon="ph:dot-fill" width="16" class="help-list-icon"></iconify-icon>
+                    <span>The authorization code expired</span>
+                  </li>
+                  <li>
+                    <iconify-icon icon="ph:dot-fill" width="16" class="help-list-icon"></iconify-icon>
+                    <span>There was a network error</span>
+                  </li>
+                </ul>
+              </div>
+              
+              <div class="buttons">
+                <a href="/" class="button">
+                  <iconify-icon icon="ph:arrow-clockwise-bold" width="18"></iconify-icon>
+                  Try Again
+                </a>
+                <a href="https://support.google.com/accounts/" target="_blank" rel="noopener noreferrer" class="button button-secondary">
+                  <iconify-icon icon="ph:question" width="18"></iconify-icon>
+                  Get Help
+                </a>
+              </div>
+              
+              <div class="error-details">
+                <span class="error-details-label">Error details:</span>
+                ${errorMessage}
+              </div>
             </div>
-            
-            <p class="help-text">
-              This might happen if:
-              <br>• The authorization was cancelled
-              <br>• The authorization code expired
-              <br>• There was a network error
-            </p>
-            
-            <div>
-              <a href="/" class="button">Try Again</a>
-              <a href="https://support.google.com/accounts/" target="_blank" rel="noopener noreferrer" class="button button-secondary">Get Help</a>
-            </div>
-            
-            <p class="error-details">
-              Error details: ${errorMessage}
-            </p>
           </div>
         </body>
         </html>
