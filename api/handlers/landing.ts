@@ -377,34 +377,19 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             letter-spacing: 0.5px;
           }
           
-          .hero-trust-avatars {
+          .hero-trust-items {
             display: flex;
             align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
           }
           
-          .hero-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid var(--background);
-            margin-left: -8px;
-            background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent) 100%);
-            display: flex;
+          .hero-trust-item {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-            color: white;
-          }
-          
-          .hero-avatar:first-child {
-            margin-left: 0;
-          }
-          
-          .hero-trust-count {
-            margin-left: 8px;
+            gap: 6px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 500;
             color: var(--foreground);
           }
           
@@ -1113,10 +1098,10 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             <!-- Left Content -->
             <div class="hero-left">
               <div class="hero-announcement">
-                <span>🎉 Now supporting bidirectional sync</span>
+                <span>⚡ Real-time sync in under 2 seconds</span>
                 <span class="hero-announcement-badge">
-                  <iconify-icon icon="ph:sparkle" width="12"></iconify-icon>
-                  NEW
+                  <iconify-icon icon="ph:lightning" width="12"></iconify-icon>
+                  FAST
                 </span>
               </div>
               
@@ -1144,15 +1129,21 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
               </div>
               
               <div class="hero-trust">
-                <span class="hero-trust-text">Trusted by</span>
-                <div class="hero-trust-avatars">
-                  <div class="hero-avatar">A</div>
-                  <div class="hero-avatar">M</div>
-                  <div class="hero-avatar">S</div>
-                  <div class="hero-avatar">J</div>
-                  <div class="hero-avatar">+</div>
+                <span class="hero-trust-text">Key Features</span>
+                <div class="hero-trust-items">
+                  <span class="hero-trust-item">
+                    <iconify-icon icon="ph:check-circle-fill" width="16" style="color: var(--success);"></iconify-icon>
+                    Free Forever
+                  </span>
+                  <span class="hero-trust-item">
+                    <iconify-icon icon="ph:shield-check-fill" width="16" style="color: var(--primary);"></iconify-icon>
+                    OAuth 2.0 Secure
+                  </span>
+                  <span class="hero-trust-item">
+                    <iconify-icon icon="ph:timer-fill" width="16" style="color: var(--accent);"></iconify-icon>
+                    2-Min Setup
+                  </span>
                 </div>
-                <span class="hero-trust-count">5,000+ users</span>
               </div>
             </div>
             
