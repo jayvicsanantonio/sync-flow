@@ -11,7 +11,7 @@ import { Redis } from '@upstash/redis';
 import { GoogleAuthService } from './services/google-auth';
 import { GoogleTasksService } from './services/google-tasks';
 import { UserService } from './services/user';
-import { createHomeHandler } from './handlers/home';
+import { createLandingPageHandler } from './handlers/landing';
 import { createAuthHandler } from './handlers/auth';
 import {
   createCreateTaskWebhookHandler,
@@ -19,6 +19,7 @@ import {
   createDeleteTaskWebhookHandler,
 } from './handlers/webhook';
 import { createFetchSyncHandler } from './handlers/sync';
+
 
 const redis = Redis.fromEnv();
 
@@ -30,7 +31,7 @@ const userService = new UserService(
   googleTasksService
 );
 
-const handleHome = createHomeHandler(googleAuthService);
+const handleLandingPage = createLandingPageHandler(googleAuthService);
 const handleGoogleCallback = createAuthHandler(googleAuthService, userService);
 const handleCreateTaskWebhook = createCreateTaskWebhookHandler(
   googleTasksService,
@@ -136,7 +137,7 @@ export type AuthCallbackQuery = z.infer<typeof authCallbackQuerySchema>;
 export type FetchSyncQuery = z.infer<typeof fetchSyncQuerySchema>;
 
 // --- ROUTES ---
-app.get('/', handleHome);
+app.get('/', handleLandingPage);
 
 app.get(
   '/auth/google/callback',
