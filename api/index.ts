@@ -17,14 +17,19 @@ import {
   createCreateTaskWebhookHandler,
   createUpdateTaskWebhookHandler,
   createDeleteTaskWebhookHandler,
-} from './handlers/webhook'; // This is a comment;
-import { createSyncHandler } from './handlers/sync';
+} from './handlers/webhook';
+import { createFetchSyncHandler } from './handlers/sync';
+
 
 const redis = Redis.fromEnv();
 
 const googleAuthService = new GoogleAuthService();
 const googleTasksService = new GoogleTasksService();
-const userService = new UserService(redis, googleAuthService);
+const userService = new UserService(
+  redis,
+  googleAuthService,
+  googleTasksService
+);
 
 const handleLandingPage = createLandingPageHandler(googleAuthService);
 const handleGoogleCallback = createAuthHandler(googleAuthService, userService);
@@ -40,7 +45,7 @@ const handleDeleteTaskWebhook = createDeleteTaskWebhookHandler(
   googleTasksService,
   userService
 );
-const handleFetchUpdates = createSyncHandler(googleTasksService, userService);
+const handleFetchSync = createFetchSyncHandler(googleTasksService, userService);
 
 export const config = {
   runtime: 'edge',
@@ -120,11 +125,16 @@ const authCallbackQuerySchema = z.object({
   code: z.string().min(1),
 });
 
+const fetchSyncQuerySchema = z.object({
+  type: z.enum(['added', 'updated', 'deleted']),
+});
+
 export type UserIdParam = z.infer<typeof userIdParamSchema>;
 export type CreateTaskWebhookBody = z.infer<typeof createTaskWebhookBodySchema>;
 export type UpdateTaskWebhookBody = z.infer<typeof updateTaskWebhookBodySchema>;
 export type DeleteTaskWebhookBody = z.infer<typeof deleteTaskWebhookBodySchema>;
 export type AuthCallbackQuery = z.infer<typeof authCallbackQuerySchema>;
+export type FetchSyncQuery = z.infer<typeof fetchSyncQuerySchema>;
 
 // --- ROUTES ---
 app.get('/', handleLandingPage);
@@ -157,9 +167,10 @@ app.delete(
 );
 
 app.get(
-  '/fetch-updates/:userId',
+  '/sync/:userId',
   zValidator('param', userIdParamSchema),
-  handleFetchUpdates
+  zValidator('query', fetchSyncQuerySchema),
+  handleFetchSync
 );
 
 // --- Vercel Export ---
