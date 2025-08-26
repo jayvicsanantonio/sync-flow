@@ -261,7 +261,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 24px;
+            padding: 17px 24px;
             background: var(--primary-gradient);
             color: white;
             text-decoration: none;
@@ -270,6 +270,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             font-weight: 600;
             transition: all 0.2s ease;
             box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.25);
+            border: none;
           }
           
           .btn-primary:hover {
@@ -1398,6 +1399,242 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
               font-size: 24px;
             }
           }
+          
+          /* Beta Access Modal */
+          .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          
+          .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+          }
+          
+          .modal {
+            background: var(--card);
+            border-radius: var(--radius-xl);
+            padding: 48px;
+            max-width: 480px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          
+          .modal-overlay.active .modal {
+            transform: scale(1) translateY(0);
+          }
+          
+          .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            color: var(--muted-foreground);
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+          }
+          
+          .modal-close:hover {
+            background: var(--muted);
+            color: var(--foreground);
+          }
+          
+          .modal-header {
+            text-align: center;
+            margin-bottom: 32px;
+          }
+          
+          .modal-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            color: white;
+            font-size: 28px;
+          }
+          
+          .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--foreground);
+            margin-bottom: 8px;
+          }
+          
+          .modal-subtitle {
+            font-size: 16px;
+            color: var(--muted-foreground);
+            line-height: 1.5;
+          }
+          
+          .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+          }
+          
+          .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          }
+          
+          .form-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--foreground);
+          }
+          
+          .form-input {
+            padding: 14px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            background: var(--background);
+            color: var(--foreground);
+            transition: all 0.2s;
+          }
+          
+          .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+          }
+          
+          .form-input.error {
+            border-color: var(--error);
+          }
+          
+          .form-error {
+            font-size: 13px;
+            color: var(--error);
+            display: none;
+          }
+          
+          .form-error.show {
+            display: block;
+          }
+          
+          .form-submit {
+            padding: 14px 24px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+          }
+          
+          .form-submit:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.35);
+          }
+          
+          .form-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+          }
+          
+          .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            display: none;
+          }
+          
+          .spinner.show {
+            display: block;
+          }
+          
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+          
+          .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-top: 16px;
+            display: none;
+          }
+          
+          .message.show {
+            display: block;
+          }
+          
+          .message.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+          }
+          
+          .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+          }
+          
+          /* Modal Mobile */
+          @media (max-width: 640px) {
+            .modal {
+              padding: 32px 24px;
+              width: 95%;
+            }
+            
+            .modal-icon {
+              width: 48px;
+              height: 48px;
+              font-size: 20px;
+            }
+            
+            .modal-title {
+              font-size: 20px;
+            }
+            
+            .modal-subtitle {
+              font-size: 14px;
+            }
+          }
         </style>
       </head>
       <body>
@@ -1418,8 +1655,8 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             <!-- Content -->
             <div class="hero-content">
               <div class="hero-badge">
-                ⚡ Real-time sync in under 2 seconds
-                <span class="hero-badge-accent">FAST</span>
+                Real-time sync is in active testing • Ongoing feature development
+                <span class="hero-badge-accent">BETA</span>
               </div>
               
               <h1 class="hero-title">
@@ -1433,13 +1670,13 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
               </p>
               
               <div class="hero-actions">
-                <a href="${authUrl}" class="btn-primary">
+                <button id="request-beta-btn" class="btn-primary" type="button" data-modal-trigger="beta">
                   <iconify-icon icon="ph:rocket-launch-bold" width="16"></iconify-icon>
-                  Start Syncing Free
-                </a>
-                <a href="#how-it-works" class="btn-secondary">
-                  <iconify-icon icon="ph:play-circle" width="16"></iconify-icon>
-                  See How It Works
+                  Request Beta Access
+                </button>
+                <a href="https://github.com/jayvicsanantonio/sync-flow" class="btn-secondary">
+                  <iconify-icon icon="simple-icons:github" width="16"></iconify-icon>
+                  See GitHub Repository
                 </a>
               </div>
             </div>
@@ -1522,6 +1759,53 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             </div>
           </div>
         </section>
+
+        <!-- Beta Access Modal -->
+        <div id="beta-modal" class="modal-overlay">
+          <div class="modal">
+            <button type="button" class="modal-close" id="modal-close-btn">&times;</button>
+            
+            <div class="modal-header">
+              <div class="modal-icon">
+                <iconify-icon icon="ph:rocket-launch-bold" width="32"></iconify-icon>
+              </div>
+              <h2 class="modal-title">Request Beta Access</h2>
+              <p class="modal-subtitle">
+                Be among the first to experience seamless task synchronization. 
+                We'll notify you as soon as your access is ready.
+              </p>
+            </div>
+            
+            <form id="beta-form" class="modal-form">
+              <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  name="email" 
+                  class="form-input" 
+                  placeholder="your@email.com" 
+                  required
+                >
+                <div id="email-error" class="form-error">Please enter a valid email address</div>
+              </div>
+              
+              <button type="submit" id="submit-btn" class="form-submit">
+                <div id="spinner" class="spinner"></div>
+                <span id="submit-text">Request Access</span>
+                <iconify-icon icon="ph:arrow-right-bold" width="16" id="submit-arrow"></iconify-icon>
+              </button>
+              
+              <div id="success-message" class="message success">
+                <strong>You're in!</strong> Thanks for your interest. We'll be in touch soon with your beta access.
+              </div>
+              
+              <div id="error-message" class="message error">
+                <strong>Something went wrong.</strong> Please try again or contact support if the problem persists.
+              </div>
+            </form>
+          </div>
+        </div>
 
         <!-- Features Section -->
         <section class="features">
@@ -1849,6 +2133,164 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             const faqItem = element.parentElement;
             faqItem.classList.toggle('active');
           }
+          
+          // Beta Access Modal functionality
+          document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('beta-modal');
+            const requestBetaBtn = document.getElementById('request-beta-btn');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const betaForm = document.getElementById('beta-form');
+            const emailInput = document.getElementById('email');
+            const emailError = document.getElementById('email-error');
+            const submitBtn = document.getElementById('submit-btn');
+            const spinner = document.getElementById('spinner');
+            const submitText = document.getElementById('submit-text');
+            const submitArrow = document.getElementById('submit-arrow');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+            
+            // Open modal
+            requestBetaBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              modal.classList.add('active');
+              // Focus email input after modal animation completes
+              setTimeout(() => emailInput.focus(), 300);
+            });
+            
+            // Close modal
+            function closeModal() {
+              modal.classList.remove('active');
+            }
+            
+            modalCloseBtn.addEventListener('click', closeModal);
+            
+            // Close modal when clicking outside
+            modal.addEventListener('click', function(e) {
+              if (e.target === modal) {
+                closeModal();
+              }
+            });
+            
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+              if (e.key === 'Escape' && modal.classList.contains('active')) {
+                closeModal();
+              }
+            });
+            
+            // Email validation
+            function validateEmail(email) {
+              const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+              return re.test(email);
+            }
+            
+            // Show/hide email error
+            function showEmailError(show) {
+              if (show) {
+                emailInput.classList.add('error');
+                emailError.classList.add('show');
+              } else {
+                emailInput.classList.remove('error');
+                emailError.classList.remove('show');
+              }
+            }
+            
+            // Real-time email validation
+            emailInput.addEventListener('input', function() {
+              if (emailInput.value && !validateEmail(emailInput.value)) {
+                showEmailError(true);
+              } else {
+                showEmailError(false);
+              }
+            });
+            
+            // Show/hide messages
+            function showMessage(type, show) {
+              successMessage.classList.remove('show');
+              errorMessage.classList.remove('show');
+              
+              if (show) {
+                if (type === 'success') {
+                  successMessage.classList.add('show');
+                } else if (type === 'error') {
+                  errorMessage.classList.add('show');
+                }
+              }
+            }
+            
+            // Set loading state
+            function setLoading(loading) {
+              if (loading) {
+                submitBtn.disabled = true;
+                spinner.classList.add('show');
+                submitText.textContent = 'Submitting...';
+                submitArrow.style.display = 'none';
+              } else {
+                submitBtn.disabled = false;
+                spinner.classList.remove('show');
+                submitText.textContent = 'Request Access';
+                submitArrow.style.display = 'flex';
+              }
+            }
+            
+            // Reset form
+            function resetForm() {
+              betaForm.reset();
+              showEmailError(false);
+              showMessage('', false);
+              setLoading(false);
+            }
+            
+            // Form submission
+            betaForm.addEventListener('submit', async function(e) {
+              e.preventDefault();
+              
+              const email = emailInput.value.trim();
+              
+              // Validate email
+              if (!email) {
+                emailInput.focus();
+                return;
+              }
+              
+              if (!validateEmail(email)) {
+                showEmailError(true);
+                emailInput.focus();
+                return;
+              }
+              
+              // Start loading
+              setLoading(true);
+              showMessage('', false);
+              
+              try {
+                const response = await fetch('/api/early-access', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ email })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                  showMessage('success', true);
+                  // Reset form after success
+                  setTimeout(() => {
+                    resetForm();
+                    closeModal();
+                  }, 3000);
+                } else {
+                  throw new Error(data.message || 'Something went wrong');
+                }
+              } catch (error) {
+                console.error('Error submitting form:', error);
+                showMessage('error', true);
+                setLoading(false);
+              }
+            });
+          });
         </script>
       </body>
     </html>
