@@ -149,11 +149,9 @@ export function createAuthHandler(
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            padding: var(--gap-double) 0;
           }
           
           /* Background gradient orbs - matching landing.ts */
@@ -193,7 +191,7 @@ export function createAuthHandler(
           }
           
           .container {
-            max-width: 540px;
+            max-width: 800px;
             width: 100%;
             margin: 0 auto;
             padding: var(--page-margin);
@@ -435,48 +433,108 @@ export function createAuthHandler(
             text-align: center;
           }
           
-          /* Confetti Animation */
-          @keyframes confetti-fall {
-            0% {
-              transform: translateY(-100vh) rotate(0deg);
-              opacity: 1;
-            }
-            100% {
-              transform: translateY(100vh) rotate(720deg);
-              opacity: 0;
-            }
+          /* Shortcuts Setup Section */
+          .setup-section {
+            margin-bottom: var(--gap-double);
+            text-align: left;
+            padding: var(--gap-double);
+            background: var(--gray-50);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
           }
           
-          .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: var(--primary);
-            animation: confetti-fall 3s linear;
-            z-index: 1000;
+          .setup-section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--foreground);
+            margin-bottom: var(--gap);
+            display: flex;
+            align-items: center;
+            gap: var(--gap-half);
           }
           
-          .confetti:nth-child(2n) {
-            background: var(--accent);
-            width: 8px;
-            height: 8px;
-            animation-duration: 2.5s;
-            animation-delay: 0.2s;
+          .shortcut-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--gap);
           }
           
-          .confetti:nth-child(3n) {
-            background: var(--success);
-            animation-duration: 3.5s;
-            animation-delay: 0.4s;
+          .shortcut-card {
+            padding: var(--gap);
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            transition: all 0.2s ease;
           }
           
-          .confetti:nth-child(4n) {
-            background: var(--warning);
-            width: 12px;
-            height: 12px;
-            animation-duration: 2.8s;
+          .shortcut-card:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
           }
           
+          .shortcut-header {
+            display: flex;
+            align-items: center;
+            gap: var(--gap-half);
+            margin-bottom: var(--gap-half);
+          }
+          
+          .shortcut-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-sm);
+            color: white;
+            flex-shrink: 0;
+          }
+          
+          .shortcut-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--foreground);
+          }
+          
+          .shortcut-description {
+            font-size: 14px;
+            color: var(--muted-foreground);
+            margin-bottom: var(--gap-half);
+          }
+          
+          .steps-list {
+            padding-left: var(--gap-double);
+            margin-bottom: var(--gap-half);
+            font-size: 14px;
+            color: var(--foreground);
+          }
+          
+          .steps-list li {
+            margin-bottom: var(--gap-quarter);
+          }
+          
+          .code-block {
+            background: var(--foreground);
+            color: var(--gray-50);
+            border-radius: var(--radius-sm);
+            padding: var(--gap-half);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            overflow-x: auto;
+            margin-bottom: var(--gap-half);
+            white-space: pre;
+          }
+          
+          .tip-text {
+            font-size: 13px;
+            color: var(--primary);
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: var(--gap-quarter);
+          }
           @media (max-width: 600px) {
             .container {
               padding: var(--gap);
@@ -505,17 +563,6 @@ export function createAuthHandler(
         <!-- Background gradient orbs - matching landing.ts -->
         <div class="hero-gradient-orb orb-1"></div>
         <div class="hero-gradient-orb orb-2"></div>
-        
-        <!-- Confetti animation -->
-        <div class="confetti" style="left: 10%; animation-delay: 0s;"></div>
-        <div class="confetti" style="left: 20%; animation-delay: 0.3s;"></div>
-        <div class="confetti" style="left: 30%; animation-delay: 0.6s;"></div>
-        <div class="confetti" style="left: 40%; animation-delay: 0.9s;"></div>
-        <div class="confetti" style="left: 50%; animation-delay: 1.2s;"></div>
-        <div class="confetti" style="left: 60%; animation-delay: 0.1s;"></div>
-        <div class="confetti" style="left: 70%; animation-delay: 0.4s;"></div>
-        <div class="confetti" style="left: 80%; animation-delay: 0.7s;"></div>
-        <div class="confetti" style="left: 90%; animation-delay: 1s;"></div>
         
         <div class="container">
           <div class="card">
@@ -594,6 +641,108 @@ export function createAuthHandler(
                   <div class="step-content">
                     <div class="step-title">Secure & Private</div>
                     <div class="step-description">Your data is encrypted and never stored - we only facilitate the sync</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Apple Shortcuts Setup -->
+            <div class="setup-section">
+              <h3 class="setup-section-title">
+                <iconify-icon icon="simple-icons:apple" width="20" style="color: var(--foreground);"></iconify-icon>
+                Apple Shortcuts Setup Guide
+              </h3>
+              <div class="shortcut-list">
+                <!-- Add New Habit Shortcut -->
+                <div class="shortcut-card">
+                  <div class="shortcut-header">
+                    <div class="shortcut-icon">
+                      <iconify-icon icon="ph:plus-bold" width="16"></iconify-icon>
+                    </div>
+                    <div class="shortcut-title">Add New Habit</div>
+                  </div>
+                  <div class="shortcut-description">
+                    Create a new habit in Apple Reminders that automatically syncs to Google Tasks
+                  </div>
+                  <ol class="steps-list">
+                    <li>Open the Shortcuts app on your iPhone/iPad</li>
+                    <li>Tap the "+" button to create a new shortcut</li>
+                    <li>Add "Get Text from Input" action</li>
+                    <li>Add "Get Contents of URL" action with the following settings:</li>
+                  </ol>
+                  <div class="code-block">URL: https://your-domain.vercel.app/api/webhook/task/create
+Method: POST
+Headers: Content-Type → application/json
+Request Body: {"title": "[Text from Input]", "user_id": "${id}"}</div>
+                  <ol class="steps-list" style="counter-reset: list 4;">
+                    <li style="counter-increment: list;">Add "Add to Reminders" action to create the task locally</li>
+                    <li style="counter-increment: list;">Test the shortcut with a sample task</li>
+                  </ol>
+                  <div class="tip-text">
+                    <iconify-icon icon="ph:lightbulb-bold" width="14"></iconify-icon>
+                    Tip: You can add this shortcut to your home screen for quick access
+                  </div>
+                </div>
+
+                <!-- Edit Habit Shortcut -->
+                <div class="shortcut-card">
+                  <div class="shortcut-header">
+                    <div class="shortcut-icon">
+                      <iconify-icon icon="ph:pencil-bold" width="16"></iconify-icon>
+                    </div>
+                    <div class="shortcut-title">Edit Habit</div>
+                  </div>
+                  <div class="shortcut-description">
+                    Update an existing habit and sync the changes to Google Tasks
+                  </div>
+                  <ol class="steps-list">
+                    <li>Open the Shortcuts app</li>
+                    <li>Create a new shortcut for editing</li>
+                    <li>Add "Choose from Menu" action with options: "Change Title", "Mark Complete", "Change Priority"</li>
+                    <li>For each menu option, add "Get Contents of URL" with:</li>
+                  </ol>
+                  <div class="code-block">URL: https://your-domain.vercel.app/api/webhook/task/update
+Method: PUT
+Headers: Content-Type → application/json
+Request Body: {"task_id": "[Task ID]", "title": "[New Title]", "completed": true/false, "user_id": "${id}"}</div>
+                  <ol class="steps-list" style="counter-reset: list 4;">
+                    <li style="counter-increment: list;">Add corresponding Reminders actions to update locally</li>
+                    <li style="counter-increment: list;">Test with different edit scenarios</li>
+                  </ol>
+                  <div class="tip-text">
+                    <iconify-icon icon="ph:lightbulb-bold" width="14"></iconify-icon>
+                    Pro tip: Use "Ask for Input" to make the shortcut interactive
+                  </div>
+                </div>
+
+                <!-- Delete Habit Shortcut -->
+                <div class="shortcut-card">
+                  <div class="shortcut-header">
+                    <div class="shortcut-icon">
+                      <iconify-icon icon="ph:trash-bold" width="16"></iconify-icon>
+                    </div>
+                    <div class="shortcut-title">Delete Habit</div>
+                  </div>
+                  <div class="shortcut-description">
+                    Remove a habit from both Apple Reminders and Google Tasks
+                  </div>
+                  <ol class="steps-list">
+                    <li>Create a new shortcut in the Shortcuts app</li>
+                    <li>Add "Choose from List" to select which habit to delete</li>
+                    <li>Add "Ask for Confirmation" action for safety</li>
+                    <li>Add "Get Contents of URL" action:</li>
+                  </ol>
+                  <div class="code-block">URL: https://your-domain.vercel.app/api/webhook/task/delete
+Method: DELETE
+Headers: Content-Type → application/json
+Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
+                  <ol class="steps-list" style="counter-reset: list 4;">
+                    <li style="counter-increment: list;">Add "Delete Reminders" action to remove locally</li>
+                    <li style="counter-increment: list;">Test deletion carefully with a test task</li>
+                  </ol>
+                  <div class="tip-text">
+                    <iconify-icon icon="ph:warning-bold" width="14"></iconify-icon>
+                    Important: Always include confirmation step to prevent accidental deletions
                   </div>
                 </div>
               </div>
