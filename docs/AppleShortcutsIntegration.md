@@ -47,7 +47,6 @@ You'll create three separate shortcuts (one for each sync type) and then a maste
    - **Get Dictionary Value**: Get "due" from Repeat Item
    - **Get Dictionary Value**: Get "syncId" from Repeat Item
    - **Get Dictionary Value**: Get "status" from Repeat Item
-   
 7. **Process the notes to preserve syncId:**
    - **Add Text action**: Combine notes with syncId
    - Format: `[notes]\n\n[SyncID: [syncId]]`
@@ -81,10 +80,8 @@ You'll create three separate shortcuts (one for each sync type) and then a maste
    - **Add "Find Reminders"** action:
      - Add Filter: "Notes" contains `[SyncID: [syncId]]`
      - Limit: 1
-   
 7. **Add "If" condition**
    - If "Reminders" has any value
-   
 8. **Inside If block:**
    - **Get item from list**: First item from Reminders
    - **Edit Reminder**:
@@ -113,7 +110,6 @@ You'll create three separate shortcuts (one for each sync type) and then a maste
    - **Add "Find Reminders"** action:
      - Add Filter: "Notes" contains `[SyncID: [Repeat Item]]`
      - Limit: 1
-   
 7. **Add "If" condition**
    - If "Reminders" has any value
 
@@ -157,6 +153,7 @@ You'll create three separate shortcuts (one for each sync type) and then a maste
 ### Alternative: Multiple Daily Automations
 
 If hourly is too frequent, create multiple automations:
+
 - Morning sync: 8:00 AM
 - Noon sync: 12:00 PM
 - Afternoon sync: 4:00 PM
@@ -246,19 +243,19 @@ Add these checks to make your shortcuts more robust:
      c. Due = Get "due" from Task
      d. SyncId = Get "syncId" from Task
      e. Status = Get "status" from Task
-     
+
      f. FormattedNotes = Notes + "\n\n[SyncID: " + SyncId + "]"
-     
+
      g. If Due exists:
         - DueDate = Format Due as Date
-     
+
      h. Add New Reminder:
         - Title: Title
         - Notes: FormattedNotes
         - Due Date: DueDate (if exists)
         - List: "Google Tasks Sync"
         - Is Completed: (Status == "completed")
-   
+
    - Show Notification: "Added [TaskCount] tasks"
 7. Else:
    - Show Notification: "No new tasks to add"

@@ -537,7 +537,9 @@ export function createAuthHandler(
             </p>
             
             <!-- User Profile Card -->
-            ${userProfile.picture ? `
+            ${
+              userProfile.picture
+                ? `
             <div class="user-profile">
               <img src="${userProfile.picture}" alt="${userProfile.name}" class="user-avatar">
               <div class="user-info">
@@ -545,7 +547,8 @@ export function createAuthHandler(
                 <div class="user-id">ID: ${id}</div>
               </div>
             </div>
-            ` : `
+            `
+                : `
             <div class="user-profile">
               <div class="user-avatar" style="background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 700;">
                 ${userProfile.name ? userProfile.name.charAt(0).toUpperCase() : 'U'}
@@ -555,7 +558,8 @@ export function createAuthHandler(
                 <div class="user-id">ID: ${id}</div>
               </div>
             </div>
-            `}
+            `
+            }
             
             <!-- Next Steps -->
             <div class="next-steps">

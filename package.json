@@ -8,7 +8,9 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test:email": "tsx scripts/send-test-email.ts",
+    "beta:export": "node scripts/get-early-access.js"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.2.2",
@@ -25,6 +27,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
     "prettier": "^3.6.2",
+    "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "vercel": "^46.0.2"
   }

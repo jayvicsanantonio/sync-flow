@@ -6,20 +6,25 @@ import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
 import { handle } from 'hono/vercel';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
-import { SyncFlowError } from './utils/errors';
+import { SyncFlowError } from '../src/utils/errors';
 import { Redis } from '@upstash/redis';
-import { GoogleAuthService } from './services/google-auth';
-import { GoogleTasksService } from './services/google-tasks';
-import { UserService } from './services/user';
-import { createLandingPageHandler } from './handlers/landing';
-import { createAuthHandler } from './handlers/auth';
+import { GoogleAuthService } from '../src/services/google-auth';
+import { GoogleTasksService } from '../src/services/google-tasks';
+import { UserService } from '../src/services/user';
+import { createLandingPageHandler } from '../src/handlers/landing';
+import { createAuthHandler } from '../src/handlers/auth';
 import {
   createCreateTaskWebhookHandler,
   createUpdateTaskWebhookHandler,
   createDeleteTaskWebhookHandler,
-} from './handlers/webhook';
-import { createFetchSyncHandler } from './handlers/sync';
-
+} from '../src/handlers/webhook';
+import { createFetchSyncHandler } from '../src/handlers/sync';
+import { createEarlyAccessHandler } from '../src/handlers/early-access';
+import {
+  createAdminEarlyAccessHandler,
+  createAdminStatsHandler,
+} from '../src/handlers/admin';
+import { createRateLimiter } from '../src/utils/rate-limit';
 
 const redis = Redis.fromEnv();
 
@@ -46,6 +51,17 @@ const handleDeleteTaskWebhook = createDeleteTaskWebhookHandler(
   userService
 );
 const handleFetchSync = createFetchSyncHandler(googleTasksService, userService);
+const handleEarlyAccess = createEarlyAccessHandler(redis);
+const handleAdminEarlyAccess = createAdminEarlyAccessHandler(redis);
+const handleAdminStats = createAdminStatsHandler(redis);
+
+// Rate limiters
+const earlyAccessRateLimit = createRateLimiter(redis, {
+  windowMs: 3600, // 1 hour
+  max: 5, // 5 requests per hour per IP
+  keyPrefix: 'rate-limit:early-access',
+  message: 'Too many early access requests. Please try again later.',
+});
 
 export const config = {
   runtime: 'edge',
@@ -129,12 +145,21 @@ const fetchSyncQuerySchema = z.object({
   type: z.enum(['added', 'updated', 'deleted']),
 });
 
+const earlyAccessBodySchema = z.object({
+  email: z
+    .string()
+    .email('Please enter a valid email address')
+    .trim()
+    .toLowerCase(),
+});
+
 export type UserIdParam = z.infer<typeof userIdParamSchema>;
 export type CreateTaskWebhookBody = z.infer<typeof createTaskWebhookBodySchema>;
 export type UpdateTaskWebhookBody = z.infer<typeof updateTaskWebhookBodySchema>;
 export type DeleteTaskWebhookBody = z.infer<typeof deleteTaskWebhookBodySchema>;
 export type AuthCallbackQuery = z.infer<typeof authCallbackQuerySchema>;
 export type FetchSyncQuery = z.infer<typeof fetchSyncQuerySchema>;
+export type EarlyAccessBody = z.infer<typeof earlyAccessBodySchema>;
 
 // --- ROUTES ---
 app.get('/', handleLandingPage);
@@ -172,6 +197,17 @@ app.get(
   zValidator('query', fetchSyncQuerySchema),
   handleFetchSync
 );
+
+app.post(
+  '/early-access',
+  earlyAccessRateLimit,
+  zValidator('json', earlyAccessBodySchema),
+  handleEarlyAccess
+);
+
+// Admin routes (optional - for monitoring)
+app.get('/admin/early-access', handleAdminEarlyAccess);
+app.get('/admin/stats', handleAdminStats);
 
 // --- Vercel Export ---
 export default handle(app);
