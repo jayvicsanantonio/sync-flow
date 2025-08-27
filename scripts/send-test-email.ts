@@ -2,7 +2,7 @@
 
 /**
  * Test script to verify Resend email integration
- * Usage: node scripts/send-test-email.ts
+ * Usage: npx tsx scripts/send-test-email.ts
  *
  * Requires the following environment variables:
  * - RESEND_API_KEY
