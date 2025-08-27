@@ -6,25 +6,25 @@ import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
 import { handle } from 'hono/vercel';
 import type { ContentfulStatusCode } from 'hono/utils/http-status';
-import { SyncFlowError } from './utils/errors';
+import { SyncFlowError } from '../src/utils/errors';
 import { Redis } from '@upstash/redis';
-import { GoogleAuthService } from './services/google-auth';
-import { GoogleTasksService } from './services/google-tasks';
-import { UserService } from './services/user';
-import { createLandingPageHandler } from './handlers/landing';
-import { createAuthHandler } from './handlers/auth';
+import { GoogleAuthService } from '../src/services/google-auth';
+import { GoogleTasksService } from '../src/services/google-tasks';
+import { UserService } from '../src/services/user';
+import { createLandingPageHandler } from '../src/handlers/landing';
+import { createAuthHandler } from '../src/handlers/auth';
 import {
   createCreateTaskWebhookHandler,
   createUpdateTaskWebhookHandler,
   createDeleteTaskWebhookHandler,
-} from './handlers/webhook';
-import { createFetchSyncHandler } from './handlers/sync';
-import { createEarlyAccessHandler } from './handlers/early-access';
+} from '../src/handlers/webhook';
+import { createFetchSyncHandler } from '../src/handlers/sync';
+import { createEarlyAccessHandler } from '../src/handlers/early-access';
 import {
   createAdminEarlyAccessHandler,
   createAdminStatsHandler,
-} from './handlers/admin';
-import { createRateLimiter } from './utils/rate-limit';
+} from '../src/handlers/admin';
+import { createRateLimiter } from '../src/utils/rate-limit';
 
 const redis = Redis.fromEnv();
 

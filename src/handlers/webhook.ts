@@ -6,7 +6,7 @@ import type {
   UpdateTaskWebhookBody,
   DeleteTaskWebhookBody,
   UserIdParam,
-} from '../index';
+} from '../../api/index';
 
 /**
  * Parses various date formats and returns RFC 3339 format

@@ -10,8 +10,8 @@
  * - BETA_NOTIFICATION_FROM
  */
 
-import { sendBetaRequestEmail } from '../api/services/email';
-import type { EarlyAccessRequest } from '../api/handlers/early-access';
+import { sendBetaRequestEmail } from '../src/services/email';
+import type { EarlyAccessRequest } from '../src/handlers/early-access';
 
 async function sendTestEmail() {
   try {

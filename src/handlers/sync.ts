@@ -2,7 +2,7 @@ import type { Context } from 'hono';
 import type { GoogleTasksService } from '../services/google-tasks';
 import type { UserService } from '../services/user';
 import type { GoogleTask } from '../types/google-api';
-import type { UserIdParam, FetchSyncQuery } from '../index';
+import type { UserIdParam, FetchSyncQuery } from '../../api/index';
 import { NotFoundError } from '../utils/errors';
 
 interface TaskWithSyncId extends GoogleTask {

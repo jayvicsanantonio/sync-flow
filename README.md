@@ -36,13 +36,16 @@ Sync Flow is a serverless API that enables bidirectional synchronization between
 ```
 sync-flow/
 ├── api/
-│   ├── index.ts         # Main entry point & route definitions
+│   └── index.ts         # Main API entry point (single Edge Function)
+├── src/                 # Source code (imported by API)
 │   ├── handlers/        # Request handlers for each endpoint
 │   │   ├── auth.ts      # OAuth callback handler
+│   │   ├── early-access.ts # Beta access handler
 │   │   ├── landing.ts   # Landing page handler
 │   │   ├── sync.ts      # Fetch updates handler
 │   │   └── webhook.ts   # Task CRUD webhook handlers
 │   ├── services/        # Business logic layer
+│   │   ├── email.ts     # Email notification service
 │   │   ├── google-auth.ts   # Google OAuth service
 │   │   ├── google-tasks.ts  # Google Tasks API service
 │   │   └── user.ts          # User data service
@@ -50,8 +53,12 @@ sync-flow/
 │   │   ├── auth.ts      # Authentication types
 │   │   ├── google-api.ts # Google API types
 │   │   └── user.ts      # User model types
-│   └── utils/
-│       └── errors.ts    # Custom error classes
+│   └── utils/           # Utility functions
+│       ├── errors.ts    # Custom error classes
+│       └── rate-limit.ts # Rate limiting utilities
+├── scripts/             # Development and admin scripts
+│   ├── get-early-access.js  # Export beta requests
+│   └── send-test-email.ts   # Test email integration
 ├── docs/                # Documentation
 ├── package.json         # Dependencies and scripts
 ├── tsconfig.json        # TypeScript configuration
