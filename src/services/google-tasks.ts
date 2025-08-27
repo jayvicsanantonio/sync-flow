@@ -4,6 +4,7 @@ import type {
   CreateTaskRequest,
   UpdateTaskRequest,
 } from '../types/google-api';
+import type { UserService } from './user';
 
 const TASKS_API_BASE_URL = 'https://tasks.googleapis.com/tasks/v1';
 const DEFAULT_TASK_LIST = '@default';
@@ -680,7 +681,7 @@ export class GoogleTasksService {
   async repairSyncMappings(
     accessToken: string,
     userId: string,
-    userService: any
+    userService: UserService
   ): Promise<{ repaired: number; errors: string[] }> {
     const errors: string[] = [];
     let repairedCount = 0;

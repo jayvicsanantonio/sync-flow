@@ -3,10 +3,6 @@ import type { Redis } from '@upstash/redis';
 import { SyncFlowError } from '../utils/errors';
 import { sendBetaRequestEmail } from '../services/email';
 
-interface EarlyAccessBody {
-  email: string;
-}
-
 export interface EarlyAccessRequest {
   email: string;
   timestamp: string;
@@ -15,12 +11,11 @@ export interface EarlyAccessRequest {
 }
 
 export function createEarlyAccessHandler(redis: Redis) {
-  return async function handleEarlyAccess(
-    c: Context<any, any, { out: { json: EarlyAccessBody } }>
-  ) {
+  return async function handleEarlyAccess(c: Context) {
     try {
       // Get email from validated request body
-      const { email } = c.req.valid('json');
+      const body = (await c.req.json()) as { email: string };
+      const email = body.email;
 
       // Check if email is already registered
       const existingEntry = await redis.get(`early-access:${email}`);

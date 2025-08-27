@@ -2,7 +2,6 @@ import type { Context } from 'hono';
 import type { GoogleTasksService } from '../services/google-tasks';
 import type { UserService } from '../services/user';
 import type { GoogleTask } from '../types/google-api';
-import type { UserIdParam, FetchSyncQuery } from '../../api/index';
 import { NotFoundError } from '../utils/errors';
 
 interface TaskWithSyncId extends GoogleTask {
@@ -22,11 +21,16 @@ export function createFetchSyncHandler(
   googleTasksService: GoogleTasksService,
   userService: UserService
 ) {
-  return async function handleFetchSync(
-    c: Context<any, any, { out: { param: UserIdParam; query: FetchSyncQuery } }>
-  ) {
-    const { userId } = c.req.valid('param');
-    const { type } = c.req.valid('query');
+  return async function handleFetchSync(c: Context) {
+    const userId = c.req.param('userId');
+    const type = c.req.query('type') as 'added' | 'updated' | 'deleted';
+
+    if (!userId) {
+      return c.json({ error: 'Missing userId parameter' }, 400);
+    }
+    if (!type) {
+      return c.json({ error: 'Missing type query parameter' }, 400);
+    }
 
     console.log(`Fetching ${type} tasks for userId:`, userId);
 

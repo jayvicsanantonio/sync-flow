@@ -16,8 +16,8 @@ export class GoogleAuthService {
     const url = 'https://oauth2.googleapis.com/token';
     const params = {
       code,
-      client_id: GOOGLE_CLIENT_ID!,
-      client_secret: GOOGLE_CLIENT_SECRET!,
+      client_id: GOOGLE_CLIENT_ID || '',
+      client_secret: GOOGLE_CLIENT_SECRET || '',
       redirect_uri: `${SERVER_BASE_URL}/api/auth/google/callback`,
       grant_type: 'authorization_code',
     };
@@ -128,8 +128,8 @@ export class GoogleAuthService {
     }
 
     const params = {
-      client_id: GOOGLE_CLIENT_ID!,
-      client_secret: GOOGLE_CLIENT_SECRET!,
+      client_id: GOOGLE_CLIENT_ID || '',
+      client_secret: GOOGLE_CLIENT_SECRET || '',
       refresh_token: refreshToken,
       grant_type: 'refresh_token',
     };
@@ -180,7 +180,7 @@ export class GoogleAuthService {
 
   generateAuthUrl(): string {
     const params = new URLSearchParams({
-      client_id: GOOGLE_CLIENT_ID!,
+      client_id: GOOGLE_CLIENT_ID || '',
       redirect_uri: `${SERVER_BASE_URL}/api/auth/google/callback`,
       response_type: 'code',
       scope: [
