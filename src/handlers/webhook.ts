@@ -5,7 +5,6 @@ import type {
   CreateTaskWebhookBody,
   UpdateTaskWebhookBody,
   DeleteTaskWebhookBody,
-  UserIdParam,
 } from '../../api/index';
 
 /**
@@ -35,15 +34,13 @@ export function createCreateTaskWebhookHandler(
   googleTasksService: GoogleTasksService,
   userService: UserService
 ) {
-  return async function handleCreateTask(
-    c: Context<
-      any,
-      any,
-      { out: { param: UserIdParam; json: CreateTaskWebhookBody } }
-    >
-  ) {
-    const { userId } = c.req.valid('param');
-    const payload = c.req.valid('json');
+  return async function handleCreateTask(c: Context) {
+    const userId = c.req.param('userId');
+    const payload = (await c.req.json()) as CreateTaskWebhookBody;
+
+    if (!userId) {
+      return c.json({ error: 'Missing userId parameter' }, 400);
+    }
 
     console.log('Creating task for userId:', userId);
     console.log('Create payload:', payload);
@@ -84,15 +81,14 @@ export function createUpdateTaskWebhookHandler(
   googleTasksService: GoogleTasksService,
   userService: UserService
 ) {
-  return async function handleUpdateTask(
-    c: Context<
-      any,
-      any,
-      { out: { param: UserIdParam; json: UpdateTaskWebhookBody } }
-    >
-  ) {
-    const { userId } = c.req.valid('param');
-    const payload = c.req.valid('json');
+  return async function handleUpdateTask(c: Context) {
+    const userId = c.req.param('userId');
+    const payload = (await c.req.json()) as UpdateTaskWebhookBody;
+
+    if (!userId) {
+      return c.json({ error: 'Missing userId parameter' }, 400);
+    }
+
     const syncId = payload.syncId;
 
     console.log('Updating task for userId:', userId);
@@ -132,15 +128,14 @@ export function createDeleteTaskWebhookHandler(
   googleTasksService: GoogleTasksService,
   userService: UserService
 ) {
-  return async function handleDeleteTask(
-    c: Context<
-      any,
-      any,
-      { out: { param: UserIdParam; json: DeleteTaskWebhookBody } }
-    >
-  ) {
-    const { userId } = c.req.valid('param');
-    const payload = c.req.valid('json');
+  return async function handleDeleteTask(c: Context) {
+    const userId = c.req.param('userId');
+    const payload = (await c.req.json()) as DeleteTaskWebhookBody;
+
+    if (!userId) {
+      return c.json({ error: 'Missing userId parameter' }, 400);
+    }
+
     const { syncId } = payload;
 
     console.log('Deleting task:', { userId, syncId });

@@ -56,9 +56,6 @@ sync-flow/
 │   └── utils/           # Utility functions
 │       ├── errors.ts    # Custom error classes
 │       └── rate-limit.ts # Rate limiting utilities
-├── scripts/             # Development and admin scripts
-│   ├── get-early-access.js  # Export beta requests
-│   └── send-test-email.ts   # Test email integration
 ├── docs/                # Documentation
 ├── package.json         # Dependencies and scripts
 ├── tsconfig.json        # TypeScript configuration
@@ -99,16 +96,6 @@ EMAIL_NOTIFICATIONS_ENABLED=true
 
 # Required for admin endpoints
 ADMIN_SECRET=your-secure-admin-secret
-```
-
-### Beta Access Scripts
-
-```bash
-# View all beta requests
-node scripts/get-early-access.js
-
-# Test email integration (requires setup)
-npx tsx scripts/send-test-email.ts
 ```
 
 ## Contributing

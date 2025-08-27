@@ -101,7 +101,8 @@ export function createAdminStatsHandler(redis: Redis) {
                 typeof parsedData === 'object' &&
                 'timestamp' in parsedData
               ) {
-                return (parsedData as any).timestamp >= yesterday
+                return (parsedData as { timestamp: string }).timestamp >=
+                  yesterday
                   ? parsedData
                   : null;
               }

@@ -90,7 +90,7 @@ app.use(async function errorHandler(c: Context, next: Next) {
         {
           error: error.message,
           code: error.code,
-          ...(error.details && { details: error.details }),
+          ...(error.details ? { details: error.details } : {}),
         },
         error.statusCode as ContentfulStatusCode
       );

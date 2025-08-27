@@ -28,8 +28,6 @@ The SyncFlow beta access system now includes complete Upstash Redis storage and 
 
 ### 4. Testing & Development Tools
 
-- **Test Email Script**: `scripts/send-test-email.ts` for verifying email integration
-- **NPM Scripts**: Convenient commands (`test:email`, `beta:export`)
 - **TSX Integration**: TypeScript execution for development scripts
 
 ### 5. Documentation & Configuration
@@ -148,6 +146,4 @@ interface EarlyAccessRequest {
 - `api/handlers/early-access.ts` - Main handler with email integration
 - `api/services/email.ts` - Resend email service wrapper
 - `api/handlers/admin.ts` - Admin endpoints with JSON parsing
-- `scripts/get-early-access.js` - CLI export tool
-- `scripts/send-test-email.ts` - Email testing script
 - `docs/BetaAccessDeployment.md` - Deployment checklist

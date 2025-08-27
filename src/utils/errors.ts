@@ -3,7 +3,7 @@ export class SyncFlowError extends Error {
     message: string,
     public code: string,
     public statusCode: number = 500,
-    public details?: any
+    public details?: unknown
   ) {
     super(message);
     this.name = 'SyncFlowError';
@@ -17,7 +17,7 @@ export class AuthenticationError extends SyncFlowError {
 }
 
 export class ValidationError extends SyncFlowError {
-  constructor(message: string, details?: any) {
+  constructor(message: string, details?: unknown) {
     super(message, 'VALIDATION_ERROR', 400, details);
   }
 }
@@ -31,7 +31,7 @@ export class NotFoundError extends SyncFlowError {
 export class GoogleAPIError extends SyncFlowError {
   constructor(
     message: string,
-    public apiResponse?: any,
+    public apiResponse?: unknown,
     public statusCode: number = 500
   ) {
     super(message, 'GOOGLE_API_ERROR', statusCode, apiResponse);

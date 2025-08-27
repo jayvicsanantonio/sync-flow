@@ -7,10 +7,11 @@ export function createAuthHandler(
   googleAuthService: GoogleAuthService,
   userService: UserService
 ) {
-  return async function handleGoogleCallback(
-    c: Context<any, any, { out: { query: { code: string } } }>
-  ) {
-    const { code } = c.req.valid('query');
+  return async function handleGoogleCallback(c: Context) {
+    const code = c.req.query('code');
+    if (!code) {
+      throw new Error('Missing authorization code');
+    }
 
     try {
       const tokens = await googleAuthService.exchangeCodeForTokens(code);
