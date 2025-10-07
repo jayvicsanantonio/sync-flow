@@ -60,44 +60,47 @@ export function createAuthHandler(
           }
           
           :root {
-            /* BuildUI-inspired Color Palette - matching landing.ts */
-            --background: #fafafa;
-            --foreground: #09090b;
-            --card: #ffffff;
-            --card-foreground: #09090b;
-            --muted: #f4f4f5;
-            --muted-foreground: #71717a;
-            --border: #e4e4e7;
+            /* Geist-inspired color system */
+            --background: #0a0a0a;
+            --foreground: #f5f5f5;
+            --card: #111111;
+            --card-foreground: #f5f5f5;
+            --muted: #141414;
+            --muted-foreground: #9ba1a6;
+            --border: #1f1f1f;
             
-            /* Primary Purple Gradient */
-            --primary: #8b5cf6;
-            --primary-light: #a78bfa;
-            --primary-dark: #7c3aed;
-            --primary-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-            --primary-gradient-hover: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
-            
-            /* Accent Colors */
-            --accent: #ec4899;
-            --accent-light: #f9a8d4;
-            --accent-dark: #db2777;
+            /* Primary Accent */
+            --primary: #0070f3;
+            --primary-light: #2b8dff;
+            --primary-dark: #0053b5;
+            --primary-gradient: var(--primary);
+            --primary-gradient-hover: var(--primary-dark);
+            --primary-surface: rgba(0, 112, 243, 0.16);
+            --primary-surface-strong: rgba(0, 112, 243, 0.26);
+            --focus-ring: rgba(0, 112, 243, 0.35);
+
+            /* Secondary Accent */
+            --accent: #0b8cff;
+            --accent-light: #34a1ff;
+            --accent-dark: #004f9e;
             
             /* Status Colors */
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --info: #3b82f6;
+            --success: #17c964;
+            --warning: #f5a623;
+            --error: #f21361;
+            --info: #3291ff;
             
             /* Gray Scale */
-            --gray-50: #fafafa;
-            --gray-100: #f4f4f5;
-            --gray-200: #e4e4e7;
-            --gray-300: #d4d4d8;
-            --gray-400: #a1a1aa;
-            --gray-500: #71717a;
-            --gray-600: #52525b;
-            --gray-700: #3f3f46;
-            --gray-800: #27272a;
-            --gray-900: #18181b;
+            --gray-50: #111111;
+            --gray-100: #161616;
+            --gray-200: #1c1c1c;
+            --gray-300: #212121;
+            --gray-400: #2a2a2a;
+            --gray-500: #343434;
+            --gray-600: #444444;
+            --gray-700: #595959;
+            --gray-800: #777777;
+            --gray-900: #e5e5e5;
             
             /* Spacing */
             --gap-quarter: 4px;
@@ -117,13 +120,13 @@ export function createAuthHandler(
             --line-height-large: 1.8;
             
             /* Shadows */
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-            --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.35);
+            --shadow: 0 6px 16px -6px rgb(0 0 0 / 0.65);
+            --shadow-md: 0 12px 28px -12px rgb(0 0 0 / 0.7);
+            --shadow-lg: 0 18px 40px -16px rgb(0 0 0 / 0.75);
+            --shadow-xl: 0 24px 60px -20px rgb(0 0 0 / 0.8);
+            --shadow-2xl: 0 32px 80px -24px rgb(0 0 0 / 0.85);
+            --shadow-inner: inset 0 1px 0 0 rgb(255 255 255 / 0.05);
             
             /* Borders */
             --radius-sm: 6px;
@@ -154,27 +157,27 @@ export function createAuthHandler(
             padding: var(--gap-double) 0;
           }
           
-          /* Background gradient orbs - matching landing.ts */
+          /* Background orbs - matching landing.ts */
           .hero-gradient-orb {
             position: absolute;
             border-radius: 50%;
             filter: blur(100px);
             opacity: 0.3;
           }
-          
+
           .orb-1 {
             width: 600px;
             height: 600px;
-            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            background: var(--primary-surface-strong);
             top: -200px;
             right: -100px;
             animation: orb-float-1 20s ease-in-out infinite;
           }
-          
+
           .orb-2 {
             width: 400px;
             height: 400px;
-            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            background: var(--primary-surface);
             bottom: -150px;
             left: -100px;
             animation: orb-float-2 15s ease-in-out infinite;
@@ -227,8 +230,8 @@ export function createAuthHandler(
             align-items: center;
             gap: 8px;
             padding: 4px 6px 4px 16px;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            background: rgba(23, 201, 100, 0.18);
+            border: 1px solid rgba(23, 201, 100, 0.32);
             border-radius: 50px;
             margin-bottom: 24px;
             font-size: 14px;
@@ -240,7 +243,7 @@ export function createAuthHandler(
             align-items: center;
             gap: 4px;
             padding: 2px 10px;
-            background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%);
+            background: var(--primary);
             color: white;
             border-radius: 50px;
             font-size: 11px;
@@ -259,7 +262,7 @@ export function createAuthHandler(
           }
           
           .success-gradient {
-            background: linear-gradient(135deg, #10b981 0%, #8b5cf6 100%);
+            background: var(--primary-light);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -296,7 +299,7 @@ export function createAuthHandler(
             height: 72px;
             border-radius: 50%;
             border: 3px solid var(--primary-light);
-            box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 0 6px rgba(0, 112, 243, 0.18);
             flex-shrink: 0;
           }
           
@@ -369,7 +372,7 @@ export function createAuthHandler(
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--primary-gradient);
+            background: var(--primary);
             border-radius: 50%;
             color: white;
             flex-shrink: 0;
@@ -406,7 +409,7 @@ export function createAuthHandler(
             justify-content: center;
             gap: var(--gap-half);
             padding: 14px 32px;
-            background: var(--primary-gradient);
+            background: var(--primary);
             color: white;
             text-decoration: none;
             border-radius: 10px;
@@ -414,7 +417,7 @@ export function createAuthHandler(
             font-weight: 600;
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 
-              0 4px 14px 0 rgba(139, 92, 246, 0.35),
+              0 22px 46px -22px rgba(0, 112, 243, 0.82),
               inset 0 0 0 1px rgba(255, 255, 255, 0.1);
             cursor: pointer;
             border: none;
@@ -423,7 +426,7 @@ export function createAuthHandler(
           .button:hover {
             transform: translateY(-2px);
             box-shadow: 
-              0 8px 20px 0 rgba(139, 92, 246, 0.45),
+              0 28px 56px -24px rgba(0, 112, 243, 0.92),
               inset 0 0 0 1px rgba(255, 255, 255, 0.2);
           }
           
@@ -486,7 +489,7 @@ export function createAuthHandler(
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--primary-gradient);
+            background: var(--primary);
             border-radius: var(--radius-sm);
             color: white;
             flex-shrink: 0;
@@ -560,7 +563,7 @@ export function createAuthHandler(
         </style>
       </head>
       <body>
-        <!-- Background gradient orbs - matching landing.ts -->
+        <!-- Background orbs - matching landing.ts -->
         <div class="hero-gradient-orb orb-1"></div>
         <div class="hero-gradient-orb orb-2"></div>
         
@@ -598,7 +601,7 @@ export function createAuthHandler(
             `
                 : `
             <div class="user-profile">
-              <div class="user-avatar" style="background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 700;">
+            <div class="user-avatar" style="background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; font-weight: 700;">
                 ${userProfile.name ? userProfile.name.charAt(0).toUpperCase() : 'U'}
               </div>
               <div class="user-info">
@@ -792,28 +795,31 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
             }
             
             :root {
-              /* BuildUI-inspired Color Palette */
-              --background: #fafafa;
-              --foreground: #09090b;
-              --card: #ffffff;
-              --card-foreground: #09090b;
-              --muted: #f4f4f5;
-              --muted-foreground: #71717a;
-              --border: #e4e4e7;
+              /* Geist-inspired Color Palette */
+              --background: #0a0a0a;
+              --foreground: #f5f5f5;
+              --card: #111111;
+              --card-foreground: #f5f5f5;
+              --muted: #141414;
+              --muted-foreground: #9ba1a6;
+              --border: #1f1f1f;
               
-              /* Primary Purple Gradient */
-              --primary: #8b5cf6;
-              --primary-light: #a78bfa;
-              --primary-dark: #7c3aed;
-              --primary-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-              --primary-gradient-hover: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+              /* Primary Accent */
+              --primary: #0070f3;
+              --primary-light: #2b8dff;
+              --primary-dark: #0053b5;
+              --primary-gradient: var(--primary);
+              --primary-gradient-hover: var(--primary-dark);
+              --primary-surface: rgba(0, 112, 243, 0.16);
+              --primary-surface-strong: rgba(0, 112, 243, 0.26);
+              --focus-ring: rgba(0, 112, 243, 0.35);
               
               /* Status Colors */
-              --error: #ef4444;
-              --error-light: #fef2f2;
-              --error-border: #fecaca;
-              --warning: #f59e0b;
-              --success: #10b981;
+              --error: #f21361;
+              --error-light: rgba(242, 19, 97, 0.15);
+              --error-border: rgba(242, 19, 97, 0.35);
+              --warning: #f5a623;
+              --success: #17c964;
               
               /* Spacing */
               --gap-quarter: 4px;
@@ -829,11 +835,11 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
               --line-height-large: 1.8;
               
               /* Shadows */
-              --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-              --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-              --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-              --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-              --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+              --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.35);
+              --shadow: 0 6px 16px -6px rgb(0 0 0 / 0.65);
+              --shadow-md: 0 12px 28px -12px rgb(0 0 0 / 0.7);
+              --shadow-lg: 0 18px 40px -16px rgb(0 0 0 / 0.75);
+              --shadow-xl: 0 24px 60px -20px rgb(0 0 0 / 0.8);
               
               /* Borders */
               --radius-sm: 6px;
@@ -865,18 +871,18 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
               overflow: hidden;
             }
             
-            /* Background gradient orbs */
+            /* Background orbs */
             .background-orb {
               position: absolute;
               border-radius: 50%;
-              filter: blur(100px);
-              opacity: 0.15;
+              filter: blur(110px);
+              opacity: 0.55;
             }
             
             .orb-1 {
               width: 400px;
               height: 400px;
-              background: linear-gradient(135deg, #ef4444 0%, #f59e0b 100%);
+              background: var(--primary-surface-strong);
               top: -200px;
               right: -100px;
             }
@@ -884,7 +890,7 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
             .orb-2 {
               width: 300px;
               height: 300px;
-              background: linear-gradient(135deg, #8b5cf6 0%, #ef4444 100%);
+              background: var(--primary-surface);
               bottom: -150px;
               left: -100px;
             }
@@ -927,7 +933,8 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
               display: flex;
               align-items: center;
               justify-content: center;
-              background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+              background: var(--error-light);
+              border: 1px solid var(--error-border);
               border-radius: var(--radius-md);
               color: var(--error);
             }
@@ -977,7 +984,7 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
             }
             
             .help-list-icon {
-              color: var(--warning);
+              color: var(--primary-light);
               flex-shrink: 0;
               margin-top: 2px;
             }
@@ -995,7 +1002,7 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
               justify-content: center;
               gap: var(--gap-half);
               padding: 14px 28px;
-              background: var(--primary-gradient);
+              background: var(--primary);
               color: white;
               text-decoration: none;
               border-radius: var(--radius-md);
@@ -1003,7 +1010,7 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
               font-weight: 600;
               transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
               box-shadow: 
-                0 4px 14px 0 rgba(139, 92, 246, 0.35),
+                0 22px 46px -22px rgba(0, 112, 243, 0.82),
                 inset 0 0 0 1px rgba(255, 255, 255, 0.1);
               cursor: pointer;
               border: none;
@@ -1012,7 +1019,7 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
             .button:hover {
               transform: translateY(-2px);
               box-shadow: 
-                0 8px 20px 0 rgba(139, 92, 246, 0.45),
+                0 28px 56px -24px rgba(0, 112, 243, 0.92),
                 inset 0 0 0 1px rgba(255, 255, 255, 0.2);
             }
             
@@ -1071,7 +1078,7 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
           </style>
         </head>
         <body>
-          <!-- Background gradient orbs -->
+          <!-- Background orbs -->
           <div class="background-orb orb-1"></div>
           <div class="background-orb orb-2"></div>
           

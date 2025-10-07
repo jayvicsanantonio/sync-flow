@@ -28,44 +28,47 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
 
           :root {
-            /* BuildUI-inspired Color Palette */
-            --background: #fafafa;
-            --foreground: #09090b;
-            --card: #ffffff;
-            --card-foreground: #09090b;
-            --muted: #f4f4f5;
-            --muted-foreground: #71717a;
-            --border: #e4e4e7;
+            /* Geist-inspired color system */
+            --background: #0a0a0a;
+            --foreground: #f5f5f5;
+            --card: #111111;
+            --card-foreground: #f5f5f5;
+            --muted: #141414;
+            --muted-foreground: #9ba1a6;
+            --border: #1f1f1f;
 
-            /* Primary Purple Gradient */
-            --primary: #8b5cf6;
-            --primary-light: #a78bfa;
-            --primary-dark: #7c3aed;
-            --primary-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-            --primary-gradient-hover: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+            /* Primary Accent */
+            --primary: #0070f3;
+            --primary-light: #2b8dff;
+            --primary-dark: #0053b5;
+            --primary-gradient: var(--primary);
+            --primary-gradient-hover: var(--primary-dark);
+            --primary-surface: rgba(0, 112, 243, 0.16);
+            --primary-surface-strong: rgba(0, 112, 243, 0.26);
+            --focus-ring: rgba(0, 112, 243, 0.35);
 
-            /* Accent Colors */
-            --accent: #ec4899;
-            --accent-light: #f9a8d4;
-            --accent-dark: #db2777;
+            /* Secondary Accent */
+            --accent: #0b8cff;
+            --accent-light: #34a1ff;
+            --accent-dark: #004f9e;
 
             /* Status Colors */
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --info: #3b82f6;
+            --success: #17c964;
+            --warning: #f5a623;
+            --error: #f21361;
+            --info: #3291ff;
 
             /* Gray Scale */
-            --gray-50: #fafafa;
-            --gray-100: #f4f4f5;
-            --gray-200: #e4e4e7;
-            --gray-300: #d4d4d8;
-            --gray-400: #a1a1aa;
-            --gray-500: #71717a;
-            --gray-600: #52525b;
-            --gray-700: #3f3f46;
-            --gray-800: #27272a;
-            --gray-900: #18181b;
+            --gray-50: #111111;
+            --gray-100: #161616;
+            --gray-200: #1c1c1c;
+            --gray-300: #212121;
+            --gray-400: #2a2a2a;
+            --gray-500: #343434;
+            --gray-600: #444444;
+            --gray-700: #595959;
+            --gray-800: #777777;
+            --gray-900: #e5e5e5;
 
             /* Spacing */
             --gap-quarter: 4px;
@@ -85,13 +88,13 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             --line-height-large: 1.8;
 
             /* Shadows */
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-            --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.35);
+            --shadow: 0 6px 16px -6px rgb(0 0 0 / 0.65);
+            --shadow-md: 0 12px 28px -12px rgb(0 0 0 / 0.7);
+            --shadow-lg: 0 18px 40px -16px rgb(0 0 0 / 0.75);
+            --shadow-xl: 0 24px 60px -20px rgb(0 0 0 / 0.8);
+            --shadow-2xl: 0 32px 80px -24px rgb(0 0 0 / 0.85);
+            --shadow-inner: inset 0 1px 0 0 rgb(255 255 255 / 0.05);
 
             /* Borders */
             --radius-sm: 6px;
@@ -136,19 +139,36 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             min-height: 100vh;
             display: flex;
             align-items: center;
-            background: linear-gradient(to bottom, var(--background), rgba(139, 92, 246, 0.02));
+            background: var(--background);
             position: relative;
             overflow: hidden;
           }
 
-          /* Subtle gradient backdrop */
-          .hero::before {
+          /* Subtle backdrop bloom */
+          .hero::before,
+          .hero::after {
             content: '';
             position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(139, 92, 246, 0.08), transparent 50%),
-                        radial-gradient(circle at 70% 50%, rgba(236, 72, 153, 0.08), transparent 50%);
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.55;
             z-index: 0;
+          }
+
+          .hero::before {
+            width: 420px;
+            height: 420px;
+            background: var(--primary-surface);
+            top: -160px;
+            right: -120px;
+          }
+
+          .hero::after {
+            width: 360px;
+            height: 360px;
+            background: var(--primary-surface-strong);
+            bottom: -140px;
+            left: -100px;
           }
 
           /* Container */
@@ -192,7 +212,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--primary-gradient);
+            background: var(--primary);
             border-radius: 8px;
             color: white;
           }
@@ -207,8 +227,8 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             align-items: center;
             gap: 8px;
             padding: 6px 8px 6px 16px;
-            background: rgba(139, 92, 246, 0.08);
-            border: 1px solid rgba(139, 92, 246, 0.2);
+            background: rgba(0, 112, 243, 0.18);
+            border: 1px solid rgba(0, 112, 243, 0.36);
             border-radius: 50px;
             margin-bottom: 24px;
             font-size: 14px;
@@ -236,7 +256,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
 
           .hero-gradient-text {
-            background: var(--primary-gradient);
+            background: var(--primary-light);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -262,20 +282,20 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             align-items: center;
             gap: 8px;
             padding: 17px 24px;
-            background: var(--primary-gradient);
+            background: var(--primary);
             color: white;
             text-decoration: none;
             border-radius: 8px;
             font-size: 15px;
             font-weight: 600;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.25);
+            box-shadow: 0 14px 30px -18px rgba(0, 112, 243, 0.8);
             border: none;
           }
 
           .btn-primary:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px 0 rgba(139, 92, 246, 0.35);
+            box-shadow: 0 18px 36px -16px rgba(0, 112, 243, 0.9);
           }
 
           .btn-secondary {
@@ -325,12 +345,12 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             text-align: center;
             position: relative;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow-lg);
           }
 
           .platform-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+            box-shadow: var(--shadow-2xl);
             border-color: var(--primary-light);
           }
 
@@ -347,12 +367,13 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           }
 
           .platform-apple .platform-icon {
-            background: linear-gradient(135deg, #000 0%, #333 100%);
-            color: white;
+            background: #181818;
+            border: 1px solid #232323;
+            color: var(--foreground);
           }
 
           .platform-google .platform-icon {
-            background: linear-gradient(135deg, #4285f4 0%, #1a73e8 100%);
+            background: var(--primary);
             color: white;
           }
 
@@ -439,18 +460,18 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             display: flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+            box-shadow: 0 18px 42px -20px rgba(0, 112, 243, 0.75);
             animation: sync-pulse 2s ease-in-out infinite;
           }
 
           @keyframes sync-pulse {
             0%, 100% {
               transform: scale(1);
-              box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+              box-shadow: 0 18px 42px -20px rgba(0, 112, 243, 0.75);
             }
             50% {
               transform: scale(1.05);
-              box-shadow: 0 12px 32px rgba(139, 92, 246, 0.35);
+              box-shadow: 0 22px 50px -18px rgba(0, 112, 243, 0.9);
             }
           }
 
@@ -460,7 +481,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--primary-gradient);
+            background: var(--primary);
             border-radius: 50%;
             color: white;
             animation: rotate-continuous 3s linear infinite;
@@ -492,13 +513,8 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             left: 25%;
             right: 25%;
             height: 2px;
-            background: linear-gradient(90deg,
-              transparent 0%,
-              var(--primary-light) 20%,
-              var(--primary) 50%,
-              var(--primary-light) 80%,
-              transparent 100%);
-            opacity: 0.3;
+            background: var(--primary-light);
+            opacity: 0.25;
           }
 
           .sync-particles {
@@ -745,7 +761,8 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
               left: 50%;
               width: 2px;
               height: 30px;
-              background: linear-gradient(to bottom, transparent, var(--primary-light), transparent);
+              background: var(--primary-light);
+              opacity: 0.25;
               transform: translateX(-50%);
             }
 
@@ -773,15 +790,15 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           .section-badge {
             display: inline-block;
             padding: 4px 10px;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
-            color: var(--primary);
+            background: var(--primary-surface);
+            color: var(--primary-light);
             border-radius: var(--radius-full);
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: var(--gap);
-            border: 1px solid rgba(139, 92, 246, 0.2);
+            border: 1px solid var(--primary-surface-strong);
           }
 
           .section-title {
@@ -828,10 +845,11 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            background: var(--primary-surface);
+            border: 1px solid var(--primary-surface-strong);
             border-radius: var(--radius-md);
             margin-bottom: 20px;
-            color: var(--primary);
+            color: var(--primary-light);
           }
 
           .feature-title {
@@ -874,12 +892,12 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--primary-gradient);
+            background: var(--primary);
             border-radius: 50%;
             font-size: 22px;
             font-weight: 700;
             color: white;
-            box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.35);
+            box-shadow: 0 24px 48px -22px rgba(0, 112, 243, 0.8);
           }
 
           .step-title {
@@ -1119,7 +1137,8 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           /* CTA Section */
           .cta-section {
             padding: 100px 0;
-            background: linear-gradient(180deg, var(--gray-50) 0%, var(--background) 100%);
+            background: var(--gray-50);
+            border-top: 1px solid var(--border);
             text-align: center;
           }
 
@@ -1127,11 +1146,11 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             max-width: 640px;
             margin: 0 auto;
             padding: 60px;
-            background: var(--primary-gradient);
+            background: var(--primary);
             border-radius: var(--radius-xl);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.4);
+            box-shadow: 0 38px 80px -30px rgba(0, 112, 243, 0.65);
           }
 
           .cta-box::before {
@@ -1141,7 +1160,9 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
             left: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            background: rgba(255, 255, 255, 0.08);
+            filter: blur(140px);
+            opacity: 0.5;
             animation: pulse 4s ease-in-out infinite;
           }
 
@@ -1471,7 +1492,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           .modal-icon {
             width: 64px;
             height: 64px;
-            background: var(--primary-gradient);
+            background: var(--primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1525,7 +1546,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
           .form-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.28);
           }
 
           .form-input.error {
@@ -1544,7 +1565,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
 
           .form-submit {
             padding: 14px 24px;
-            background: var(--primary-gradient);
+            background: var(--primary);
             color: white;
             border: none;
             border-radius: 8px;
@@ -1561,7 +1582,7 @@ export function createLandingPageHandler(googleAuthService: GoogleAuthService) {
 
           .form-submit:hover:not(:disabled) {
             transform: translateY(-1px);
-            box-shadow: 0 4px 14px 0 rgba(139, 92, 246, 0.35);
+            box-shadow: 0 18px 36px -16px rgba(0, 112, 243, 0.9);
           }
 
           .form-submit:disabled {
