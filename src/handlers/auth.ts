@@ -875,14 +875,14 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
             .background-orb {
               position: absolute;
               border-radius: 50%;
-              filter: blur(100px);
-              opacity: 0.15;
+              filter: blur(110px);
+              opacity: 0.55;
             }
             
             .orb-1 {
               width: 400px;
               height: 400px;
-              background: rgba(242, 19, 97, 0.45);
+              background: var(--primary-surface-strong);
               top: -200px;
               right: -100px;
             }
@@ -890,7 +890,7 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
             .orb-2 {
               width: 300px;
               height: 300px;
-              background: rgba(0, 112, 243, 0.35);
+              background: var(--primary-surface);
               bottom: -150px;
               left: -100px;
             }
@@ -933,8 +933,8 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
               display: flex;
               align-items: center;
               justify-content: center;
-              background: rgba(242, 19, 97, 0.18);
-              border: 1px solid rgba(242, 19, 97, 0.28);
+              background: var(--error-light);
+              border: 1px solid var(--error-border);
               border-radius: var(--radius-md);
               color: var(--error);
             }
@@ -984,7 +984,7 @@ Request Body: {"task_id": "[Task ID]", "user_id": "${id}"}</div>
             }
             
             .help-list-icon {
-              color: var(--warning);
+              color: var(--primary-light);
               flex-shrink: 0;
               margin-top: 2px;
             }
