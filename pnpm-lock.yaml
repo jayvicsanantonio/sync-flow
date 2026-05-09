@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@hono/zod-validator':
         specifier: ^0.2.2
-        version: 0.2.2(hono@4.12.14)(zod@3.25.76)
+        version: 0.2.2(hono@4.12.16)(zod@3.25.76)
       '@upstash/redis':
         specifier: ^1.35.2
         version: 1.35.2
@@ -18,8 +18,8 @@ importers:
         specifier: ^9.32.0
         version: 9.32.0
       hono:
-        specifier: ^4.12.14
-        version: 4.12.14
+        specifier: ^4.12.16
+        version: 4.12.16
       zod:
         specifier: ^3.25.76
         version: 3.25.76
@@ -1024,8 +1024,8 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
-  hono@4.12.14:
-    resolution: {integrity: sha512-am5zfg3yu6sqn5yjKBNqhnTX7Cv+m00ox+7jbaKkrLMRJ4rAdldd1xPd/JzbBWspqaQv6RSTrgFN95EsfhC+7w==}
+  hono@4.12.16:
+    resolution: {integrity: sha512-jN0ZewiNAWSe5khM3EyCmBb250+b40wWbwNILNfEvq84VREWwOIkuUsFONk/3i3nqkz7Oe1PcpM2mwQEK2L9Kg==}
     engines: {node: '>=16.9.0'}
 
   http-errors@1.4.0:
@@ -1780,9 +1780,9 @@ snapshots:
 
   '@fastify/busboy@2.1.1': {}
 
-  '@hono/zod-validator@0.2.2(hono@4.12.14)(zod@3.25.76)':
+  '@hono/zod-validator@0.2.2(hono@4.12.16)(zod@3.25.76)':
     dependencies:
-      hono: 4.12.14
+      hono: 4.12.16
       zod: 3.25.76
 
   '@humanfs/core@0.19.1': {}
@@ -2620,7 +2620,7 @@ snapshots:
 
   has-flag@4.0.0: {}
 
-  hono@4.12.14: {}
+  hono@4.12.16: {}
 
   http-errors@1.4.0:
     dependencies:
